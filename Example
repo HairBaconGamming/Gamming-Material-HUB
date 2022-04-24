@@ -1,17 +1,21 @@
 local material = loadstring(game:HttpGet("https://raw.githubusercontent.com/HairBaconGamming/Gamming-Material-HUB/main/Main"))
 
-local gui = material.CreateMain(
-	"BABA BOIS" -- title
+local gui = material.Load(
+	"Noob" -- title
 )
 
-local button = gui.Button(
+local temp = gui.new(
+	"Home" -- title
+)
+
+local button = temp.Button(
 	"Click me", -- title
 	function()
 		print("Amogus")
 	end -- callback
 )
 
-local toggle = gui.Toggle(
+local toggle = temp.Toggle(
 	"Click me", -- title
 	function(Value)
 		print(Value)
