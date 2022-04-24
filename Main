@@ -8,14 +8,18 @@ function amogus.Load(Title)
 	local SecondFrame = Instance.new("Frame")
 	local UICorner = Instance.new("UICorner")
 	local UIGradient = Instance.new("UIGradient")
+	local Frame = Instance.new("Frame")
 	local Main = Instance.new("Frame")
 	local UICorner_2 = Instance.new("UICorner")
-	local Frame = Instance.new("Frame")
 	local UICorner_3 = Instance.new("UICorner")
 	local TextLabel = Instance.new("TextLabel")
 	local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
-	local Frame2 = Instance.new("Frame")
-	local UICorner_4 = Instance.new("UICorner")
+	local Frame3 = Instance.new("Frame")
+	local Frame4 = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local ImageButton = Instance.new("ImageButton")
+	local ImageButton2 = Instance.new("ImageButton")
+	local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 	local UIListLayout = Instance.new("UIListLayout")
 
 	ScreenGui.Parent = game.CoreGui
@@ -29,33 +33,44 @@ function amogus.Load(Title)
 	SecondFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SecondFrame.Position = UDim2.new(0.345534384, 0, 0.221848756, 0)
 	SecondFrame.Size = UDim2.new(0, 421, 0, 330)
+	SecondFrame.ClipsDescendants = true
+	SecondFrame.BackgroundTransparency = 1
 
 	UICorner.CornerRadius = UDim.new(0.0199999996, 0)
 	UICorner.Parent = SecondFrame
 
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 4)), ColorSequenceKeypoint.new(0.22, Color3.fromRGB(221, 255, 0)), ColorSequenceKeypoint.new(0.41, Color3.fromRGB(25, 255, 0)), ColorSequenceKeypoint.new(0.62, Color3.fromRGB(2, 200, 255)), ColorSequenceKeypoint.new(0.80, Color3.fromRGB(0, 17, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(143, 30, 255))}
 	UIGradient.Parent = SecondFrame
-	
+
 	local rs = game:GetService("RunService")
 	local tween = game:GetService("TweenService")
 	rs.Stepped:Connect(function()
 		UIGradient.Rotation += 1.5
 	end)
+
+	UICorner_2.CornerRadius = UDim.new(0.0199999996, 0)
+	UICorner_2.Parent = Main
 	
 	Main.Name = "Main"
 	Main.Parent = SecondFrame
 	Main.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
-	Main.Position = UDim2.new(0.0119025083, 0, 0.0181309097, 0)
-	Main.Size = UDim2.new(0.974109113, 0, 0.963636339, 0)
-
-	UICorner_2.CornerRadius = UDim.new(0.0199999996, 0)
-	UICorner_2.Parent = Main
-
-	Frame.Parent = Main
-	Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	Frame.Position = UDim2.new(0, 0, -0.00309187174, 0)
-	Frame.Size = UDim2.new(0.999999881, 0, 0.0969008356, 0)
-
+	Main.Position = UDim2.new(0.012, 0,0.1, 0)
+	Main.Size = UDim2.new(0.974, 0,0.882, 0)
+	Main.ClipsDescendants = true
+	
+	Frame3.Name = ""
+	Frame3.Parent = SecondFrame
+	Frame3.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Frame3.BackgroundTransparency = 1
+	Frame3.Size = UDim2.new(0.974, 0,0.958, 0)
+	Frame3.Position = UDim2.new(0.012, 0,0.024, 0)
+	
+	Frame.Name = ""
+	Frame.Parent = SecondFrame
+	Frame.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
+	Frame.Position = UDim2.new(0.012, 0,0.024, 0)
+	Frame.Size = UDim2.new(0.974, 0, 0.0969008356, 0)
+	
 	UICorner_3.CornerRadius = UDim.new(0.200000003, 0)
 	UICorner_3.Parent = Frame
 
@@ -75,256 +90,426 @@ function amogus.Load(Title)
 	UITextSizeConstraint.Parent = TextLabel
 	UITextSizeConstraint.MaxTextSize = 14
 
-	Frame2.Name = "Frame2"
-	Frame2.Parent = Main
-	Frame2.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	Frame2.BackgroundTransparency = 0.200
-	Frame2.Position = UDim2.new(0.0170690101, 0, 0.119496852, 0)
-	Frame2.Size = UDim2.new(0.968080759, 0, 0.857861519, 0)
+	Frame4.Name = ""
+	Frame4.Parent = SecondFrame
+	Frame4.BackgroundColor3 = Color3.fromRGB(43, 43, 43)
+	Frame4.Position = UDim2.new(-0.515, 0,0.121, 0)
+	Frame4.Size = UDim2.new(0.32, 0,0.864, 0)
 
-	UICorner_4.CornerRadius = UDim.new(0.0199999996, 0)
-	UICorner_4.Parent = Frame2
+	UICorner.Parent = Frame4
 
-	UIListLayout.Parent = Frame2
+	UIListLayout.Parent = Frame4
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	UIListLayout.Padding = UDim.new(0.0299999993, 0)
+	UIListLayout.Padding = UDim.new(0, 8)
+	
+	ImageButton.Parent = Frame
+	ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ImageButton.BackgroundTransparency = 1.000
+	ImageButton.Size = UDim2.new(0.0855886862, 0, 1, 0)
+	ImageButton.Position = UDim2.new(0,0,0,0)
+	ImageButton.Image = "http://www.roblox.com/asset/?id=3340612851"
+	
+	ImageButton2.Parent = Frame
+	ImageButton2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ImageButton2.BackgroundTransparency = 1.000
+	ImageButton2.Size = UDim2.new(0.0855886862, 0, 1, 0)
+	ImageButton2.Position = UDim2.new(0.907,0,0,0)
+	ImageButton2.Image = "http://www.roblox.com/asset/?id=5450880072"
+
+	UIAspectRatioConstraint.Parent = ImageButton
+	
+	spawn(function()
+		local script = Instance.new("LocalScript",SecondFrame)
+		local UserInputService = game:GetService("UserInputService")
+		local runService = (game:GetService("RunService"));
+
+		local gui = script.Parent
+
+		local dragging
+		local dragInput
+		local dragStart
+		local startPos
+
+		local function Lerp(a, b, m)
+			return a + (b - a) * m
+		end;
+
+		local lastMousePos
+		local lastGoalPos
+		local DRAG_SPEED = (8); -- // The speed of the UI darg.
+		local function Update(dt)
+			if not (startPos) then return end;
+			if not (dragging) and (lastGoalPos) then
+				gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, lastGoalPos.X.Offset, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, lastGoalPos.Y.Offset, dt * DRAG_SPEED))
+				return 
+			end;
+
+			local delta = (lastMousePos - UserInputService:GetMouseLocation())
+			local xGoal = (startPos.X.Offset - delta.X);
+			local yGoal = (startPos.Y.Offset - delta.Y);
+			lastGoalPos = UDim2.new(startPos.X.Scale, xGoal, startPos.Y.Scale, yGoal)
+			gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, xGoal, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, yGoal, dt * DRAG_SPEED))
+		end;
+
+		gui.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				dragging = true
+				dragStart = input.Position
+				startPos = gui.Position
+				lastMousePos = UserInputService:GetMouseLocation()
+
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragging = false
+					end
+				end)
+			end
+		end)
+
+		gui.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				dragInput = input
+			end
+		end)
+
+		runService.Heartbeat:Connect(Update)
+	end)
+	
+	local closed = false
+	local closed2 = false
+	ImageButton.MouseButton1Click:Connect(function()
+		if not closed2 then
+			closed = not closed
+			if closed then
+				tween:Create(Frame4,TweenInfo.new(0.5),{Position = UDim2.new(0.01, 0, 0.121, 0)}):Play()
+				tween:Create(Frame3,TweenInfo.new(0.5),{BackgroundTransparency = 0.5}):Play()
+			else
+				tween:Create(Frame4,TweenInfo.new(0.5),{Position = UDim2.new(-0.515, 0, 0.121, 0)}):Play()
+				tween:Create(Frame3,TweenInfo.new(0.5),{BackgroundTransparency = 1}):Play()
+			end
+		end
+	end)
+	
+	ImageButton2.MouseButton1Click:Connect(function()
+		closed2 = not closed2
+		if closed2 then
+			tween:Create(Main,TweenInfo.new(0.5),{Position = UDim2.new(0.012, 0,1, 0)}):Play()
+			tween:Create(ImageButton2,TweenInfo.new(0.5),{Rotation = 180}):Play()
+			tween:Create(Frame4,TweenInfo.new(0.5),{Position = UDim2.new(-0.515, 0, 0.121, 0)}):Play()
+			tween:Create(Frame3,TweenInfo.new(0.5),{BackgroundTransparency = 1}):Play()
+		else
+			tween:Create(Main,TweenInfo.new(0.5),{Position = UDim2.new(0.012, 0,0.1, 0)}):Play()
+			tween:Create(ImageButton2,TweenInfo.new(0.5),{Rotation = 360}):Play()
+			if closed then
+				tween:Create(Frame4,TweenInfo.new(0.5),{Position = UDim2.new(0.01, 0, 0.121, 0)}):Play()
+				tween:Create(Frame3,TweenInfo.new(0.5),{BackgroundTransparency = 0.5}):Play()
+			end
+			wait(0.5)
+			ImageButton2.Rotation = 0
+		end
+	end)
+	
 	local module = {}
 	
-	function module.Button(Title,Callback)
-		local Button = Instance.new("Frame")
-		local UICorner = Instance.new("UICorner")
-		local TextLabel = Instance.new("TextLabel")
+	local first = false
+	
+	function module.New(Title)
+		local Frame2 = Instance.new("ScrollingFrame")
+		local UICorners = Instance.new("UICorner")
+		local UIListLayout = Instance.new("UIListLayout")
+		local UIListLayout_2 = Instance.new("UIListLayout")
+		
+		local TextButtonae = Instance.new("TextButton")
 		local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
-		local TextButton = Instance.new("TextButton")
 
-		Button.Name = "Button"
-		Button.Parent = Frame2
-		Button.BackgroundColor3 = Color3.fromRGB(85, 170, 127)
-		Button.Size = UDim2.new(1.00000012, 0, 0.125659823, 0)
+		TextButtonae.Parent = Frame4
+		TextButtonae.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		TextButtonae.BackgroundTransparency = 1.000
+		TextButtonae.Position = UDim2.new(0.0839052498, 0, 0, 0)
+		TextButtonae.Size = UDim2.new(1, 0, 0, 30)
+		TextButtonae.Font = Enum.Font.GothamBold
+		TextButtonae.Text = Title
+		TextButtonae.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TextButtonae.TextScaled = true
+		TextButtonae.TextSize = 14.000
+		TextButtonae.TextWrapped = true
 
-		UICorner.CornerRadius = UDim.new(0.150000006, 0)
-		UICorner.Parent = Button
-
-		TextLabel.Parent = Button
-		TextLabel.BackgroundColor3 = Color3.fromRGB(127, 255, 189)
-		TextLabel.BackgroundTransparency = 1.000
-		TextLabel.Position = UDim2.new(0.0176318008, 0, 0.20420073, 0)
-		TextLabel.Size = UDim2.new(0.982368112, 0, 0.562427044, 0)
-		TextLabel.Font = Enum.Font.GothamBold
-		TextLabel.Text = "Title"
-		TextLabel.TextColor3 = Color3.fromRGB(127, 255, 189)
-		TextLabel.TextScaled = true
-		TextLabel.TextSize = 14.000
-		TextLabel.TextWrapped = true
-		TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-		UITextSizeConstraint.Parent = TextLabel
+		UITextSizeConstraint.Parent = TextButtonae
 		UITextSizeConstraint.MaxTextSize = 14
 
-		TextButton.Parent = Button
-		TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		TextButton.BackgroundTransparency = 1.000
-		TextButton.Size = UDim2.new(1, 0, 1, 0)
-		TextButton.Font = Enum.Font.SourceSans
-		TextButton.Text = ""
-		TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-		TextButton.TextSize = 14.000
-		
-		local function tweenInRipple(ripple)
-			spawn(function()
-				local TweenService = game:GetService("TweenService")
-				local Part = ripple
-				local Info = TweenInfo.new(
-					1,
-					Enum.EasingStyle.Linear,
-					Enum.EasingDirection.InOut,
-					0,
-					false,
-					0
-				)
-				local Goals = 
-					{
-						Size = UDim2.new(0, 2000, 0, 2000);
-					}
-				local Tween = TweenService:Create(Part, Info, Goals)
-				Tween:Play()
-			end)
+		Frame2.Name = Title
+		Frame2.Parent = Main
+		Frame2.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		Frame2.BackgroundTransparency = 0.200
+		Frame2.ClipsDescendants = true
+		Frame2.Position = UDim2.new(0.0170690101, 0, 0.022, 0)
+		Frame2.Size = UDim2.new(0.968080759, 0, 0.955, 0)
+		Frame2.BorderSizePixel = 0
+		Frame2.CanvasSize = UDim2.new(0,0,0,0)
+		Frame2.ScrollBarThickness = 2
+		Frame2.Visible = false
+		if not first then
+			Frame2.Visible = true
+			first = true
 		end
 
-		local function fadeOutRipple(ripple)
-			spawn(function()
-				local TweenService = game:GetService("TweenService")
-				local Part = ripple
-				local Info = TweenInfo.new(
-					0.5,
-					Enum.EasingStyle.Linear,
-					Enum.EasingDirection.InOut,
-					0,
-					false,
-					0
-				)
-				local Goals = 
-					{
-						ImageTransparency = 1;
-					}
-				local Tween = TweenService:Create(Part, Info, Goals)
-				Tween:Play()
-				wait(0.5 + 0.1)
-				ripple:Destroy()
-			end)
-		end
-		
-		TextButton.MouseButton1Down:Connect(function()
-			Callback()
-			local Circle = Instance.new("ImageLabel")
+		UICorners.CornerRadius = UDim.new(0.0199999996, 0)
+		UICorners.Parent = Frame2
 
-			Circle.Name = "Circle"
-			Circle.Parent = game.Workspace.RippleEffect
-			Circle.AnchorPoint = Vector2.new(0.5, 0.5)
-			Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			Circle.BackgroundTransparency = 1.000
-			Circle.Position = UDim2.new(0.5, 0, 0.5, 0)
-			Circle.ZIndex = 10
-			Circle.Image = "rbxassetid://266543268"
-			Circle.ImageColor3 = Color3.fromRGB(0, 0, 0)
-			Circle.ImageTransparency = 0.500
-			
-			tweenInRipple(Circle)
-			TextButton.MouseButton1Up:Connect(function()
-				fadeOutRipple(Circle)
+		UIListLayout.Parent = Frame2
+		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout.Padding = UDim.new(0, 8)
+
+		UIListLayout_2.Parent = Frame2
+		UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout_2.Padding = UDim.new(0.0299999993, 0)
+		
+		TextButtonae.MouseButton1Click:Connect(function()
+			for i,v in pairs(Main:GetChildren()) do
+				if v:IsA("ScrollingFrame") then
+					v.Visible = false
+				end
+			end
+			Frame2.Visible = true
+		end)
+		
+		spawn(function()
+			rs.Stepped:Connect(function()
+				local all = 0
+				for i,v in pairs(Frame2:GetChildren()) do
+					if v:IsA("Frame") then
+						all += 1
+					end
+				end
+				Frame2.CanvasSize = UDim2.new(0,0,0.151*all,0)
 			end)
 		end)
-	end
-	
-	function module.Toggle(Title,Callback,Enable)
-		local Toggle = Instance.new("Frame")
-		local UICorner = Instance.new("UICorner")
-		local TextLabel = Instance.new("TextLabel")
-		local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
-		local Frame = Instance.new("Frame")
-		local UICorner_2 = Instance.new("UICorner")
-		local Frame_2 = Instance.new("Frame")
-		local UICorner_3 = Instance.new("UICorner")
-		local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
-		local TextButton = Instance.new("TextButton")
-
-		Toggle.Name = "Toggle"
-		Toggle.Parent = Frame2
-		Toggle.BackgroundColor3 = Color3.fromRGB(0, 85, 127)
-		Toggle.Size = UDim2.new(1.00000012, 0, 0.125659823, 0)
-
-		UICorner.CornerRadius = UDim.new(0.150000006, 0)
-		UICorner.Parent = Toggle
-
-		TextLabel.Parent = Toggle
-		TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		TextLabel.BackgroundTransparency = 1.000
-		TextLabel.Position = UDim2.new(0.0176318008, 0, 0.20420073, 0)
-		TextLabel.Size = UDim2.new(0.86395818, 0, 0.562427044, 0)
-		TextLabel.Font = Enum.Font.GothamBold
-		TextLabel.Text = "Title"
-		TextLabel.TextColor3 = Color3.fromRGB(0, 174, 255)
-		TextLabel.TextScaled = true
-		TextLabel.TextSize = 14.000
-		TextLabel.TextWrapped = true
-		TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-		UITextSizeConstraint.Parent = TextLabel
-		UITextSizeConstraint.MaxTextSize = 14
-
-		Frame.Parent = Toggle
-		Frame.BackgroundColor3 = Color3.fromRGB(0, 174, 255)
-		Frame.BackgroundTransparency = 0.500
-		Frame.Position = UDim2.new(0.858920634, 0, 0.350058407, 0)
-		Frame.Size = UDim2.new(0.100000001, 0, 0.27071175, 0)
-
-		UICorner_2.CornerRadius = UDim.new(1, 0)
-		UICorner_2.Parent = Frame
-
-		Frame_2.Parent = Frame
-		Frame_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Frame_2.Position = UDim2.new(0, 0, -0.538793206, 0)
-		Frame_2.Size = UDim2.new(0.485630035, 0, 2.18534517, 0)
-
-		UICorner_3.CornerRadius = UDim.new(1, 0)
-		UICorner_3.Parent = Frame_2
-
-		UIAspectRatioConstraint.Parent = Frame_2
-
-		TextButton.Parent = Toggle
-		TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		TextButton.BackgroundTransparency = 1.000
-		TextButton.Size = UDim2.new(1, 0, 1, 0)
-		TextButton.Font = Enum.Font.SourceSans
-		TextButton.Text = ""
-		TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-		TextButton.TextSize = 14.000
 		
-		local function tweenInRipple(ripple)
-			spawn(function()
-				local TweenService = game:GetService("TweenService")
-				local Part = ripple
-				local Info = TweenInfo.new(
-					1,
-					Enum.EasingStyle.Linear,
-					Enum.EasingDirection.InOut,
-					0,
-					false,
-					0
-				)
-				local Goals = 
-					{
-						Size = UDim2.new(0, 2000, 0, 2000);
-					}
-				local Tween = TweenService:Create(Part, Info, Goals)
-				Tween:Play()
+		
+		local module2 = {}
+		function module2.Button(Title,Callback)
+			local Button = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local TextLabel = Instance.new("TextLabel")
+			local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+			local TextButton = Instance.new("TextButton")
+
+			Button.Name = "Button"
+			Button.Parent = Frame2
+			Button.BackgroundColor3 = Color3.fromRGB(85, 170, 127)
+			Button.Size = UDim2.new(1.00000012, 0, 0, 40)
+			Button.ClipsDescendants = true
+
+			UICorner.CornerRadius = UDim.new(0.150000006, 0)
+			UICorner.Parent = Button
+
+			TextLabel.Parent = Button
+			TextLabel.BackgroundColor3 = Color3.fromRGB(127, 255, 189)
+			TextLabel.BackgroundTransparency = 1.000
+			TextLabel.Position = UDim2.new(0.0176318008, 0, 0.20420073, 0)
+			TextLabel.Size = UDim2.new(0.982368112, 0, 0.562427044, 0)
+			TextLabel.Font = Enum.Font.GothamBold
+			TextLabel.Text = Title
+			TextLabel.TextColor3 = Color3.fromRGB(127, 255, 189)
+			TextLabel.TextScaled = true
+			TextLabel.TextSize = 14.000
+			TextLabel.TextWrapped = true
+			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			UITextSizeConstraint.Parent = TextLabel
+			UITextSizeConstraint.MaxTextSize = 14
+
+			TextButton.Parent = Button
+			TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextButton.BackgroundTransparency = 1.000
+			TextButton.Size = UDim2.new(1, 0, 1, 0)
+			TextButton.Font = Enum.Font.SourceSans
+			TextButton.Text = ""
+			TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+			TextButton.TextSize = 14.000
+
+			local function tweenInRipple(ripple)
+				spawn(function()
+					local TweenService = game:GetService("TweenService")
+					local Part = ripple
+					local Info = TweenInfo.new(
+						1,
+						Enum.EasingStyle.Linear,
+						Enum.EasingDirection.InOut,
+						0,
+						false,
+						0
+					)
+					local Goals = 
+						{
+							Size = UDim2.new(0, 2000, 0, 2000);
+						}
+					local Tween = TweenService:Create(Part, Info, Goals)
+					Tween:Play()
+				end)
+			end
+
+			local function fadeOutRipple(ripple)
+				spawn(function()
+					local TweenService = game:GetService("TweenService")
+					local Part = ripple
+					local Info = TweenInfo.new(
+						0.5,
+						Enum.EasingStyle.Linear,
+						Enum.EasingDirection.InOut,
+						0,
+						false,
+						0
+					)
+					local Goals = 
+						{
+							ImageTransparency = 1;
+						}
+					local Tween = TweenService:Create(Part, Info, Goals)
+					Tween:Play()
+					wait(0.5 + 0.1)
+					ripple:Destroy()
+				end)
+			end
+
+			TextButton.MouseButton1Down:Connect(function()
+				Callback()
+				local Circle = Instance.new("ImageLabel")
+
+				Circle.Name = "Circle"
+				Circle.Parent = TextButton
+				Circle.AnchorPoint = Vector2.new(0.5, 0.5)
+				Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Circle.BackgroundTransparency = 1.000
+				Circle.Position = UDim2.new(0.5, 0, 0.5, 0)
+				Circle.ZIndex = 10
+				Circle.Image = "rbxassetid://266543268"
+				Circle.ImageColor3 = Color3.fromRGB(0, 0, 0)
+				Circle.ImageTransparency = 0.500
+
+				tweenInRipple(Circle)
+				TextButton.MouseButton1Up:Connect(function()
+					fadeOutRipple(Circle)
+				end)
+				TextButton.MouseLeave:Connect(function()
+					fadeOutRipple(Circle)
+				end)
 			end)
 		end
 
-		local function fadeOutRipple(ripple)
-			spawn(function()
-				local TweenService = game:GetService("TweenService")
-				local Part = ripple
-				local Info = TweenInfo.new(
-					0.5,
-					Enum.EasingStyle.Linear,
-					Enum.EasingDirection.InOut,
-					0,
-					false,
-					0
-				)
-				local Goals = 
-					{
-						ImageTransparency = 1;
-					}
-				local Tween = TweenService:Create(Part, Info, Goals)
-				Tween:Play()
-				wait(0.5 + 0.1)
-				ripple:Destroy()
-			end)
-		end
-		
-		local Enablesussy = Enable
-		
-		Callback(Enablesussy)
+		function module2.Toggle(Title,Callback,Enable)
+			local Toggle = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local TextLabel = Instance.new("TextLabel")
+			local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+			local Frame = Instance.new("Frame")
+			local UICorner_2 = Instance.new("UICorner")
+			local Frame_2 = Instance.new("Frame")
+			local UICorner_3 = Instance.new("UICorner")
+			local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+			local TextButton = Instance.new("TextButton")
 
-		if Enablesussy then
-			tween:Create(
-				Frame_2,
-				TweenInfo.new(0.5),
-				{Position = UDim2.new(0.5,0,-0.539,0)}
-			):Play()
-		else
-			tween:Create(
-				Frame_2,
-				TweenInfo.new(0.5),
-				{Position = UDim2.new(0,0,-0.539,0)}
-			):Play()
-		end
-		
-		TextButton.MouseButton1Down:Connect(function()
-			Enablesussy = not Enablesussy
+			Toggle.Name = "Toggle"
+			Toggle.Parent = Frame2
+			Toggle.BackgroundColor3 = Color3.fromRGB(0, 85, 127)
+			Toggle.Size = UDim2.new(1.00000012, 0, 0, 40)
+			Toggle.ClipsDescendants = true
+
+			UICorner.CornerRadius = UDim.new(0.150000006, 0)
+			UICorner.Parent = Toggle
+
+			TextLabel.Parent = Toggle
+			TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel.BackgroundTransparency = 1.000
+			TextLabel.Position = UDim2.new(0.0176318008, 0, 0.20420073, 0)
+			TextLabel.Size = UDim2.new(0.86395818, 0, 0.562427044, 0)
+			TextLabel.Font = Enum.Font.GothamBold
+			TextLabel.Text = Title
+			TextLabel.TextColor3 = Color3.fromRGB(0, 174, 255)
+			TextLabel.TextScaled = true
+			TextLabel.TextSize = 14.000
+			TextLabel.TextWrapped = true
+			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			UITextSizeConstraint.Parent = TextLabel
+			UITextSizeConstraint.MaxTextSize = 14
+
+			Frame.Parent = Toggle
+			Frame.BackgroundColor3 = Color3.fromRGB(0, 174, 255)
+			Frame.BackgroundTransparency = 0.500
+			Frame.Position = UDim2.new(0.858920634, 0, 0.350058407, 0)
+			Frame.Size = UDim2.new(0.100000001, 0, 0.27071175, 0)
+
+			UICorner_2.CornerRadius = UDim.new(1, 0)
+			UICorner_2.Parent = Frame
+
+			Frame_2.Parent = Frame
+			Frame_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Frame_2.Position = UDim2.new(0, 0, -0.538793206, 0)
+			Frame_2.Size = UDim2.new(0.485630035, 0, 2.18534517, 0)
+
+			UICorner_3.CornerRadius = UDim.new(1, 0)
+			UICorner_3.Parent = Frame_2
+
+			UIAspectRatioConstraint.Parent = Frame_2
+
+			TextButton.Parent = Toggle
+			TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextButton.BackgroundTransparency = 1.000
+			TextButton.Size = UDim2.new(1, 0, 1, 0)
+			TextButton.Font = Enum.Font.SourceSans
+			TextButton.Text = ""
+			TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+			TextButton.TextSize = 14.000
+
+			local function tweenInRipple(ripple)
+				spawn(function()
+					local TweenService = game:GetService("TweenService")
+					local Part = ripple
+					local Info = TweenInfo.new(
+						1,
+						Enum.EasingStyle.Linear,
+						Enum.EasingDirection.InOut,
+						0,
+						false,
+						0
+					)
+					local Goals = 
+						{
+							Size = UDim2.new(0, 2000, 0, 2000);
+						}
+					local Tween = TweenService:Create(Part, Info, Goals)
+					Tween:Play()
+				end)
+			end
+
+			local function fadeOutRipple(ripple)
+				spawn(function()
+					local TweenService = game:GetService("TweenService")
+					local Part = ripple
+					local Info = TweenInfo.new(
+						0.5,
+						Enum.EasingStyle.Linear,
+						Enum.EasingDirection.InOut,
+						0,
+						false,
+						0
+					)
+					local Goals = 
+						{
+							ImageTransparency = 1;
+						}
+					local Tween = TweenService:Create(Part, Info, Goals)
+					Tween:Play()
+					wait(0.5 + 0.1)
+					ripple:Destroy()
+				end)
+			end
+
+			local Enablesussy = Enable
+
 			Callback(Enablesussy)
+
 			if Enablesussy then
 				tween:Create(
 					Frame_2,
@@ -338,25 +523,47 @@ function amogus.Load(Title)
 					{Position = UDim2.new(0,0,-0.539,0)}
 				):Play()
 			end
-			
-			local Circle = Instance.new("ImageLabel")
 
-			Circle.Name = "Circle"
-			Circle.Parent = game.Workspace.RippleEffect
-			Circle.AnchorPoint = Vector2.new(0.5, 0.5)
-			Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			Circle.BackgroundTransparency = 1.000
-			Circle.Position = UDim2.new(0.5, 0, 0.5, 0)
-			Circle.ZIndex = 10
-			Circle.Image = "rbxassetid://266543268"
-			Circle.ImageColor3 = Color3.fromRGB(0, 0, 0)
-			Circle.ImageTransparency = 0.500
+			TextButton.MouseButton1Down:Connect(function()
+				Enablesussy = not Enablesussy
+				Callback(Enablesussy)
+				if Enablesussy then
+					tween:Create(
+						Frame_2,
+						TweenInfo.new(0.5),
+						{Position = UDim2.new(0.5,0,-0.539,0)}
+					):Play()
+				else
+					tween:Create(
+						Frame_2,
+						TweenInfo.new(0.5),
+						{Position = UDim2.new(0,0,-0.539,0)}
+					):Play()
+				end
 
-			tweenInRipple(Circle)
-			TextButton.MouseButton1Up:Connect(function()
-				fadeOutRipple(Circle)
+				local Circle = Instance.new("ImageLabel")
+
+				Circle.Name = "Circle"
+				Circle.Parent = TextButton
+				Circle.AnchorPoint = Vector2.new(0.5, 0.5)
+				Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Circle.BackgroundTransparency = 1.000
+				Circle.Position = UDim2.new(0.5, 0, 0.5, 0)
+				Circle.ZIndex = 10
+				Circle.Image = "rbxassetid://266543268"
+				Circle.ImageColor3 = Color3.fromRGB(0, 0, 0)
+				Circle.ImageTransparency = 0.500
+
+				tweenInRipple(Circle)
+				TextButton.MouseButton1Up:Connect(function()
+					fadeOutRipple(Circle)
+				end)
+				TextButton.MouseLeave:Connect(function()
+					fadeOutRipple(Circle)
+				end)
 			end)
-		end)
+		end
+		return module2
 	end
 	return module
 end
