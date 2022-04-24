@@ -1,6 +1,6 @@
 local amogus = {}
 
-function amogus.Main(Title)
+function amogus.Load(Title)
 	if game.CoreGui:FindFirstChild("Gamming_GUI_MATERIAL") then
 		game.CoreGui:FindFirstChild("Gamming_GUI_MATERIAL"):Destroy()
 	end
