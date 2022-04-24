@@ -1,6 +1,6 @@
 local amogus = {}
 
-function amogus.CreateMain(Title)
+function amogus:CreateMain(Title)
 	if game.CoreGui:FindFirstChild("Gamming_GUI_MATERIAL") then
 		game.CoreGui:FindFirstChild("Gamming_GUI_MATERIAL"):Destroy()
 	end
@@ -90,7 +90,7 @@ function amogus.CreateMain(Title)
 	UIListLayout.Padding = UDim.new(0.0299999993, 0)
 	local module = {}
 	
-	function module.Button(Title,Callback)
+	function module:Button(Title,Callback)
 		local Button = Instance.new("Frame")
 		local UICorner = Instance.new("UICorner")
 		local TextLabel = Instance.new("TextLabel")
@@ -196,7 +196,7 @@ function amogus.CreateMain(Title)
 		end)
 	end
 	
-	function module.Toggle(Title,Callback,Enable)
+	function module:Toggle(Title,Callback,Enable)
 		local Toggle = Instance.new("Frame")
 		local UICorner = Instance.new("UICorner")
 		local TextLabel = Instance.new("TextLabel")
