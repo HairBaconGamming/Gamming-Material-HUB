@@ -1,8 +1,14 @@
 local amogus = {}
 
 function amogus.Load(Title)
-	if game.CoreGui:FindFirstChild("Gamming_GUI_MATERIAL") then
-		game.CoreGui:FindFirstChild("Gamming_GUI_MATERIAL"):Destroy()
+	local GUI_SERVICE
+	if game:GetService("RunService"):IsStudio() then
+		GUI_SERVICE = game.Players.LocalPlayer.PlayerGui
+	else
+		GUI_SERVICE = game.CoreGui
+	end
+	if GUI_SERVICE:FindFirstChild("Gamming_GUI_MATERIAL") then
+		GUI_SERVICE:FindFirstChild("Gamming_GUI_MATERIAL"):Destroy()
 	end
 	local ScreenGui = Instance.new("ScreenGui")
 	local SecondFrame = Instance.new("Frame")
@@ -22,7 +28,7 @@ function amogus.Load(Title)
 	local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 	local UIListLayout = Instance.new("UIListLayout")
 
-	ScreenGui.Parent = game.CoreGui
+	ScreenGui.Parent = GUI_SERVICE
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	ScreenGui.Name = "Gamming_GUI_MATERIAL"
 	ScreenGui.IgnoreGuiInset = true
@@ -507,7 +513,11 @@ function amogus.Load(Title)
 			end
 
 			local Enablesussy = Enable
-
+			
+			if Enablesussy == nil then
+				Enablesussy = false
+			end
+			
 			Callback(Enablesussy)
 
 			if Enablesussy then
@@ -560,6 +570,149 @@ function amogus.Load(Title)
 				end)
 				TextButton.MouseLeave:Connect(function()
 					fadeOutRipple(Circle)
+				end)
+			end)
+		end
+		
+		function module2.Slide(Title,Callback,Min,Max,Default,Percent)
+			local Slide = Instance.new("Frame")
+			local UICorner1 = Instance.new("UICorner")
+			local TextLabel1 = Instance.new("TextLabel")
+			local UITextSizeConstraint1 = Instance.new("UITextSizeConstraint")
+			local Frame1 = Instance.new("Frame")
+			local UICorner1_2 = Instance.new("UICorner")
+			local Frame_2 = Instance.new("Frame")
+			local UICorner1_3 = Instance.new("UICorner")
+			local Frame_3 = Instance.new("TextButton")
+			local UICorner1_4 = Instance.new("UICorner")
+			local UIAspectRatioConstraint1 = Instance.new("UIAspectRatioConstraint")
+			local TextLabel2 = Instance.new("TextLabel")
+			local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+
+			Slide.Name = "Slide"
+			Slide.Parent = Frame2
+			Slide.BackgroundColor3 = Color3.fromRGB(85, 85, 127)
+			Slide.ClipsDescendants = true
+			Slide.Size = UDim2.new(1, 0, 0, 40)
+
+			UICorner1.CornerRadius = UDim.new(0.150000006, 0)
+			UICorner1.Parent = Slide
+
+			TextLabel1.Parent = Slide
+			TextLabel1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel1.BackgroundTransparency = 1.000
+			TextLabel1.Position = UDim2.new(0.0176318008, 0, 0, 0)
+			TextLabel1.Size = UDim2.new(0.861439526, 0, 0.554259062, 0)
+			TextLabel1.Font = Enum.Font.GothamBold
+			TextLabel1.Text = Title
+			TextLabel1.TextColor3 = Color3.fromRGB(171, 171, 255)
+			TextLabel1.TextScaled = true
+			TextLabel1.TextSize = 14.000
+			TextLabel1.TextWrapped = true
+			TextLabel1.TextXAlignment = Enum.TextXAlignment.Left
+
+			UITextSizeConstraint1.Parent = TextLabel1
+			UITextSizeConstraint1.MaxTextSize = 14
+
+			Frame1.Parent = Slide
+			Frame1.BackgroundColor3 = Color3.fromRGB(171, 171, 255)
+			Frame1.BackgroundTransparency = 0.500
+			Frame1.Position = UDim2.new(0.0179999992, 0, 0.699999988, 0)
+			Frame1.Size = UDim2.new(0.961000025, 0, 0.150000006, 0)
+
+			UICorner1_2.CornerRadius = UDim.new(1, 0)
+			UICorner1_2.Parent = Frame1
+
+			Frame_2.Parent = Frame1
+			Frame_2.BackgroundColor3 = Color3.fromRGB(171, 171, 255)
+			Frame_2.Size = UDim2.new(0, 200, 1, 0)
+
+			UICorner1_3.CornerRadius = UDim.new(1, 0)
+			UICorner1_3.Parent = Frame_2
+
+			Frame_3.Parent = Frame_2
+			Frame_3.BackgroundColor3 = Color3.fromRGB(171, 171, 255)
+			Frame_3.Position = UDim2.new(0.980000019, 0, -0.274333358, 0)
+			Frame_3.Size = UDim2.new(0, 10, 0, 10)
+			Frame_3.Text = ""
+
+			UICorner1_4.CornerRadius = UDim.new(1, 0)
+			UICorner1_4.Parent = Frame_3
+
+			UIAspectRatioConstraint.Parent = Frame_3
+
+			TextLabel2.Name = "TextLabel2"
+			TextLabel2.Parent = Slide
+			TextLabel2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel2.BackgroundTransparency = 1.000
+			TextLabel2.Position = UDim2.new(0.879071236, 0, 0.175029203, 0)
+			TextLabel2.Size = UDim2.new(0.120903924, 0, 0.379229873, 0)
+			TextLabel2.Font = Enum.Font.GothamBold
+			TextLabel2.Text = Default
+			TextLabel2.TextColor3 = Color3.fromRGB(171, 171, 255)
+			TextLabel2.TextScaled = true
+			TextLabel2.TextSize = 14.000
+			TextLabel2.TextWrapped = true
+
+			UITextSizeConstraint_2.Parent = TextLabel2
+			UITextSizeConstraint_2.MaxTextSize = 14
+			
+			Callback(Default)
+			
+			spawn(function()
+				local obj = Frame_3
+				local UserInputService = game:GetService("UserInputService")
+				local mouse = game.Players.LocalPlayer:GetMouse()
+
+				local minSize = Vector2.new(0, 0)
+
+				local startDrag, startSize
+
+				local dragInput
+
+				local timedddddd = 2
+
+				local function update()
+					if startDrag then       
+						local m = Vector2.new(mouse.X, mouse.Y)
+						local mouseMoved = Vector2.new(m.X - startDrag.X, m.Y - startDrag.Y)
+
+						local s = startSize + mouseMoved
+						local sx = math.max(minSize.X, s.X) 
+						local sy = math.max(minSize.Y, s.Y)
+
+						obj.Parent.Size = UDim2.new(0, sx,1,0)
+						local number
+						if sx > obj.Parent.Parent.AbsoluteSize.X then
+							obj.Parent.Size = UDim2.new(0,obj.Parent.Parent.AbsoluteSize.X, 1,0)
+							number = Max
+						else
+							number = math.floor((Max*Percent*(obj.Parent.AbsoluteSize.X/obj.Parent.Parent.AbsoluteSize.X))*(Min/Max)*10)/Percent
+						end
+						TextLabel2.Text = number
+						Callback(number)
+					end
+				end
+
+				obj.InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+						if not startDrag then
+							startSize = obj.Parent.AbsoluteSize            
+							startDrag = Vector2.new(mouse.X, mouse.Y)
+						end
+						input.Changed:Connect(function()
+							if input.UserInputState == Enum.UserInputState.End then
+								startDrag = nil
+							end
+						end)
+					end
+				end)
+
+				obj.InputChanged:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+						timedddddd = 2
+						update()
+					end
 				end)
 			end)
 		end
