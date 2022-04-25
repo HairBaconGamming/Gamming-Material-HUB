@@ -1,46 +1,44 @@
-local jesus = loadstring(game:HttpGet("https://raw.githubusercontent.com/HairBaconGamming/Gamming-Material-HUB/main/Main"))()
+local Material = require(script.ModuleScript)
 
-local bababoifake = jesus.Load(
-	"Gamming Hub" -- title
-)
+local Main = Material.Load({
+	Title = "Example",
+	SmothDrag = false,
+})
 
-local bababoi = bababoifake.New("Home")
-local bababoi2 = bababoifake.New("Misc")
+local Temp = Main.New({
+	Title = "Home"
+})
 
-local button = bababoi.Button(
-	"Your name", -- title
-	function()
+local Button = Temp.Button({
+	Title = "Player Name",
+	Callback = function()
 		print(game.Players.LocalPlayer.Name)
-	end -- callback
-)
+	end,
+})
+local Toggle = Temp.Toggle({
+	Title = "Bool",
+	Callback = function(Value)
+		print(Value)
+	end,
+	Enabled = false
+})
 
-local speed = 16
-local speedbool = false
-local toggle = bababoi.Toggle(
-	"Speed",-- title
-	function(Value)
-		speedbool = Value
-	end,-- callback
-	false--enabled
-)
+local Slide = Temp.Slide({
+	Title = "Value",
+	Callback = function(Value)
+		print(Value)
+	end,
+	Min = 1,
+	Max = 100,
+	Default = 1,
+	Percent = 1,
+})
 
-local Slide = bababoi.Slide(
-	"Speed",-- title
-	function(Value)
-		speed = Value
-	end,-- callback
-	10,-- min
-	100,-- max
-	10,-- default
-	100 -- percent
-)
-
--- script --
-local rs = game:GetService("RunService")
-rs.Heartbeat:Connect(function()
-	if speedbool then
-		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
-	else
-		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
-	end
-end)
+local Dropdown = Temp.Dropdown({
+	Title = "Numbers",
+	Callback = function(Value)
+		print(Value)
+	end,
+	Table = {"1","2","3"},
+	AutoTextChose = true,
+})
