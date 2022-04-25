@@ -1,4 +1,4 @@
-local Material = require(script.ModuleScript)
+local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/HairBaconGamming/Gamming-Material-HUB/main/Main"))()
 
 local Main = Material.Load({
 	Title = "Example",
