@@ -1,24 +1,46 @@
-local material = loadstring(game:HttpGet("https://raw.githubusercontent.com/HairBaconGamming/Gamming-Material-HUB/main/Main"))
+local jesus = require(script.ModuleScript)
 
-local gui = material.Load(
-	"Noob" -- title
+local bababoifake = jesus.Load(
+	"Gamming Hub" -- title
 )
 
-local temp = gui.new(
-	"Home" -- title
-)
+local bababoi = bababoifake.New("Home")
+local bababoi2 = bababoifake.New("Misc")
 
-local button = temp.Button(
-	"Click me", -- title
+local button = bababoi.Button(
+	"Your name", -- title
 	function()
-		print("Amogus")
+		print(game.Players.LocalPlayer.Name)
 	end -- callback
 )
 
-local toggle = temp.Toggle(
-	"Click me", -- title
+local speed = 16
+local speedbool = false
+local toggle = bababoi.Toggle(
+	"Speed",-- title
 	function(Value)
-		print(Value)
-	end, -- callback
-	false -- enable
+		speedbool = Value
+	end,-- callback
+	false--enabled
 )
+
+local Slide = bababoi.Slide(
+	"Speed",-- title
+	function(Value)
+		speed = Value
+	end,-- callback
+	10,-- min
+	100,-- max
+	10,-- default
+	100 -- percent
+)
+
+-- script --
+local rs = game:GetService("RunService")
+rs.Heartbeat:Connect(function()
+	if speedbool then
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
+	else
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+	end
+end)
