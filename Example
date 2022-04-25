@@ -1,4 +1,4 @@
-local jesus = require(script.ModuleScript)
+local jesus = loadstring(game:HttpGet("https://raw.githubusercontent.com/HairBaconGamming/Gamming-Material-HUB/main/Main"))()
 
 local bababoifake = jesus.Load(
 	"Gamming Hub" -- title
