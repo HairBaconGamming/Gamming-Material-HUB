@@ -1,7 +1,7 @@
-local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/HairBaconGamming/Gamming-Material-HUB/main/Main"))()
+local Material = require(script.ModuleScript)
 
 local Main = Material.Load({
-	Title = "Example",
+	Title = "Gamming Hub",
 	SmothDrag = false,
 })
 
@@ -15,6 +15,7 @@ local Button = Temp.Button({
 		print(game.Players.LocalPlayer.Name)
 	end,
 })
+
 local Toggle = Temp.Toggle({
 	Title = "Bool",
 	Callback = function(Value)
@@ -41,4 +42,21 @@ local Dropdown = Temp.Dropdown({
 	end,
 	Table = {"1","2","3"},
 	AutoTextChose = true,
+})
+
+local Textbox = Temp.Textbox({
+	Title = "Textbox",
+	TextboxTitle = "Text here",
+	Callback = function(Value)
+		print(Value)
+	end,
+	ClearTextOnFocus = false,
+})
+
+local ColorPicker = Temp.ColorPicker({
+	Title = "Color Picker",
+	Callback = function(Value)
+		print(Value)
+	end,
+	Default = Color3.new(1, 1, 1),
 })
