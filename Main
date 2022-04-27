@@ -1,7 +1,7 @@
 local amogus = {}
 
 function amogus.Load(Table)
-	local Titlem,SmothDrag = Table.Title,Table.SmothDrag
+	local Titlem,Xsize,Ysize,SmothDrag = Table.Title,Table.X,Table.Y,Table.SmothDrag
 	local GUI_SERVICE
 	if game:GetService("RunService"):IsStudio() then
 		GUI_SERVICE = game.Players.LocalPlayer.PlayerGui
@@ -34,12 +34,20 @@ function amogus.Load(Table)
 	ScreenGui.Name = "Gamming_GUI_MATERIAL"
 	ScreenGui.IgnoreGuiInset = true
 	ScreenGui.ResetOnSpawn = false
-
+	
+	if not Xsize then
+		Xsize = 421
+	end
+	
+	if not Ysize then
+		Ysize = 330
+	end
+	
 	SecondFrame.Name = "SecondFrame"
 	SecondFrame.Parent = ScreenGui
 	SecondFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SecondFrame.Position = UDim2.new(0.345534384, 0, 0.221848756, 0)
-	SecondFrame.Size = UDim2.new(0, 421, 0, 330)
+	SecondFrame.Size = UDim2.new(0, Xsize, 0, Ysize)
 	SecondFrame.ClipsDescendants = true
 	SecondFrame.BackgroundTransparency = 1
 
@@ -456,6 +464,22 @@ function amogus.Load(Table)
 					fadeOutRipple(Circle)
 				end)
 			end)
+			
+			local module3 = {}
+
+			function module3.SetTitle(Text)
+				TextLabel.Text = Text
+			end
+
+			function module3.GetTitle(Text)
+				return TextLabel.Text
+			end
+			
+			function module3.SetCallback(functionae)
+				Callback = functionae
+			end
+			
+			return module3
 		end
 
 		function module2.Toggle(Table)
@@ -629,6 +653,43 @@ function amogus.Load(Table)
 					fadeOutRipple(Circle)
 				end)
 			end)
+			
+			local module3 = {}
+
+			function module3.SetTitle(Text)
+				TextLabel.Text = Text
+			end
+
+			function module3.GetTitle(Text)
+				return TextLabel.Text
+			end
+			
+			function module3.SetToggle(Bool)
+				Enablesussy = Bool
+				if Enablesussy then
+					tween:Create(
+						Frame_2,
+						TweenInfo.new(0.2),
+						{Position = UDim2.new(0.5,0,-0.446444064,0)}
+					):Play()
+				else
+					tween:Create(
+						Frame_2,
+						TweenInfo.new(0.2),
+						{Position = UDim2.new(0,0,-0.446444064,0)}
+					):Play()
+				end
+			end
+			
+			function module3.GetToggle()
+				return Enablesussy
+			end
+			
+			function module3.SetCallback(functionae)
+				Callback = functionae
+			end
+			
+			return module3
 		end
 		
 		function module2.Slide(Table)
@@ -768,26 +829,50 @@ function amogus.Load(Table)
 							number = math.floor(Min * Percent + ((Max - Min) * (obj.Parent.AbsoluteSize.X/obj.Parent.Parent.AbsoluteSize.X)))/Percent --math.floor(((Max*Percent*(obj.Parent.AbsoluteSize.X/obj.Parent.Parent.AbsoluteSize.X)*Min)))/Percent
 						end
 						TextLabel2.Text = number
+						Default = number
 						Callback(number)
 					end
 				end
 				
 				local mousedown = false
+				local userinput = game:GetService("UserInputService")
+				
 				mouse.Button1Down:Connect(function()
 					mousedown = true
 				end)
-				mouse.Button1Up:Connect(function()
-					mousedown = false
-					if big then
-						tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,10,0,10),Position = UDim2.new(0.980000019, 0, -0.274333358, 0)}):Play()
+				
+				userinput.InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+						mousedown = true
 					end
 				end)
+				
+				userinput.InputEnded:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+						mousedown = false
+						if big then
+							tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,10,0,10),Position = UDim2.new(0.980000019, 0, -0.274333358, 0)}):Play()
+						end
+					end
+				end)
+				
+				userinput.InputChanged:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+						if mousedown then
+							timedddddd = 2
+							update()
+						end
+					end
+				end)
+				
+				--[[
 				mouse.Move:Connect(function()
 					if mousedown == false then
 						timedddddd = 2
 						update()
 					end
 				end)
+				]]
 				
 				obj.MouseEnter:Connect(function()
 					if not startDrag then
@@ -821,7 +906,7 @@ function amogus.Load(Table)
 						end)
 					end
 				end)
-
+				
 				--[[
 				obj.InputChanged:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
@@ -831,6 +916,51 @@ function amogus.Load(Table)
 				end)
 				]]
 			end)
+			
+			local module3 = {}
+
+			function module3.SetTitle(Text)
+				TextLabel.Text = Text
+			end
+
+			function module3.GetTitle(Text)
+				return TextLabel.Text
+			end
+			
+			function module3.SetCallback(functionae)
+				Callback = functionae
+			end
+			
+			function module3.SetMin(Value)
+				Min = Value
+			end
+			
+			function module3.SetMax(Value)
+				Max = Value
+			end
+			
+			function module3.SetDefault(Value)
+				Default = Value
+				Frame_3.Parent.Size = UDim2.new(0, Frame_3.Parent.Parent.AbsoluteSize.X * Min/Max,1,0)
+			end
+			
+			function module3.SetPercent(Value)
+				Percent = Value
+			end
+			
+			function module3.GetMin(Value)
+				return Min
+			end
+
+			function module3.GetMax(Value)
+				return Max
+			end
+			
+			function module3.GetDefault(Value)
+				return Default
+			end
+			
+			return module3
 		end
 		
 		function module2.Dropdown(Tables)
@@ -1043,7 +1173,7 @@ function amogus.Load(Table)
 			
 			local opened = false
 			local dbdd = true
-			local Rotationaeaeaea = 0
+			local Rotationaeaeaea = ImageButton.Rotation
 			ImageButton.MouseButton1Click:Connect(function()
 				if dbdd then
 					dbdd = false
@@ -1060,6 +1190,712 @@ function amogus.Load(Table)
 				end
 			end)
 			
+
+			local module3 = {}
+
+			function module3.SetTitle(Text)
+				TextLabel.Text = Text
+			end
+
+			function module3.GetTitle(Text)
+				return TextLabel.Text
+			end
+			
+			function module3.SetCallback(functionae)
+				Callback = functionae
+			end
+			
+			function module3.SetTable(Tableass)
+				TextLabel.Text = Title
+				if opened then
+					opened = false
+					Rotationaeaeaea += 180
+					tween:Create(ImageButton,TweenInfo.new(0.1),{Rotation = Rotationaeaeaea}):Play()
+					tween:Create(Dropdown,TweenInfo.new(0.1),{Size = UDim2.new(1,0,0,40)}):Play()
+				end
+				for i,v in pairs(Frame_2) do
+					if v:IsA("Frame") then
+						v:Destroy()
+					end
+				end
+				for i,v in pairs(Tableass) do
+					local Frame_3 = Instance.new("Frame")
+					local UICorner_3 = Instance.new("UICorner")
+					local TextLabel_2 = Instance.new("TextLabel")
+					local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+					local TextButton_2 = Instance.new("TextButton")
+
+					Frame_3.Parent = Frame_2
+					Frame_3.BackgroundColor3 = Color3.fromRGB(255, 255, 191)
+					Frame_3.Position = UDim2.new(0, 0, 0, 40)
+					Frame_3.Size = UDim2.new(1, 0, 0, 20)
+					Frame_3.ClipsDescendants = true
+					Frame_3.Name = i
+
+					UICorner_3.CornerRadius = UDim.new(0, 4)
+					UICorner_3.Parent = Frame_3
+
+					TextLabel_2.Parent = Frame_3
+					TextLabel_2.BackgroundColor3 = Color3.fromRGB(170, 170, 127)
+					TextLabel_2.BackgroundTransparency = 1.000
+					TextLabel_2.Position = UDim2.new(0.0176318008, 0, 0.20420073, 0)
+					TextLabel_2.Size = UDim2.new(0.86395818, 0, 0.562427044, 0)
+					TextLabel_2.Font = Enum.Font.GothamBold
+					TextLabel_2.Text = v
+					TextLabel_2.TextColor3 = Color3.fromRGB(170, 170, 127)
+					TextLabel_2.TextScaled = true
+					TextLabel_2.TextSize = 14.000
+					TextLabel_2.TextWrapped = true
+					TextLabel_2.TextXAlignment = Enum.TextXAlignment.Left
+
+					UITextSizeConstraint_2.Parent = TextLabel_2
+					UITextSizeConstraint_2.MaxTextSize = 14
+
+					TextButton_2.Parent = Frame_3
+					TextButton_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					TextButton_2.BackgroundTransparency = 1.000
+					TextButton_2.Size = UDim2.new(1, 0, 1, 0)
+					TextButton_2.Font = Enum.Font.SourceSans
+					TextButton_2.Text = ""
+					TextButton_2.TextColor3 = Color3.fromRGB(0, 0, 0)
+					TextButton_2.TextSize = 14.000
+
+					local function tweenInRipple(ripple)
+						spawn(function()
+							local TweenService = game:GetService("TweenService")
+							local Part = ripple
+							local Info = TweenInfo.new(
+								1,
+								Enum.EasingStyle.Linear,
+								Enum.EasingDirection.InOut,
+								0,
+								false,
+								0
+							)
+							local Goals = 
+								{
+									Size = UDim2.new(0, 2000, 0, 2000);
+								}
+							local Tween = TweenService:Create(Part, Info, Goals)
+							Tween:Play()
+						end)
+					end
+
+					local function fadeOutRipple(ripple)
+						spawn(function()
+							local TweenService = game:GetService("TweenService")
+							local Part = ripple
+							local Info = TweenInfo.new(
+								0.5,
+								Enum.EasingStyle.Linear,
+								Enum.EasingDirection.InOut,
+								0,
+								false,
+								0
+							)
+							local Goals = 
+								{
+									ImageTransparency = 1;
+								}
+							local Tween = TweenService:Create(Part, Info, Goals)
+							Tween:Play()
+							wait(0.5 + 0.1)
+							ripple:Destroy()
+						end)
+					end
+
+					TextButton_2.MouseButton1Click:Connect(function()
+						Callback(v)
+						if AutoTextChose then
+							TextLabel.Text = Title..": ".. v
+						end
+
+						local Circle = Instance.new("ImageLabel")
+
+						Circle.Name = "Circle"
+						Circle.Parent = TextButton_2
+						Circle.AnchorPoint = Vector2.new(0.5, 0.5)
+						Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						Circle.BackgroundTransparency = 1.000
+						Circle.Position = UDim2.new(0.5, 0, 0.5, 0)
+						Circle.ZIndex = 10
+						Circle.Image = "rbxassetid://266543268"
+						Circle.ImageColor3 = Color3.fromRGB(0, 0, 0)
+						Circle.ImageTransparency = 0.500
+
+						tweenInRipple(Circle)
+						TextButton_2.MouseButton1Up:Connect(function()
+							fadeOutRipple(Circle)
+						end)
+						TextButton_2.MouseLeave:Connect(function()
+							fadeOutRipple(Circle)
+						end)
+					end)
+				end
+				sisssisisi = (23*#Tableass)+40
+				Tablea = Tableass
+			end
+			
+			function module3.GetTable()
+				return Tablea
+			end
+			
+			function module3.AutoTextChose(Bool)
+				AutoTextChose = Bool
+				if not AutoTextChose then
+					TextLabel.Text = Title
+				end
+			end
+			
+			return module3
+		end
+		
+		function module2.Textbox(Tables)
+			local Title,TextboxTitle,ClearTextOnFocus,Callback = Tables.Title,Tables.TextboxTitle,Tables.ClearTextOnFocus,Tables.Callback
+			
+			local Textbox = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local TextLabel = Instance.new("TextLabel")
+			local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+			local TextBox = Instance.new("TextBox")
+			local UICorner_2 = Instance.new("UICorner")
+			local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+
+			Textbox.Name = "Textbox"
+			Textbox.Parent = Frame2
+			Textbox.BackgroundColor3 = Color3.fromRGB(85, 0, 127)
+			Textbox.ClipsDescendants = false
+			Textbox.Size = UDim2.new(1, 0, 0, 40)
+
+			UICorner.CornerRadius = UDim.new(0.150000006, 0)
+			UICorner.Parent = Textbox
+
+			TextLabel.Parent = Textbox
+			TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel.BackgroundTransparency = 1.000
+			TextLabel.Position = UDim2.new(0.0176318008, 0, 0, 0)
+			TextLabel.Size = UDim2.new(0.861439526, 0, 0.554259062, 0)
+			TextLabel.Font = Enum.Font.GothamBold
+			TextLabel.Text = Title
+			TextLabel.TextColor3 = Color3.fromRGB(170, 0, 255)
+			TextLabel.TextScaled = true
+			TextLabel.TextSize = 14.000
+			TextLabel.TextWrapped = true
+			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			UITextSizeConstraint.Parent = TextLabel
+			UITextSizeConstraint.MaxTextSize = 14
+
+			TextBox.Parent = Textbox
+			TextBox.BackgroundColor3 = Color3.fromRGB(170, 0, 255)
+			TextBox.Position = UDim2.new(0.0176318008, 0, 0.554258704, 0)
+			TextBox.Size = UDim2.new(0.962217569, 0, 0, 13)
+			TextBox.ClearTextOnFocus = ClearTextOnFocus
+			TextBox.Font = Enum.Font.GothamBold
+			TextBox.PlaceholderColor3 = Color3.fromRGB(120, 0, 194)
+			TextBox.PlaceholderText = TextboxTitle
+			TextBox.Text = ""
+			TextBox.TextColor3 = Color3.fromRGB(88, 0, 139)
+			TextBox.TextSize = 14.000
+			TextBox.TextXAlignment = Enum.TextXAlignment.Center
+			TextBox.TextYAlignment = Enum.TextYAlignment.Top
+			
+			UICorner_2.CornerRadius = UDim.new(0, 4)
+			UICorner_2.Parent = TextBox
+
+			UITextSizeConstraint_2.Parent = TextBox
+			UITextSizeConstraint_2.MaxTextSize = 12
+			
+			TextBox.Changed:Connect(function(property)
+				if property == "Text" then
+					Callback(TextBox.Text)
+				end
+			end)
+			
+			local module3 = {}
+			
+			function module3.SetTitle(Text)
+				TextLabel.Text = Text
+			end
+			
+			function module3.GetTitle(Text)
+				return TextLabel.Text
+			end
+			
+			function module3.SetCallback(functionae)
+				Callback = functionae
+			end
+			
+			function module3.SetText(Text)
+				TextBox.Text = Text
+			end
+			
+			function module3.GetText()
+				return TextBox.Text
+			end
+			
+			function module3.SetPlaceholderText(Text)
+				TextBox.PlaceholderText = Text
+			end
+			
+			function module3.GetPlaceholderText(Text)
+				return TextBox.PlaceholderText
+			end
+			
+			function module3.ClearTextOnFocus(Bool)
+				ClearTextOnFocus = Bool
+				TextBox.ClearTextOnFocus = ClearTextOnFocus
+			end
+			
+			return module3
+		end
+		
+		function module2.ColorPicker(Tables)
+			local Title,Callback,Default = Tables.Title,Tables.Callback,Tables.Default
+			
+			local ColorPicker = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local Dropdown = Instance.new("Frame")
+			local UICorner_2 = Instance.new("UICorner")
+			local TextButton = Instance.new("TextButton")
+			local TextLabel = Instance.new("TextLabel")
+			local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+			local Frame = Instance.new("Frame")
+			local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+			local ImageButton = Instance.new("ImageButton")
+			local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+			local Frame_2 = Instance.new("Frame")
+			local UIListLayout = Instance.new("UIListLayout")
+			local Frame_3 = Instance.new("Frame")
+			local Palette = Instance.new("ImageLabel")
+			local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
+			local Crosshair = Instance.new("ImageButton")
+			local Value = Instance.new("Frame")
+			local UIGradient = Instance.new("UIGradient")
+			local bar = Instance.new("TextButton")
+			local Display = Instance.new("Frame")
+			local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
+			local UICorner_3 = Instance.new("UICorner")
+			local R = Instance.new("TextBox")
+			local TextLabel_2 = Instance.new("TextLabel")
+			local UICorner_4 = Instance.new("UICorner")
+			local Deco = Instance.new("Frame")
+			local G = Instance.new("TextBox")
+			local TextLabel_3 = Instance.new("TextLabel")
+			local UICorner_5 = Instance.new("UICorner")
+			local B = Instance.new("TextBox")
+			local TextLabel_4 = Instance.new("TextLabel")
+			local UICorner_6 = Instance.new("UICorner")
+			local UICorner_7 = Instance.new("UICorner")
+
+			ColorPicker.Name = "ColorPicker"
+			ColorPicker.Parent = Frame2
+			ColorPicker.BackgroundColor3 = Color3.fromRGB(85, 0, 0)
+			ColorPicker.BackgroundTransparency = 1.000
+			ColorPicker.ClipsDescendants = true
+			ColorPicker.Size = UDim2.new(1, 0, 0, 40)
+
+			UICorner.CornerRadius = UDim.new(0.150000006, 0)
+			UICorner.Parent = ColorPicker
+
+			Dropdown.Name = "Dropdown"
+			Dropdown.Parent = ColorPicker
+			Dropdown.BackgroundColor3 = Color3.fromRGB(85, 0, 0)
+			Dropdown.ClipsDescendants = true
+			Dropdown.Size = UDim2.new(1, 0, 0, 40)
+
+			UICorner_2.CornerRadius = UDim.new(0.150000006, 0)
+			UICorner_2.Parent = Dropdown
+
+			TextButton.Parent = Dropdown
+			TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextButton.BackgroundTransparency = 1.000
+			TextButton.Size = UDim2.new(1, 0, 1, 0)
+			TextButton.Font = Enum.Font.SourceSans
+			TextButton.Text = ""
+			TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+			TextButton.TextSize = 14.000
+
+			TextLabel.Parent = Dropdown
+			TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 191)
+			TextLabel.BackgroundTransparency = 1.000
+			TextLabel.Position = UDim2.new(0.0176318008, 0, 0.20420073, 0)
+			TextLabel.Size = UDim2.new(0.86395818, 0, 0.562427044, 0)
+			TextLabel.Font = Enum.Font.GothamBold
+			TextLabel.Text = Title
+			TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+			TextLabel.TextScaled = true
+			TextLabel.TextSize = 14.000
+			TextLabel.TextWrapped = true
+			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			UITextSizeConstraint.Parent = TextLabel
+			UITextSizeConstraint.MaxTextSize = 14
+
+			Frame.Parent = Dropdown
+			Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Frame.BackgroundTransparency = 1.000
+			Frame.BorderColor3 = Color3.fromRGB(27, 42, 53)
+			Frame.Position = UDim2.new(0.899999976, 0, 0, 0)
+			Frame.Size = UDim2.new(1, 0, 1, 0)
+
+			UIAspectRatioConstraint.Parent = Frame
+
+			ImageButton.Parent = Frame
+			ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ImageButton.BackgroundTransparency = 1.000
+			ImageButton.Position = UDim2.new(0.25, 0, 0.25, 0)
+			ImageButton.Rotation = 180.000
+			ImageButton.Size = UDim2.new(0.5, 0, 0.5, 0)
+			ImageButton.Image = "http://www.roblox.com/asset/?id=302248702"
+			ImageButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
+
+			UIAspectRatioConstraint_2.Parent = ImageButton
+
+			Frame_2.Parent = ColorPicker
+			Frame_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Frame_2.BackgroundTransparency = 1.000
+			Frame_2.Position = UDim2.new(0, 0, 0, 40)
+			Frame_2.Size = UDim2.new(1, 0, 1, 0)
+
+			UIListLayout.Parent = Frame_2
+			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			UIListLayout.Padding = UDim.new(0, 3)
+
+			Frame_3.Parent = Frame_2
+			Frame_3.BackgroundColor3 = Color3.fromRGB(85, 0, 0)
+			Frame_3.BorderSizePixel = 0
+			Frame_3.Size = UDim2.new(1, 0, 0, 150)
+
+			Palette.Name = "Palette"
+			Palette.Parent = Frame_3
+			Palette.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Palette.BackgroundTransparency = 1.000
+			Palette.Position = UDim2.new(0.550000012, 0, 0, 0)
+			Palette.Size = UDim2.new(0.5, 0, 1, 0)
+			Palette.Image = "rbxassetid://2849458409"
+
+			UIAspectRatioConstraint_3.Parent = Palette
+
+			Crosshair.Name = "Crosshair"
+			Crosshair.Parent = Palette
+			Crosshair.AnchorPoint = Vector2.new(0.5, 0.5)
+			Crosshair.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Crosshair.BackgroundTransparency = 1.000
+			Crosshair.Position = UDim2.new(0.5, 0, 0.5, 0)
+			Crosshair.Size = UDim2.new(0, 16, 0, 16)
+			Crosshair.Image = "http://www.roblox.com/asset/?id=9068520229"
+			Crosshair.AutoButtonColor = false
+
+			Value.Name = "Value"
+			Value.Parent = Frame_3
+			Value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Value.BorderSizePixel = 0
+			Value.Position = UDim2.new(0.367273927, 0, 0.0375972986, 0)
+			Value.Size = UDim2.new(0.100000001, 0, 0.899999976, 0)
+
+			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(11, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))}
+			UIGradient.Rotation = 84
+			UIGradient.Parent = Value
+
+			bar.Name = "bar"
+			bar.Parent = Value
+			bar.AnchorPoint = Vector2.new(0.5, 0)
+			bar.BackgroundColor3 = Color3.fromRGB(76, 76, 76)
+			bar.BorderSizePixel = 0
+			bar.Position = UDim2.new(0.5, 0, 0, 0)
+			bar.Size = UDim2.new(1.10000002, 0, 0.0250000004, 0)
+			bar.Text = ""
+			bar.AutoButtonColor = false
+
+			Display.Name = "Display"
+			Display.Parent = Frame_3
+			Display.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Display.BorderColor3 = Color3.fromRGB(85, 0, 0)
+			Display.BorderSizePixel = 0
+			Display.Position = UDim2.new(0.104627073, 0, 0.0320293419, 0)
+			Display.Size = UDim2.new(0.270222217, 0, 0.430674702, 0)
+
+			UIAspectRatioConstraint_4.Parent = Display
+
+			UICorner_3.CornerRadius = UDim.new(1, 0)
+			UICorner_3.Parent = Display
+
+			R.Name = "R"
+			R.Parent = Frame_3
+			R.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+			R.BorderSizePixel = 0
+			R.Position = UDim2.new(0.0984988883, 0, 0.520637035, 0)
+			R.Size = UDim2.new(0.176386878, 0, 0.107035622, 0)
+			R.Font = Enum.Font.SourceSans
+			R.Text = ""
+			R.TextColor3 = Color3.fromRGB(85, 0, 0)
+			R.TextScaled = true
+			R.TextSize = 14.000
+			R.TextWrapped = true
+
+			TextLabel_2.Parent = R
+			TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel_2.BackgroundTransparency = 1.000
+			TextLabel_2.Position = UDim2.new(-0.558425307, 0, 0, 0)
+			TextLabel_2.Size = UDim2.new(0.558425188, 0, 1, 0)
+			TextLabel_2.Font = Enum.Font.GothamBold
+			TextLabel_2.Text = "R:"
+			TextLabel_2.TextColor3 = Color3.fromRGB(255, 0, 0)
+			TextLabel_2.TextScaled = true
+			TextLabel_2.TextSize = 14.000
+			TextLabel_2.TextWrapped = true
+
+			UICorner_4.Parent = R
+
+			Deco.Name = "Deco"
+			Deco.Parent = Frame_3
+			Deco.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Deco.BackgroundTransparency = 1.000
+			Deco.Size = UDim2.new(1, 0, 1, 0)
+
+			G.Name = "G"
+			G.Parent = Frame_3
+			G.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+			G.BorderSizePixel = 0
+			G.Position = UDim2.new(0.0984988883, 0, 0.657831907, 0)
+			G.Size = UDim2.new(0.176386878, 0, 0.107035622, 0)
+			G.Font = Enum.Font.SourceSans
+			G.Text = ""
+			G.TextColor3 = Color3.fromRGB(85, 0, 0)
+			G.TextScaled = true
+			G.TextSize = 14.000
+			G.TextWrapped = true
+
+			TextLabel_3.Parent = G
+			TextLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel_3.BackgroundTransparency = 1.000
+			TextLabel_3.Position = UDim2.new(-0.558425307, 0, 0, 0)
+			TextLabel_3.Size = UDim2.new(0.558425188, 0, 1, 0)
+			TextLabel_3.Font = Enum.Font.GothamBold
+			TextLabel_3.Text = "G:"
+			TextLabel_3.TextColor3 = Color3.fromRGB(255, 0, 0)
+			TextLabel_3.TextScaled = true
+			TextLabel_3.TextSize = 14.000
+			TextLabel_3.TextWrapped = true
+
+			UICorner_5.Parent = G
+
+			B.Name = "B"
+			B.Parent = Frame_3
+			B.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+			B.BorderSizePixel = 0
+			B.Position = UDim2.new(0.0984988883, 0, 0.802062392, 0)
+			B.Size = UDim2.new(0.176386878, 0, 0.107035622, 0)
+			B.Font = Enum.Font.SourceSans
+			B.Text = ""
+			B.TextColor3 = Color3.fromRGB(85, 0, 0)
+			B.TextScaled = true
+			B.TextSize = 14.000
+			B.TextWrapped = true
+
+			TextLabel_4.Parent = B
+			TextLabel_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel_4.BackgroundTransparency = 1.000
+			TextLabel_4.Position = UDim2.new(-0.558425307, 0, 0, 0)
+			TextLabel_4.Size = UDim2.new(0.558425188, 0, 1, 0)
+			TextLabel_4.Font = Enum.Font.GothamBold
+			TextLabel_4.Text = "B:"
+			TextLabel_4.TextColor3 = Color3.fromRGB(255, 0, 0)
+			TextLabel_4.TextScaled = true
+			TextLabel_4.TextSize = 14.000
+			TextLabel_4.TextWrapped = true
+
+			UICorner_6.Parent = B
+
+			UICorner_7.Parent = Frame_3
+			
+			local opened = false
+			local dbdd = true
+			local Rotationaeaeaea = ImageButton.Rotation
+			ImageButton.MouseButton1Click:Connect(function()
+				if dbdd then
+					dbdd = false
+					opened = not opened
+					Rotationaeaeaea += 180
+					if opened then
+						tween:Create(ImageButton,TweenInfo.new(0.1),{Rotation = Rotationaeaeaea}):Play()
+						tween:Create(ColorPicker,TweenInfo.new(0.1),{Size = UDim2.new(1,0,0,40+Frame_3.Size.Y.Offset)}):Play()
+					else
+						tween:Create(ImageButton,TweenInfo.new(0.1),{Rotation = Rotationaeaeaea}):Play()
+						tween:Create(ColorPicker,TweenInfo.new(0.1),{Size = UDim2.new(1,0,0,40)}):Play()
+					end
+					dbdd = true
+				end
+			end)
+			
+			local currentcolor = Default
+			local mouse = game.Players.LocalPlayer:GetMouse()
+			local palette = Palette
+			local display = Display
+			local crosshair = palette.Crosshair
+			local UIS = game:GetService("UserInputService")
+			local Value = UIGradient
+
+			local bar = Value.Parent.bar
+			local barval = 1
+
+			local labels = {}
+			labels.R = R
+			labels.G = G
+			labels.B = B
+
+			local function converttofull(ang)
+				local ang = math.deg(ang)
+				local min = -180
+				local dist = math.abs(ang-min)
+				return 360-dist
+			end
+
+			local function isonpalette()
+				local p = Vector2.new(mouse.X,mouse.Y)
+				local onp = p-palette.AbsolutePosition
+				local monp = onp-(palette.AbsoluteSize/2)
+
+				local mid = palette.AbsolutePosition+(palette.AbsoluteSize/2)
+				local distFromMid = (mid-p).Magnitude
+
+				if distFromMid>palette.AbsoluteSize.X/2 then 
+					return false
+				else
+					return true
+				end
+			end
+			local function isonbar()
+				local p = Vector2.new(mouse.X,mouse.Y)
+				if p.X>bar.AbsolutePosition.X and p.X<bar.AbsolutePosition.X+bar.AbsoluteSize.X and p.Y>bar.AbsolutePosition.Y and p.Y<bar.AbsolutePosition.Y+bar.AbsoluteSize.Y then
+					return true
+				else
+					return false
+				end
+			end
+			local function updatel()
+				for i,v in pairs(labels)do
+					v.Text = tostring(math.floor(currentcolor[i]*255))
+				end
+			end
+			local function updateCrosshair()
+				local hue,s,v = Color3.toHSV(currentcolor)
+				local plane = CFrame.new(Vector3.new(0,0,0))*CFrame.Angles(0,math.rad((180+(hue*360))%360),0)*CFrame.new(0,0,-s/2)
+				local p = Vector2.new(plane.X,plane.Z)
+				crosshair.Position = UDim2.new(0.5-p.Y,0,0.5+p.X,0)
+
+			end
+			local function update()
+				local p = Vector2.new(mouse.X,mouse.Y)
+				local onp = p-palette.AbsolutePosition
+				local monp = onp-(palette.AbsoluteSize/2)
+
+				local mid = palette.AbsolutePosition+(palette.AbsoluteSize/2)
+				local distFromMid = (mid-p).Magnitude
+
+				if distFromMid>palette.AbsoluteSize.X/2 then return end -- Mouse outside the palette reach
+
+				local value = barval
+				local saturation = distFromMid/(palette.AbsoluteSize.X/2)
+				local hue = converttofull(math.atan2(monp.Y,monp.X))/360
+
+				display.BackgroundColor3 = Color3.fromHSV(hue,saturation,value)
+				currentcolor = Color3.fromHSV(hue,saturation,value)
+				Value.Color = ColorSequence.new(Color3.fromHSV(hue,saturation,1),Color3.new(0,0,0))
+				updateCrosshair()
+			end
+			spawn(function()
+				
+				for i,v in pairs(labels)do
+					local otherlabels = {unpack(labels)}
+					otherlabels[i] = nil
+					v.FocusLost:Connect(function(enter)
+						if enter then else updatel() return end
+						local c = tonumber(v.Text)
+						c = math.clamp(c,0,255)
+						v.Text = tostring(c)
+						currentcolor = Color3.fromRGB(tonumber(labels.R.Text),tonumber(labels.G.Text),tonumber(labels.B.Text))
+						local h,s,v = Color3.toHSV(currentcolor)
+						barval = v
+						bar.Position = UDim2.new(0.5,0,1-math.clamp(barval,0,1),0)
+						Value.Color = ColorSequence.new(Color3.fromHSV(h,s,1),Color3.new(0,0,0))
+						display.BackgroundColor3 = currentcolor
+						updateCrosshair()
+					end)
+				end
+				
+				UIS.InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+						if isonpalette() then
+							local v = Instance.new("BindableEvent")
+
+							local b = mouse.Move:Connect(function()
+								Callback(currentcolor)
+								v:Fire()
+							end)
+							local b2 = UIS.InputEnded:Connect(function(i)
+								if i.UserInputType == Enum.UserInputType.MouseButton1 then
+									Callback(currentcolor)
+									v:Fire()
+								end
+							end)
+							repeat update() updatel() v.Event:Wait() until not UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
+							b:Disconnect()
+							b2:Disconnect()
+						elseif isonbar() then
+							while UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+								local mpos = mouse.Y-Value.Parent.AbsolutePosition.Y
+								local y = mpos/Value.Parent.AbsoluteSize.Y
+								y = math.clamp(y,0,1)
+								bar.Position = UDim2.new(0.5,0,y,0)
+								barval = 1-y
+								local h,s,v = Color3.toHSV(currentcolor)
+								currentcolor = Color3.fromHSV(h,s,barval)
+								display.BackgroundColor3 = currentcolor
+								Callback(currentcolor)
+								updatel()
+								game:GetService("RunService").RenderStepped:Wait()
+							end
+						end
+					end
+				end)
+				
+				updateCrosshair(currentcolor)
+				updatel()
+			end)
+			
+			local module3 = {}
+			
+			function module3.SetTitle(Text)
+				TextLabel.Text = Text
+			end
+			
+			function module3.SetCallback(functionae)
+				Callback = functionae
+			end
+			
+			function module3.GetColor()
+				return currentcolor
+			end
+			
+			function module3.GetTitle()
+				return TextLabel.Text
+			end
+			
+			function module3.SetColor(Color)
+				currentcolor = Color
+				local h,s,v = Color3.toHSV(currentcolor)
+				barval = v
+				bar.Position = UDim2.new(0.5,0,1-math.clamp(barval,0,1),0)
+				Value.Color = ColorSequence.new(Color3.fromHSV(h,s,1),Color3.new(0,0,0))
+				display.BackgroundColor3 = currentcolor
+				updateCrosshair()
+				updatel()
+				Callback(currentcolor)
+			end
+			
+			return module3
 		end
 		return module2
 	end
