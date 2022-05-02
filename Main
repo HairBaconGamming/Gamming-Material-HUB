@@ -1213,7 +1213,7 @@ function amogus.Load(Table)
 					tween:Create(ImageButton,TweenInfo.new(0.1),{Rotation = Rotationaeaeaea}):Play()
 					tween:Create(Dropdown,TweenInfo.new(0.1),{Size = UDim2.new(1,0,0,40)}):Play()
 				end
-				for i,v in pairs(Frame_2) do
+				for i,v in pairs(Frame_2:GetChildren()) do
 					if v:IsA("Frame") then
 						v:Destroy()
 					end
