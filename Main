@@ -715,7 +715,7 @@ function amogus.Load(Table)
 			local UICorner1 = Instance.new("UICorner")
 			local TextLabel1 = Instance.new("TextLabel")
 			local UITextSizeConstraint1 = Instance.new("UITextSizeConstraint")
-			local Frame1 = Instance.new("Frame")
+			local Frame1 = Instance.new("TextButton")
 			local UICorner1_2 = Instance.new("UICorner")
 			local Frame_2 = Instance.new("Frame")
 			local UICorner1_3 = Instance.new("UICorner")
@@ -758,26 +758,28 @@ function amogus.Load(Table)
 			Frame1.BackgroundTransparency = 0.500
 			Frame1.Position = UDim2.new(0.0179999992, 0, 0.699999988, 0)
 			Frame1.Size = UDim2.new(0.961000025, 0, 0.150000006, 0)
+			Frame1.Text = ""
+			Frame1.AutoButtonColor = false
 
 			UICorner1_2.CornerRadius = UDim.new(1, 0)
 			UICorner1_2.Parent = Frame1
 
 			Frame_2.Parent = Frame1
 			Frame_2.BackgroundColor3 = Color3.fromRGB(171, 171, 255)
-			Frame_2.Size = UDim2.new(0, 200, 1, 0)
+			Frame_2.Size = UDim2.new(0, 0, 1, 0)
 
 			UICorner1_3.CornerRadius = UDim.new(1, 0)
 			UICorner1_3.Parent = Frame_2
 			
 			Frame_4.Parent = Frame_2
 			Frame_4.BackgroundColor3 = Color3.fromRGB(172, 144, 255)
-			Frame_4.Position = UDim2.new(0.980000019, 5, -0.274333358, 5)
-			Frame_4.Size = UDim2.new(0, 0, 0, 0)
+			Frame_4.Position = UDim2.new(0.980000019, 0, -0.333, 0)
+			Frame_4.Size = UDim2.new(0, 10, 0, 10)
 			Frame_4.BackgroundTransparency = 0.5
 			
 			Frame_3.Parent = Frame_2
 			Frame_3.BackgroundColor3 = Color3.fromRGB(171, 171, 255)
-			Frame_3.Position = UDim2.new(0.980000019, 0, -0.274333358, 0)
+			Frame_3.Position = UDim2.new(0.980000019, 0, -0.333, 0)
 			Frame_3.Size = UDim2.new(0, 10, 0, 10)
 			Frame_3.Text = ""
 			Frame_3.AutoButtonColor = false
@@ -809,7 +811,78 @@ function amogus.Load(Table)
 			
 			Callback(Default)
 			
+			local UserInputService = game:GetService("UserInputService")
+			local Dragging = false
+
+			local function ayo()
+				local Precenta = Default/Max
+				Frame_2:TweenSize(UDim2.new(Precenta,0,1,0),nil,nil,0.05)
+				return Precenta
+			end
+
+			local function yes()
+				local MousePos = UserInputService:GetMouseLocation()+Vector2.new(0,36)
+				local RelPos = MousePos-Frame1.AbsolutePosition
+				local Precenta = math.clamp(RelPos.X/Frame1.AbsoluteSize.X,0,1)
+				Frame_2:TweenSize(UDim2.new(Precenta,0,1,0),nil,nil,0.05)
+				return Precenta
+			end
+
 			spawn(function()
+				local Precent = ayo()
+				print(Max*Precent)
+			end)
+
+			Frame1.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch and not Dragging then
+					local Precenta = yes()
+					TextLabel2.Text = math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent
+					Callback(math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent)
+					tween:Create(Frame_3,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
+					tween:Create(Frame_2,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
+					tween:Create(Frame_4,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,25,0,25),Position = UDim2.new(0.98,-7,-1.666,0)}):Play()
+					Dragging = true
+				end
+			end)
+			
+			Frame_3.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch and not Dragging then
+					local Precenta = yes()
+					TextLabel2.Text = math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent
+					Callback(math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent)
+					tween:Create(Frame_3,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
+					tween:Create(Frame_2,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
+					tween:Create(Frame_4,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,25,0,25),Position = UDim2.new(0.98,-7,-1.666,0)}):Play()
+					Dragging = true
+				end
+			end)
+
+			UserInputService.InputChanged:Connect(function()
+				if Dragging then
+					local Precenta = yes()
+					TextLabel2.Text = math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent
+					Callback(math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent)
+					tween:Create(Frame_3,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
+					tween:Create(Frame_2,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
+					tween:Create(Frame_4,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,25,0,25),Position = UDim2.new(0.98,-7,-1.666,0)}):Play()
+				end
+			end)
+
+			UserInputService.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					Dragging = false
+					tween:Create(Frame_3,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(170, 170, 255)}):Play()
+					tween:Create(Frame_2,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(170, 170, 255)}):Play()
+					tween:Create(Frame_4,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,10,0,10),Position = UDim2.new(0.980000019, 0, -0.333, 0)}):Play()
+				end
+			end)
+			
+			spawn(function()
+				
+				--[[
+				
+				
+				
 				local obj = Frame_3
 				local UserInputService = game:GetService("UserInputService")
 				local mouse = game.Players.LocalPlayer:GetMouse()
@@ -830,27 +903,19 @@ function amogus.Load(Table)
 					return Precent
 				end
 				
-				ayo(obj.Parent)
+				ayo(obj)
 
 				local function yes(obja)
 					local MousePos = UserInputService:GetMouseLocation()+Vector2.new(0,36)
-					local RelPos = MousePos-script.Parent.AbsolutePosition
-					local Precent = math.clamp(RelPos.X/script.Parent.AbsoluteSize.X,0,1)
+					local RelPos = MousePos-obja.Parent.AbsolutePosition
+					local Precent = math.clamp(RelPos.X/obja.Parent.AbsoluteSize.X,0,1)
 					obja:TweenSize(UDim2.new(Precent,0,1,0),nil,nil,0.05)
 					return Precent
 				end
 				
 				local function update()
 					if startDrag then       
-						local m = Vector2.new(mouse.X, mouse.Y)
-						local mouseMoved = Vector2.new(m.X - startDrag.X, m.Y - startDrag.Y)
-
-						local s = startSize + mouseMoved
-						local sx = math.max(minSize.X, s.X) 
-						local sy = math.max(minSize.Y, s.Y)
-
-						obj.Parent.Size = UDim2.new(0, sx,1,0)
-						local precent = yes(obj.Parent)
+						local precent = yes(obj)
 						local number = (Max-Min)*precent+Min
 						TextLabel2.Text = number
 						Default = number
@@ -888,30 +953,21 @@ function amogus.Load(Table)
 						end
 					end
 				end)
-				
-				--[[
-				mouse.Move:Connect(function()
-					if mousedown == false then
-						timedddddd = 2
-						update()
-					end
-				end)
-				]]
-				
+
 				obj.MouseEnter:Connect(function()
 					if not startDrag then
 						big = true
 						tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,12,0,12),Position = UDim2.new(0.980000019, -1, -0.274333358, -1)}):Play()
 					end
 				end)
-				
+
 				obj.MouseLeave:Connect(function()
 					if not startDrag then
 						tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,10,0,10),Position = UDim2.new(0.980000019, 0, -0.274333358, 0)}):Play()
 					end
 				end)
-				
-				obj.InputBegan:Connect(function(input)
+
+				obj.Parent.InputBegan:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
 						tween:Create(obj.Parent,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
@@ -919,6 +975,9 @@ function amogus.Load(Table)
 						if not startDrag then
 							startSize = obj.Parent.AbsoluteSize            
 							startDrag = Vector2.new(mouse.X, mouse.Y)
+							local Precent = yes(obj)
+							local number = (Max-Min)*Precent+Min
+							Callback(number)
 						end
 						input.Changed:Connect(function()
 							if input.UserInputState == Enum.UserInputState.End then
@@ -928,14 +987,6 @@ function amogus.Load(Table)
 								tween:Create(Frame_4,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,0,0,0),Position = UDim2.new(0.980000019, 5, -0.274333358, 5)}):Play()
 							end
 						end)
-					end
-				end)
-				
-				--[[
-				obj.InputChanged:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-						timedddddd = 2
-						update()
 					end
 				end)
 				]]
@@ -965,7 +1016,7 @@ function amogus.Load(Table)
 			
 			function module3.SetDefault(Value)
 				Default = Value
-				Frame_3.Parent.Size = UDim2.new(0, Frame_3.Parent.Parent.AbsoluteSize.X * Min/Max,1,0)
+				ayo()
 			end
 			
 			function module3.SetPercent(Value)
@@ -999,7 +1050,7 @@ function amogus.Load(Table)
 			local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
 			local Frame = Instance.new("Frame")
 			local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
-			local ImageButton = Instance.new("ImageButton")
+			local ImageButton = Instance.new("ImageLabel")
 			local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
 			local Frame_2 = Instance.new("Frame")
 			local UIListLayout = Instance.new("UIListLayout")
@@ -1193,6 +1244,50 @@ function amogus.Load(Table)
 				end)
 			end
 			
+			local function tweenInRipple(ripple)
+				spawn(function()
+					local TweenService = game:GetService("TweenService")
+					local Part = ripple
+					local Info = TweenInfo.new(
+						1,
+						Enum.EasingStyle.Linear,
+						Enum.EasingDirection.InOut,
+						0,
+						false,
+						0
+					)
+					local Goals = 
+						{
+							Size = UDim2.new(0, 2000, 0, 2000);
+						}
+					local Tween = TweenService:Create(Part, Info, Goals)
+					Tween:Play()
+				end)
+			end
+
+			local function fadeOutRipple(ripple)
+				spawn(function()
+					local TweenService = game:GetService("TweenService")
+					local Part = ripple
+					local Info = TweenInfo.new(
+						0.5,
+						Enum.EasingStyle.Linear,
+						Enum.EasingDirection.InOut,
+						0,
+						false,
+						0
+					)
+					local Goals = 
+						{
+							ImageTransparency = 1;
+						}
+					local Tween = TweenService:Create(Part, Info, Goals)
+					Tween:Play()
+					wait(0.5 + 0.1)
+					ripple:Destroy()
+				end)
+			end
+			
 			local sisssisisi = (23*#Tablea)+40
 			
 			local opened = false
@@ -1212,6 +1307,26 @@ function amogus.Load(Table)
 					end
 					dbdd = true
 				end
+				local Circle = Instance.new("ImageLabel")
+
+				Circle.Name = "Circle"
+				Circle.Parent = TextButton
+				Circle.AnchorPoint = Vector2.new(0.5, 0.5)
+				Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Circle.BackgroundTransparency = 1.000
+				Circle.Position = UDim2.new(0.5, 0, 0.5, 0)
+				Circle.ZIndex = 10
+				Circle.Image = "rbxassetid://266543268"
+				Circle.ImageColor3 = Color3.fromRGB(0, 0, 0)
+				Circle.ImageTransparency = 0.500
+
+				tweenInRipple(Circle)
+				TextButton.MouseButton1Up:Connect(function()
+					fadeOutRipple(Circle)
+				end)
+				TextButton.MouseLeave:Connect(function()
+					fadeOutRipple(Circle)
+				end)
 			end)
 			
 
@@ -1430,10 +1545,8 @@ function amogus.Load(Table)
 			UITextSizeConstraint_2.Parent = TextBox
 			UITextSizeConstraint_2.MaxTextSize = 12
 			
-			TextBox.Changed:Connect(function(property)
-				if property == "Text" then
-					Callback(TextBox.Text)
-				end
+			TextBox.FocusLost:Connect(function()
+				Callback(TextBox.Text)
 			end)
 			
 			local module3 = {}
@@ -1486,17 +1599,17 @@ function amogus.Load(Table)
 			local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
 			local Frame = Instance.new("Frame")
 			local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
-			local ImageButton = Instance.new("ImageButton")
+			local ImageButton = Instance.new("ImageLabel")
 			local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
 			local Frame_2 = Instance.new("Frame")
 			local UIListLayout = Instance.new("UIListLayout")
 			local Frame_3 = Instance.new("Frame")
-			local Palette = Instance.new("ImageLabel")
+			local Palette = Instance.new("ImageButton")
 			local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
 			local Crosshair = Instance.new("ImageButton")
-			local Value = Instance.new("Frame")
+			local Value = Instance.new("TextButton")
 			local UIGradient = Instance.new("UIGradient")
-			local bar = Instance.new("TextButton")
+			local bar = Instance.new("Frame")
 			local Display = Instance.new("Frame")
 			local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
 			local UICorner_3 = Instance.new("UICorner")
@@ -1617,6 +1730,8 @@ function amogus.Load(Table)
 			Value.BorderSizePixel = 0
 			Value.Position = UDim2.new(0.367273927, 0, 0.0375972986, 0)
 			Value.Size = UDim2.new(0.100000001, 0, 0.899999976, 0)
+			Value.Text = ""
+			Value.AutoButtonColor = false
 
 			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(11, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))}
 			UIGradient.Rotation = 84
@@ -1629,8 +1744,6 @@ function amogus.Load(Table)
 			bar.BorderSizePixel = 0
 			bar.Position = UDim2.new(0.5, 0, 0, 0)
 			bar.Size = UDim2.new(1.10000002, 0, 0.0250000004, 0)
-			bar.Text = ""
-			bar.AutoButtonColor = false
 
 			Display.Name = "Display"
 			Display.Parent = Frame_3
@@ -1734,10 +1847,54 @@ function amogus.Load(Table)
 
 			UICorner_7.Parent = Frame_3
 			
+			local function tweenInRipple(ripple)
+				spawn(function()
+					local TweenService = game:GetService("TweenService")
+					local Part = ripple
+					local Info = TweenInfo.new(
+						1,
+						Enum.EasingStyle.Linear,
+						Enum.EasingDirection.InOut,
+						0,
+						false,
+						0
+					)
+					local Goals = 
+						{
+							Size = UDim2.new(0, 2000, 0, 2000);
+						}
+					local Tween = TweenService:Create(Part, Info, Goals)
+					Tween:Play()
+				end)
+			end
+
+			local function fadeOutRipple(ripple)
+				spawn(function()
+					local TweenService = game:GetService("TweenService")
+					local Part = ripple
+					local Info = TweenInfo.new(
+						0.5,
+						Enum.EasingStyle.Linear,
+						Enum.EasingDirection.InOut,
+						0,
+						false,
+						0
+					)
+					local Goals = 
+						{
+							ImageTransparency = 1;
+						}
+					local Tween = TweenService:Create(Part, Info, Goals)
+					Tween:Play()
+					wait(0.5 + 0.1)
+					ripple:Destroy()
+				end)
+			end
+			
 			local opened = false
 			local dbdd = true
 			local Rotationaeaeaea = ImageButton.Rotation
-			ImageButton.MouseButton1Click:Connect(function()
+			TextButton.MouseButton1Click:Connect(function()
 				if dbdd then
 					dbdd = false
 					opened = not opened
@@ -1751,6 +1908,26 @@ function amogus.Load(Table)
 					end
 					dbdd = true
 				end
+				local Circle = Instance.new("ImageLabel")
+
+				Circle.Name = "Circle"
+				Circle.Parent = TextButton
+				Circle.AnchorPoint = Vector2.new(0.5, 0.5)
+				Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Circle.BackgroundTransparency = 1.000
+				Circle.Position = UDim2.new(0.5, 0, 0.5, 0)
+				Circle.ZIndex = 10
+				Circle.Image = "rbxassetid://266543268"
+				Circle.ImageColor3 = Color3.fromRGB(0, 0, 0)
+				Circle.ImageTransparency = 0.500
+
+				tweenInRipple(Circle)
+				TextButton.MouseButton1Up:Connect(function()
+					fadeOutRipple(Circle)
+				end)
+				TextButton.MouseLeave:Connect(function()
+					fadeOutRipple(Circle)
+				end)
 			end)
 			
 			local currentcolor = Default
@@ -1762,6 +1939,7 @@ function amogus.Load(Table)
 			local Value = UIGradient
 
 			local bar = Value.Parent.bar
+			local eeee = Value.Parent
 			local barval = 1
 
 			local labels = {}
@@ -1793,6 +1971,14 @@ function amogus.Load(Table)
 			local function isonbar()
 				local p = Vector2.new(mouse.X,mouse.Y)
 				if p.X>bar.AbsolutePosition.X and p.X<bar.AbsolutePosition.X+bar.AbsoluteSize.X and p.Y>bar.AbsolutePosition.Y and p.Y<bar.AbsolutePosition.Y+bar.AbsoluteSize.Y then
+					return true
+				else
+					return false
+				end
+			end
+			local function isoneee()
+				local p = Vector2.new(mouse.X,mouse.Y)
+				if p.X>eeee.AbsolutePosition.X and p.X<eeee.AbsolutePosition.X+eeee.AbsoluteSize.X and p.Y>eeee.AbsolutePosition.Y and p.Y<eeee.AbsolutePosition.Y+eeee.AbsoluteSize.Y then
 					return true
 				else
 					return false
@@ -1867,7 +2053,7 @@ function amogus.Load(Table)
 							repeat update() updatel() v.Event:Wait() until not UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
 							b:Disconnect()
 							b2:Disconnect()
-						elseif isonbar() then
+						elseif isoneee() then
 							while UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
 								local mpos = mouse.Y-Value.Parent.AbsolutePosition.Y
 								local y = mpos/Value.Parent.AbsoluteSize.Y
