@@ -809,7 +809,21 @@ function amogus.Load(Table)
 				
 				local big = false
 				
-				obj.Parent.Size = UDim2.new(0, obj.Parent.Parent.AbsoluteSize.X*(Min/Max),1,0)
+				local function ayo(obja)
+					local Precent = Default/Max
+					obja:TweenSize(UDim2.new(Precent,0,1,0),nil,nil,0.05)
+					return Precent
+				end
+				
+				ayo(obj.Parent)
+
+				local function yes(obja)
+					local MousePos = UserInputService:GetMouseLocation()+Vector2.new(0,36)
+					local RelPos = MousePos-script.Parent.AbsolutePosition
+					local Precent = math.clamp(RelPos.X/script.Parent.AbsoluteSize.X,0,1)
+					obja:TweenSize(UDim2.new(Precent,0,1,0),nil,nil,0.05)
+					return Precent
+				end
 				
 				local function update()
 					if startDrag then       
@@ -821,13 +835,8 @@ function amogus.Load(Table)
 						local sy = math.max(minSize.Y, s.Y)
 
 						obj.Parent.Size = UDim2.new(0, sx,1,0)
-						local number
-						if sx > obj.Parent.Parent.AbsoluteSize.X then
-							obj.Parent.Size = UDim2.new(0,obj.Parent.Parent.AbsoluteSize.X, 1,0)
-							number = Max
-						else
-							number = math.floor(Min * Percent + ((Max - Min) * (obj.Parent.AbsoluteSize.X/obj.Parent.Parent.AbsoluteSize.X)))/Percent --math.floor(((Max*Percent*(obj.Parent.AbsoluteSize.X/obj.Parent.Parent.AbsoluteSize.X)*Min)))/Percent
-						end
+						local precent = yes(obj.Parent)
+						local number = (Max-Min)*precent+Min
 						TextLabel2.Text = number
 						Default = number
 						Callback(number)
@@ -1174,7 +1183,7 @@ function amogus.Load(Table)
 			local opened = false
 			local dbdd = true
 			local Rotationaeaeaea = ImageButton.Rotation
-			ImageButton.MouseButton1Click:Connect(function()
+			TextButton.MouseButton1Click:Connect(function()
 				if dbdd then
 					dbdd = false
 					opened = not opened
