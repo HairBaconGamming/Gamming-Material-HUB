@@ -1,7 +1,7 @@
 local amogus = {}
 
 function amogus.Load(Table)
-	local Titlem,Xsize,Ysize,SmothDrag = Table.Title,Table.X,Table.Y,Table.SmothDrag
+	local Titlem,Xsize,Ysize,SmothDrag,Close_Open_Key = Table.Title,Table.X,Table.Y,Table.SmothDrag,Table.CloseOpenKey
 	local GUI_SERVICE
 	if game:GetService("RunService"):IsStudio() then
 		GUI_SERVICE = game.Players.LocalPlayer.PlayerGui
@@ -272,6 +272,21 @@ function amogus.Load(Table)
 			end
 			db = true
 		end
+	end)
+	
+	spawn(function()
+		local UserInputService = game:GetService("UserInputService")
+		UserInputService.InputBegan:Connect(function(Input)
+			if type(Close_Open_Key) == "string" then
+				if Input.KeyCode == Enum.KeyCode[Close_Open_Key] then
+					ScreenGui.Enabled = not ScreenGui.Enabled
+				end
+			else
+				if Input.KeyCode == Close_Open_Key then
+					ScreenGui.Enabled = not ScreenGui.Enabled
+				end
+			end
+		end)
 	end)
 	
 	local module = {}
