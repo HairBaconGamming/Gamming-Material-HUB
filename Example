@@ -3,6 +3,7 @@ local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Hair
 local Main = Material.Load({
 	Title = "Gamming Hub",
 	SmothDrag = false,
+	CloseOpenKey = "RightControl" or Enum.KeyCode.RightControl,
 })
 
 local Temp = Main.New({
@@ -32,7 +33,7 @@ local Slide = Temp.Slide({
 	Min = 1,
 	Max = 100,
 	Default = 1,
-	Percent = 1,
+	Percent = 10, -- example: 23 >> 23.2
 })
 
 local Dropdown = Temp.Dropdown({
@@ -41,7 +42,7 @@ local Dropdown = Temp.Dropdown({
 		print(Value)
 	end,
 	Table = {"1","2","3"},
-	AutoTextChose = true,
+	AutoTextChose = true, -- example: 'numbers:1' >> 'numbers'
 })
 
 local Textbox = Temp.Textbox({
