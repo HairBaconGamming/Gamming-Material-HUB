@@ -3,7 +3,7 @@ local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Hair
 local Main = Material.Load({
 	Title = "Gamming Hub",
 	SmothDrag = false,
-	CloseOpenKey = "RightControl" or Enum.KeyCode.RightControl,
+	Key = "RightControl" or Enum.KeyCode.RightControl,
 })
 
 local Temp = Main.New({
