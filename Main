@@ -1,6 +1,21 @@
 local amogus = {}
 
 function amogus.Load(Table)
+	print([[
+   _____                           _               __  __       _            _       _ 
+  / ____|                         (_)             |  \/  |     | |          (_)     | |
+ | |  __  __ _ _ __ ___  _ __ ___  _ _ __   __ _  | \  / | __ _| |_ ___ _ __ _  __ _| |
+ | | |_ |/ _` | '_ ` _ \| '_ ` _ \| | '_ \ / _` | | |\/| |/ _` | __/ _ \ '__| |/ _` | |
+ | |__| | (_| | | | | | | | | | | | | | | | (_| | | |  | | (_| | ||  __/ |  | | (_| | |
+  \_____|\__,_|_|_|_|_|_|_| |_| |_|_|_| |_|\__, | |_|  |_|\__,_|\__\___|_|  |_|\__,_|_|
+            |__   __| |           / _|      __/ |          (_)                         
+               | |  | |__ __  __ | |_ ___  |___/  _   _ ___ _ _ __   __ _              
+               | |  | '_ \\ \/ / |  _/ _ \| '__| | | | / __| | '_ \ / _` |             
+               | |  | | | |>  <  | || (_) | |    | |_| \__ \ | | | | (_| |             
+               |_|  |_| |_/_/\_\ |_| \___/|_|     \__,_|___/_|_| |_|\__, |             
+                                                                     __/ |             
+                                                                    |___/              
+	]])
 	local Titlem,Xsize,Ysize,SmothDrag,Close_Open_Key = Table.Title,Table.X,Table.Y,Table.SmothDrag,Table.Key
 	local GUI_SERVICE
 	if game:GetService("RunService"):IsStudio() then
@@ -28,7 +43,8 @@ function amogus.Load(Table)
 	local ImageButton2 = Instance.new("ImageButton")
 	local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 	local UIListLayout = Instance.new("UIListLayout")
-
+	local TextService = game:GetService("TextService")
+	
 	ScreenGui.Parent = GUI_SERVICE
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	ScreenGui.Name = "Gamming_GUI_MATERIAL"
@@ -725,8 +741,9 @@ function amogus.Load(Table)
 			local UICorner1_5 = Instance.new("UICorner")
 			local UIAspectRatioConstraint1 = Instance.new("UIAspectRatioConstraint")
 			local UIAspectRatioConstraint1_2 = Instance.new("UIAspectRatioConstraint")
-			local TextLabel2 = Instance.new("TextLabel")
+			local TextBox = Instance.new("TextBox")
 			local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+			local UICorner1_6 = Instance.new("UICorner")
 
 			Slide.Name = "Slide"
 			Slide.Parent = Frame2
@@ -740,7 +757,7 @@ function amogus.Load(Table)
 			TextLabel1.Parent = Slide
 			TextLabel1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			TextLabel1.BackgroundTransparency = 1.000
-			TextLabel1.Position = UDim2.new(0.0176318008, 0, 0, 0)
+			TextLabel1.Position = UDim2.new(0.018, 0,0.1, 0)
 			TextLabel1.Size = UDim2.new(0.861439526, 0, 0.554259062, 0)
 			TextLabel1.Font = Enum.Font.GothamBold
 			TextLabel1.Text = Title
@@ -767,6 +784,7 @@ function amogus.Load(Table)
 			Frame_2.Parent = Frame1
 			Frame_2.BackgroundColor3 = Color3.fromRGB(171, 171, 255)
 			Frame_2.Size = UDim2.new(0, 0, 1, 0)
+			Frame_2.BorderSizePixel = 0
 
 			UICorner1_3.CornerRadius = UDim.new(1, 0)
 			UICorner1_3.Parent = Frame_2
@@ -793,21 +811,25 @@ function amogus.Load(Table)
 			UIAspectRatioConstraint1.Parent = Frame_3
 			UIAspectRatioConstraint1_2.Parent = Frame_4
 
-			TextLabel2.Name = "TextLabel2"
-			TextLabel2.Parent = Slide
-			TextLabel2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			TextLabel2.BackgroundTransparency = 1.000
-			TextLabel2.Position = UDim2.new(0.879071236, 0, 0.175029203, 0)
-			TextLabel2.Size = UDim2.new(0.120903924, 0, 0.379229873, 0)
-			TextLabel2.Font = Enum.Font.GothamBold
-			TextLabel2.Text = Default
-			TextLabel2.TextColor3 = Color3.fromRGB(171, 171, 255)
-			TextLabel2.TextScaled = true
-			TextLabel2.TextSize = 14.000
-			TextLabel2.TextWrapped = true
+			TextBox.BackgroundColor3 = Color3.new(0.670588, 0.670588, 1)
+			TextBox.BackgroundTransparency = 0
+			TextBox.Font = Enum.Font.GothamBold
+			TextBox.Parent = Slide
+			TextBox.PlaceholderColor3 = Color3.new(1, 1, 1)
+			TextBox.PlaceholderText = [[Number]]
+			TextBox.Position = UDim2.new(0.85, 0,0.175, 0)
+			TextBox.Size = UDim2.new(0, 195, 0.379000008, 0)
+			TextBox.Text = [[100]]
+			TextBox.TextColor3 = Color3.fromRGB(85, 85, 127)
+			TextBox.TextScaled = false
+			TextBox.TextSize = 14
+			TextBox.TextWrapped = true
+			TextBox.ClearTextOnFocus = false
 
-			UITextSizeConstraint_2.Parent = TextLabel2
+			UITextSizeConstraint_2.Parent = TextBox
 			UITextSizeConstraint_2.MaxTextSize = 14
+			UICorner1_6.CornerRadius = UDim.new(1, 0)
+			UICorner1_6.Parent = TextBox
 
 			Callback(Default)
 
@@ -829,14 +851,14 @@ function amogus.Load(Table)
 			end
 
 			spawn(function()
-				local Precent = ayo()
-				print(Max*Precent)
+				local Precenta = ayo()
+				TextBox.Text = math.floor((Max*Precenta)*Percent)/Percent
 			end)
 
 			Frame1.InputBegan:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch and not Dragging then
 					local Precenta = yes()
-					TextLabel2.Text = math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent
+					TextBox.Text = math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent
 					Callback(math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent)
 					tween:Create(Frame_3,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
 					tween:Create(Frame_2,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
@@ -848,7 +870,7 @@ function amogus.Load(Table)
 			Frame_3.InputBegan:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch and not Dragging then
 					local Precenta = yes()
-					TextLabel2.Text = math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent
+					TextBox.Text = math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent
 					Callback(math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent)
 					tween:Create(Frame_3,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
 					tween:Create(Frame_2,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
@@ -860,7 +882,7 @@ function amogus.Load(Table)
 			UserInputService.InputChanged:Connect(function()
 				if Dragging then
 					local Precenta = yes()
-					TextLabel2.Text = math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent
+					TextBox.Text = math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent
 					Callback(math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent)
 					tween:Create(Frame_3,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
 					tween:Create(Frame_2,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
@@ -876,122 +898,45 @@ function amogus.Load(Table)
 					tween:Create(Frame_4,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,10,0,10),Position = UDim2.new(0.980000019, 0, -0.333, 0)}):Play()
 				end
 			end)
-
-			spawn(function()
-
-				--[[
-				
-				
-				
-				local obj = Frame_3
-				local UserInputService = game:GetService("UserInputService")
-				local mouse = game.Players.LocalPlayer:GetMouse()
-
-				local minSize = Vector2.new(0, 0)
-
-				local startDrag, startSize
-
-				local dragInput
-
-				local timedddddd = 2
-				
-				local big = false
-				
-				local function ayo(obja)
-					local Precent = Default/Max
-					obja:TweenSize(UDim2.new(Precent,0,1,0),nil,nil,0.05)
-					return Precent
-				end
-				
-				ayo(obj)
-
-				local function yes(obja)
-					local MousePos = UserInputService:GetMouseLocation()+Vector2.new(0,36)
-					local RelPos = MousePos-obja.Parent.AbsolutePosition
-					local Precent = math.clamp(RelPos.X/obja.Parent.AbsoluteSize.X,0,1)
-					obja:TweenSize(UDim2.new(Precent,0,1,0),nil,nil,0.05)
-					return Precent
-				end
-				
-				local function update()
-					if startDrag then       
-						local precent = yes(obj)
-						local number = (Max-Min)*precent+Min
-						TextLabel2.Text = number
-						Default = number
-						Callback(number)
-					end
-				end
-				
-				local mousedown = false
-				local userinput = game:GetService("UserInputService")
-				
-				mouse.Button1Down:Connect(function()
-					mousedown = true
-				end)
-				
-				userinput.InputBegan:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-						mousedown = true
-					end
-				end)
-				
-				userinput.InputEnded:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-						mousedown = false
-						if big then
-							tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,10,0,10),Position = UDim2.new(0.980000019, 0, -0.274333358, 0)}):Play()
-						end
-					end
-				end)
-				
-				userinput.InputChanged:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-						if mousedown then
-							timedddddd = 2
-							update()
-						end
-					end
-				end)
-
-				obj.MouseEnter:Connect(function()
-					if not startDrag then
-						big = true
-						tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,12,0,12),Position = UDim2.new(0.980000019, -1, -0.274333358, -1)}):Play()
-					end
-				end)
-
-				obj.MouseLeave:Connect(function()
-					if not startDrag then
-						tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,10,0,10),Position = UDim2.new(0.980000019, 0, -0.274333358, 0)}):Play()
-					end
-				end)
-
-				obj.Parent.InputBegan:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-						tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
-						tween:Create(obj.Parent,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(172, 144, 255)}):Play()
-						tween:Create(Frame_4,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,25,0,25),Position = UDim2.new(0.980000019, -7.5, -0.274333358, -7.5)}):Play()
-						if not startDrag then
-							startSize = obj.Parent.AbsoluteSize            
-							startDrag = Vector2.new(mouse.X, mouse.Y)
-							local Precent = yes(obj)
-							local number = (Max-Min)*Precent+Min
-							Callback(number)
-						end
-						input.Changed:Connect(function()
-							if input.UserInputState == Enum.UserInputState.End then
-								startDrag = nil
-								tween:Create(obj,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(170, 170, 255)}):Play()
-								tween:Create(obj.Parent,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{BackgroundColor3 = Color3.fromRGB(170, 170, 255)}):Play()
-								tween:Create(Frame_4,TweenInfo.new(0.3,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,0,0,0),Position = UDim2.new(0.980000019, 5, -0.274333358, 5)}):Play()
-							end
-						end)
-					end
-				end)
-				]]
+			
+			TextBox.Focused:Connect(function()
+				local TextSize = TextService:GetTextSize(TextBox.ContentText,TextBox.TextSize,TextBox.Font,TextBox.AbsoluteSize)
+				tween:Create(TextBox,TweenInfo.new(0.05,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,math.max(TextSize.X+10,49),0.379,0)}):Play()
 			end)
-
+			
+			TextBox.Changed:Connect(function(type)
+				if type == "Text" then
+					local TextSize = TextService:GetTextSize(TextBox.ContentText,TextBox.TextSize,TextBox.Font,TextBox.AbsoluteSize)
+					tween:Create(TextBox,TweenInfo.new(0.05,Enum.EasingStyle.Cubic,Enum.EasingDirection.InOut,0,false,0),{Size = UDim2.new(0,math.max(TextSize.X+10,49),0.379,0)}):Play()
+				end
+			end)
+			
+			TextBox.FocusLost:Connect(function(Enter)
+				if Enter and tonumber(TextBox.Text) then
+					local a = false
+					if tonumber(TextBox.Text) > Max then
+						Default = Max
+						TextBox.Text = Max
+						ayo()
+						a = true
+					end
+					if tonumber(TextBox.Text) < Min then
+						Default = Min
+						TextBox.Text = Min
+						ayo()
+						a = true
+					end
+					if a == false then
+						Default = tonumber(TextBox.Text)
+						local Precenta = ayo()
+						TextBox.Text = math.floor((Max*Precenta)*Percent)/Percent
+					end
+				else
+					local Precenta = ayo()
+					TextBox.Text = math.floor((Max*Precenta)*Percent)/Percent
+				end
+			end)
+			
 			local module3 = {}
 
 			function module3.SetTitle(Text)
