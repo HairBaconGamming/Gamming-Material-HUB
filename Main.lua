@@ -48,7 +48,7 @@ function amogus.Load(Table)
 	
 	ScreenGui.Parent = GUI_SERVICE
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	ScreenGui.Name = "Gamming_GUI_MATERIAL"
+	ScreenGui.Name = Titlem
 	ScreenGui.IgnoreGuiInset = true
 	ScreenGui.ResetOnSpawn = false
 
