@@ -1,6 +1,6 @@
 local amogus = {}
 
-function amogus.Load(Table)
+function amogus:Load(Table)
 	print([[
 	
    _____                           _               __  __       _            _       _ 
@@ -48,7 +48,7 @@ function amogus.Load(Table)
 	
 	ScreenGui.Parent = GUI_SERVICE
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	ScreenGui.Name = Titlem
+	ScreenGui.Name = "Gamming_GUI_MATERIAL"
 	ScreenGui.IgnoreGuiInset = true
 	ScreenGui.ResetOnSpawn = false
 
@@ -310,31 +310,59 @@ function amogus.Load(Table)
 
 	local first = false
 
-	function module.New(Table)
-		local Titlea = Table.Title
-
+	function module:New(Table)
+		local Titlea,Imagea,ImageIdea = Table.Title,Table.Image,Table.ImageId
+		
 		local Frame2 = Instance.new("ScrollingFrame")
 		local UICorners = Instance.new("UICorner")
 		local UIListLayout = Instance.new("UIListLayout")
 		local UIListLayout_2 = Instance.new("UIListLayout")
 
+		local Frame_1 = Instance.new("Frame")
 		local TextButtonae = Instance.new("TextButton")
+		local ImageLabel = Instance.new("ImageLabel")
+		local TextLabel = Instance.new("TextLabel")
 		local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+		
+		Frame_1.BackgroundColor3 = Color3.new(1, 1, 1)
+		Frame_1.BackgroundTransparency = 1
+		Frame_1.Parent = Frame4
+		Frame_1.Size = UDim2.new(1, 0, 0, 30)
 
-		TextButtonae.Parent = Frame4
-		TextButtonae.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		TextButtonae.BackgroundTransparency = 1.000
-		TextButtonae.Position = UDim2.new(0.0839052498, 0, 0, 0)
-		TextButtonae.Size = UDim2.new(1, 0, 0, 30)
+		TextButtonae.BackgroundColor3 = Color3.new(1, 1, 1)
+		TextButtonae.BackgroundTransparency = 1
 		TextButtonae.Font = Enum.Font.GothamBold
-		TextButtonae.Text = Titlea
-		TextButtonae.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TextButtonae.Parent = Frame_1
+		TextButtonae.Size = UDim2.new(1, 0, 1, 0)
+		TextButtonae.Text = [[]]
+		TextButtonae.TextColor3 = Color3.new(1, 1, 1)
 		TextButtonae.TextScaled = true
-		TextButtonae.TextSize = 14.000
+		TextButtonae.TextSize = 14
 		TextButtonae.TextWrapped = true
+		
+		if ImageIdea then
+			ImageIdea = "http://www.roblox.com/asset/?id=".. ImageIdea
+		end
+		ImageLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+		ImageLabel.BackgroundTransparency = 1
+		ImageLabel.Image = (Imagea or ImageIdea)
+		ImageLabel.Parent = Frame_1
+		ImageLabel.Size = UDim2.new(0.21850659, 0, 1, 0)
 
-		UITextSizeConstraint.Parent = TextButtonae
+		TextLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+		TextLabel.BackgroundTransparency = 1
+		TextLabel.Font = Enum.Font.GothamBold
+		TextLabel.Parent = Frame_1
+		TextLabel.Position = UDim2.new(0.218506545, 0, 0, 0)
+		TextLabel.Size = UDim2.new(0.781493545, 0, 1, 0)
+		TextLabel.Text = Titlea
+		TextLabel.TextColor3 = Color3.new(1, 1, 1)
+		TextLabel.TextScaled = true
+		TextLabel.TextSize = 14
+		TextLabel.TextWrapped = true
+
 		UITextSizeConstraint.MaxTextSize = 14
+		UITextSizeConstraint.Parent = TextLabel
 
 		Frame2.Name = Titlea
 		Frame2.Parent = Main
@@ -386,7 +414,7 @@ function amogus.Load(Table)
 
 
 		local module2 = {}
-		function module2.Button(Table)
+		function module2:Button(Table)
 			local Title,Callback = Table.Title,Table.Callback
 
 			local Button = Instance.new("Frame")
@@ -499,22 +527,22 @@ function amogus.Load(Table)
 
 			local module3 = {}
 
-			function module3.SetTitle(Text)
+			function module3:SetTitle(Text)
 				TextLabel.Text = Text
 			end
 
-			function module3.GetTitle(Text)
+			function module3:GetTitle(Text)
 				return TextLabel.Text
 			end
 
-			function module3.SetCallback(functionae)
+			function module3:SetCallback(functionae)
 				Callback = functionae
 			end
 
 			return module3
 		end
 
-		function module2.Toggle(Table)
+		function module2:Toggle(Table)
 			local Title,Callback,Enable = Table.Title,Table.Callback,Table.Enabled
 
 			local Toggle = Instance.new("Frame")
@@ -688,15 +716,15 @@ function amogus.Load(Table)
 
 			local module3 = {}
 
-			function module3.SetTitle(Text)
+			function module3:SetTitle(Text)
 				TextLabel.Text = Text
 			end
 
-			function module3.GetTitle(Text)
+			function module3:GetTitle(Text)
 				return TextLabel.Text
 			end
 
-			function module3.SetToggle(Bool)
+			function module3:SetToggle(Bool)
 				Enablesussy = Bool
 				if Enablesussy then
 					tween:Create(
@@ -713,18 +741,18 @@ function amogus.Load(Table)
 				end
 			end
 
-			function module3.GetToggle()
+			function module3:GetToggle()
 				return Enablesussy
 			end
 
-			function module3.SetCallback(functionae)
+			function module3:SetCallback(functionae)
 				Callback = functionae
 			end
 
 			return module3
 		end
 
-		function module2.Slide(Table)
+		function module2:Slide(Table)
 			local Title = Table.Title
 			local Callback,Min,Max,Default,Percent = Table.Callback,Table.Min,Table.Max,Table.Default,Table.Percent
 
@@ -940,51 +968,51 @@ function amogus.Load(Table)
 			
 			local module3 = {}
 
-			function module3.SetTitle(Text)
+			function module3:SetTitle(Text)
 				TextLabel.Text = Text
 			end
 
-			function module3.GetTitle(Text)
+			function module3:GetTitle(Text)
 				return TextLabel.Text
 			end
 
-			function module3.SetCallback(functionae)
+			function module3:SetCallback(functionae)
 				Callback = functionae
 			end
 
-			function module3.SetMin(Value)
+			function module3:SetMin(Value)
 				Min = Value
 			end
 
-			function module3.SetMax(Value)
+			function module3:SetMax(Value)
 				Max = Value
 			end
 
-			function module3.SetDefault(Value)
+			function module3:SetDefault(Value)
 				Default = Value
 				ayo()
 			end
 
-			function module3.SetPercent(Value)
+			function module3:SetPercent(Value)
 				Percent = Value
 			end
 
-			function module3.GetMin(Value)
+			function module3:GetMin(Value)
 				return Min
 			end
 
-			function module3.GetMax(Value)
+			function module3:GetMax(Value)
 				return Max
 			end
 
-			function module3.GetDefault(Value)
+			function module3:GetDefault(Value)
 				return Default
 			end
 
 			return module3
 		end
 
-		function module2.Dropdown(Tables)
+		function module2:Dropdown(Tables)
 			local Title,Callback,Tablea,AutoTextChose = Tables.Title,Tables.Callback,Tables.Table,Tables.AutoTextChose
 
 			local Dropdown = Instance.new("Frame")
@@ -1278,19 +1306,19 @@ function amogus.Load(Table)
 
 			local module3 = {}
 
-			function module3.SetTitle(Text)
+			function module3:SetTitle(Text)
 				TextLabel.Text = Text
 			end
 
-			function module3.GetTitle(Text)
+			function module3:GetTitle(Text)
 				return TextLabel.Text
 			end
 
-			function module3.SetCallback(functionae)
+			function module3:SetCallback(functionae)
 				Callback = functionae
 			end
 
-			function module3.SetTable(Tableass)
+			function module3:SetTable(Tableass)
 				TextLabel.Text = Title
 				if opened then
 					opened = false
@@ -1421,11 +1449,11 @@ function amogus.Load(Table)
 				Tablea = Tableass
 			end
 
-			function module3.GetTable()
+			function module3:GetTable()
 				return Tablea
 			end
 
-			function module3.AutoTextChose(Bool)
+			function module3:AutoTextChose(Bool)
 				AutoTextChose = Bool
 				if not AutoTextChose then
 					TextLabel.Text = Title
@@ -1435,7 +1463,7 @@ function amogus.Load(Table)
 			return module3
 		end
 
-		function module2.Textbox(Tables)
+		function module2:Textbox(Tables)
 			local Title,TextboxTitle,ClearTextOnFocus,Callback = Tables.Title,Tables.TextboxTitle,Tables.ClearTextOnFocus,Tables.Callback
 
 			local Textbox = Instance.new("Frame")
@@ -1497,35 +1525,35 @@ function amogus.Load(Table)
 
 			local module3 = {}
 
-			function module3.SetTitle(Text)
+			function module3:SetTitle(Text)
 				TextLabel.Text = Text
 			end
 
-			function module3.GetTitle(Text)
+			function module3:GetTitle(Text)
 				return TextLabel.Text
 			end
 
-			function module3.SetCallback(functionae)
+			function module3:SetCallback(functionae)
 				Callback = functionae
 			end
 
-			function module3.SetText(Text)
+			function module3:SetText(Text)
 				TextBox.Text = Text
 			end
 
-			function module3.GetText()
+			function module3:GetText()
 				return TextBox.Text
 			end
 
-			function module3.SetPlaceholderText(Text)
+			function module3:SetPlaceholderText(Text)
 				TextBox.PlaceholderText = Text
 			end
 
-			function module3.GetPlaceholderText(Text)
+			function module3:GetPlaceholderText(Text)
 				return TextBox.PlaceholderText
 			end
 
-			function module3.ClearTextOnFocus(Bool)
+			function module3:ClearTextOnFocus(Bool)
 				ClearTextOnFocus = Bool
 				TextBox.ClearTextOnFocus = ClearTextOnFocus
 			end
@@ -1533,7 +1561,7 @@ function amogus.Load(Table)
 			return module3
 		end
 
-		function module2.ColorPicker(Tables)
+		function module2:ColorPicker(Tables)
 			local Title,Callback,Default = Tables.Title,Tables.Callback,Tables.Default
 
 			local ColorPicker = Instance.new("Frame")
@@ -1836,7 +1864,7 @@ function amogus.Load(Table)
 					ripple:Destroy()
 				end)
 			end
-
+			
 			local opened = false
 			local dbdd = true
 			local Rotationaeaeaea = ImageButton.Rotation
@@ -1982,7 +2010,7 @@ function amogus.Load(Table)
 				end
 
 				UIS.InputBegan:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and opened then
 						if isonpalette() then
 							local v = Instance.new("BindableEvent")
 
@@ -2025,23 +2053,23 @@ function amogus.Load(Table)
 
 			local module3 = {}
 
-			function module3.SetTitle(Text)
+			function module3:SetTitle(Text)
 				TextLabel.Text = Text
 			end
 
-			function module3.SetCallback(functionae)
+			function module3:SetCallback(functionae)
 				Callback = functionae
 			end
 
-			function module3.GetColor()
+			function module3:GetColor()
 				return currentcolor
 			end
 
-			function module3.GetTitle()
+			function module3:GetTitle()
 				return TextLabel.Text
 			end
 
-			function module3.SetColor(Color)
+			function module3:SetColor(Color)
 				currentcolor = Color
 				local h,s,v = Color3.toHSV(currentcolor)
 				barval = v
@@ -2054,6 +2082,120 @@ function amogus.Load(Table)
 			end
 
 			return module3
+		end
+		
+		function module2:KeyBox(Tables)
+			local Title,Callback,Key = Tables.Title,Tables.Callback,Tables.Key
+			
+			local KeyBox = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local TextLabel = Instance.new("TextLabel")
+			local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+			local Frame = Instance.new("Frame")
+			local TextButton = Instance.new("TextButton")
+			local UICorner_1 = Instance.new("UICorner")
+			local UITextSizeConstraint_1 = Instance.new("UITextSizeConstraint")
+			local UICorner_2 = Instance.new("UICorner")
+
+			KeyBox.BackgroundColor3 = Color3.new(0.760784, 0.760784, 0.760784)
+			KeyBox.ClipsDescendants = true
+			KeyBox.Name = [[KeyBox]]
+			KeyBox.Parent = Frame2
+			KeyBox.Size = UDim2.new(1, 0, 0, 40)
+
+			UICorner.CornerRadius = UDim.new(0.150000006, 0)
+			UICorner.Parent = KeyBox
+			
+			TextLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+			TextLabel.BackgroundTransparency = 1
+			TextLabel.Font = Enum.Font.GothamBold
+			TextLabel.Parent = KeyBox
+			TextLabel.Position = UDim2.new(0.0176317804, 0, 0, 0)
+			TextLabel.Size = UDim2.new(0.861439526, 0, 0.999999881, 0)
+			TextLabel.Text = Title
+			TextLabel.TextColor3 = Color3.new(1, 1, 1)
+			TextLabel.TextScaled = true
+			TextLabel.TextSize = 14
+			TextLabel.TextWrapped = true
+			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			UITextSizeConstraint.MaxTextSize = 14
+			UITextSizeConstraint.Parent = TextLabel
+
+			Frame.BackgroundColor3 = Color3.new(1, 1, 1)
+			Frame.Parent = KeyBox
+			Frame.Position = UDim2.new(0.894914389, 0, 0.100000001, 0)
+			Frame.Size = UDim2.new(0.0887071863, 0, 0.800000012, 0)
+			Frame.BackgroundTransparency = 1
+
+			TextButton.BackgroundColor3 = Color3.new(0.603922, 0.603922, 0.603922)
+			TextButton.Font = Enum.Font.GothamBlack
+			TextButton.Parent = Frame
+			TextButton.Position = UDim2.new(0.05, 0, 0.05, 0)
+			TextButton.Size = UDim2.new(0.9, 0, 0.9, 0)
+			TextButton.TextColor3 = Color3.new(0, 0, 0)
+			TextButton.TextScaled = true
+			TextButton.TextSize = 14
+			TextButton.TextWrapped = true
+			TextButton.Text = Key.Name
+			TextButton.TextColor3 = Color3.new(1, 1, 1)
+
+			UICorner_1.CornerRadius = UDim.new(1, 0)
+			UICorner_1.Parent = TextButton
+
+			UITextSizeConstraint_1.MaxTextSize = 24
+			UITextSizeConstraint_1.Parent = TextButton
+
+			UICorner_2.CornerRadius = UDim.new(1, 0)
+			UICorner_2.Parent = Frame
+			
+			local connect 
+			local click = false
+			TextButton.MouseButton1Click:Connect(function()
+				if click == false then
+					Frame.BackgroundTransparency = 0
+					connect = game:GetService("UserInputService").InputBegan:Connect(function(Input)
+						if Input.KeyCode ~= Enum.KeyCode.Unknown then
+							Key = Input.KeyCode
+							Frame.BackgroundTransparency = 1
+							TextButton.BorderSizePixel = 0
+							TextButton.Text = Key.Name
+							click = false
+							connect:Disconnect()
+							Callback(Key)
+						end
+					end)
+					click = true
+				else
+					if connect then
+						connect:Disconnect()
+					end
+					Frame.BackgroundTransparency = 1
+					click = false
+				end
+			end)
+			
+			local module3 = {}
+
+			function module3:SetTitle(Text)
+				TextLabel.Text = Text
+			end
+
+			function module3:GetTitle(Text)
+				return TextLabel.Text
+			end
+
+			function module3:SetCallback(functionae)
+				Callback = functionae
+			end
+			
+			function module3:SetKey(Keyae)
+				Key = Keyae
+			end
+			
+			function module3:GetKey(Keyae)
+				return Key
+			end
 		end
 		return module2
 	end
