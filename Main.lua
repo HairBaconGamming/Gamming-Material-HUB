@@ -24,9 +24,6 @@ function amogus:Load(Table)
 	else
 		GUI_SERVICE = game.CoreGui
 	end
-	if GUI_SERVICE:FindFirstChild("Gamming_GUI_MATERIAL") then
-		GUI_SERVICE:FindFirstChild("Gamming_GUI_MATERIAL"):Destroy()
-	end
 	local ScreenGui = Instance.new("ScreenGui")
 	local SecondFrame = Instance.new("Frame")
 	local UICorner = Instance.new("UICorner")
@@ -48,7 +45,7 @@ function amogus:Load(Table)
 	
 	ScreenGui.Parent = GUI_SERVICE
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	ScreenGui.Name = "Gamming_GUI_MATERIAL"
+	ScreenGui.Name = Titlem
 	ScreenGui.IgnoreGuiInset = true
 	ScreenGui.ResetOnSpawn = false
 
