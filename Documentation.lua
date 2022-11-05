@@ -4,8 +4,8 @@ local Main = Material:Load({
 	Title = <string>,
 	SmothDrag = <bool>,
 	Key = <string> or <keycode>,
-  X = <number>,
-  Y = <number>,
+        X = <number>,
+        Y = <number>,
 })
 
 local Temp = Main:New({
