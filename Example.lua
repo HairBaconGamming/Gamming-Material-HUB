@@ -1,23 +1,25 @@
 local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/HairBaconGamming/Gamming-Material-HUB/main/Main.lua"))()
 
-local Main = Material.Load({
+local Main = Material:Load({
 	Title = "Gamming Hub",
 	SmothDrag = false,
 	Key = "RightControl" or Enum.KeyCode.RightControl,
 })
 
-local Temp = Main.New({
-	Title = "Home"
+local Temp = Main:New({
+	Title = "Home",
+	ImageId = 4034483344,
+	Image = "http://www.roblox.com/asset/?id=4034483344",
 })
 
-local Button = Temp.Button({
+local Button = Temp:Button({
 	Title = "Player Name",
 	Callback = function()
 		print(game.Players.LocalPlayer.Name)
 	end,
 })
 
-local Toggle = Temp.Toggle({
+local Toggle = Temp:Toggle({
 	Title = "Bool",
 	Callback = function(Value)
 		print(Value)
@@ -25,7 +27,7 @@ local Toggle = Temp.Toggle({
 	Enabled = false
 })
 
-local Slide = Temp.Slide({
+local Slide = Temp:Slide({
 	Title = "Value",
 	Callback = function(Value)
 		print(Value)
@@ -36,7 +38,7 @@ local Slide = Temp.Slide({
 	Percent = 10, -- example: 23 >> 23.2
 })
 
-local Dropdown = Temp.Dropdown({
+local Dropdown = Temp:Dropdown({
 	Title = "Numbers",
 	Callback = function(Value)
 		print(Value)
@@ -45,7 +47,7 @@ local Dropdown = Temp.Dropdown({
 	AutoTextChose = true, -- example: 'numbers:1' >> 'numbers'
 })
 
-local Textbox = Temp.Textbox({
+local Textbox = Temp:Textbox({
 	Title = "Textbox",
 	TextboxTitle = "Text here",
 	Callback = function(Value)
@@ -54,10 +56,18 @@ local Textbox = Temp.Textbox({
 	ClearTextOnFocus = false,
 })
 
-local ColorPicker = Temp.ColorPicker({
+local ColorPicker = Temp:ColorPicker({
 	Title = "Color Picker",
 	Callback = function(Value)
 		print(Value)
 	end,
 	Default = Color3.new(1, 1, 1),
+})
+
+local KeyBox = Temp:KeyBox({
+	Title = "Key",
+	Callback = function(Value)
+		print(Value)
+	end,
+	Key = Enum.KeyCode.F,
 })
