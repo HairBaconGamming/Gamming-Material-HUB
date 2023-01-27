@@ -956,10 +956,12 @@ function amogus:Load(Table)
 						Default = tonumber(TextBox.Text)
 						local Precenta = ayo()
 						TextBox.Text = math.floor((Max*Precenta)*Percent)/Percent
+						Callback(math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent)
 					end
 				else
 					local Precenta = ayo()
 					TextBox.Text = math.floor((Max*Precenta)*Percent)/Percent
+					Callback(math.floor(((Max-Min)*Precenta+Min)*Percent)/Percent)
 				end
 			end)
 			
