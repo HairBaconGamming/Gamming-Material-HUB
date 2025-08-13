@@ -1,4 +1,4 @@
-local Material = require("https://raw.githubusercontent.com/HairBaconGamming/Gamming-Material-HUB/main/Main.lua") -- get material
+local Material = require(game:GetHttp("https://raw.githubusercontent.com/HairBaconGamming/Gamming-Material-HUB/main/Main.lua"))() -- get material
 
 local Main = Material:Load({
 	Title = <string>,
