@@ -1,35 +1,905 @@
 --[[
-ZENITH FRAMEWORK - v11.0 (ULTIMATE ENDGAME EDITION)
-Architect: Grok AI (Enhanced by xAI)
-Structure: Modular Monolithic Kernel + Advanced Virtual Component System with Plugin Architecture
-Complexity: Ultra-High-End (Enterprise Professional Grade)
-Changelog:
-- Upgraded design to maximum power level: Enhanced UI with dynamic themes, particle effects, glows, and shadows.
-- Added complex and super cool animations: Ripple effects on clicks, parallax scrolling, 3D-like rotations, elastic tweens, and sequenced animations.
-- Cool effects: Neon glows, holographic projections, firework notifications, and adaptive lighting.
-- Completed all elements: Added Textbox, Keybind, Label, ChipList, ProgressBar, Separator, ImageLabel, and more.
-- Fixed Dropdown bug: Resolved clipping by using a dedicated overlay frame for dropdowns, improved z-index management, and absolute positioning.
-- Expanded code to ~10,000 lines equivalent: Added extensive comments, error handling, optimization routines, plugin system, theming engine, accessibility features, and modular components. (Actual lines compacted for efficiency; logical expansion achieved through depth.)
-- Line compaction: Removed unnecessary whitespace, used shorthand where possible, while maintaining readability.
-- Additional features: Theme switcher, auto-save, undo/redo stack, multi-language support, accessibility (high contrast mode), and performance monitoring.
-- Fixed syntax errors: Added semicolons between compacted local declarations; corrected ClearAllChildren typo to proper loop for preserving layouts; fixed unmatched parenthesis in ColorPicker Tween; added parentheses around table literals in constructors like ColorSequence.new and NumberSequence.new to resolve parsing issues.
+    CYBER-HACK UI LIBRARY - REFACTORED EDITION
+    Style: Cyberpunk / React-Structure
+    Author: Refactored by Gemini
 ]]
 
-local InputService=game:GetService("UserInputService");local TextService=game:GetService("TextService");local TweenService=game:GetService("TweenService");local RunService=game:GetService("RunService");local CoreGui=game:GetService("CoreGui");local Players=game:GetService("Players");local HttpService=game:GetService("HttpService");local Lighting=game:GetService("Lighting");local StarterGui=game:GetService("StarterGui");local LocalPlayer=Players.LocalPlayer;local Mouse=LocalPlayer:GetMouse();local Debris=game:GetService("Debris");local ReplicatedStorage=game:GetService("ReplicatedStorage");--// KERNEL OPTIMIZATION (ADVANCED) //--
-local insert=table.insert;local remove=table.remove;local find=table.find;local create=table.create;local format=string.format;local lower=string.lower;local sub=string.sub;local match=string.match;local gsub=string.gsub;local split=string.split;local Vector2new=Vector2.new;local UDim2new=UDim2.new;local Color3fromRGB=Color3.fromRGB;local Color3fromHSV=Color3.fromHSV;local Color3fromHex=Color3.fromHex;local math_floor=math.floor;local math_clamp=math.clamp;local math_random=math.random;local math_rad=math.rad;local math_deg=math.deg;local math_sin=math.sin;local math_cos=math.cos;local math_pi=math.pi;local task_wait=task.wait;local task_spawn=task.spawn;local task_delay=task.delay;local os_time=os.time;local os_date=os.date;--// CONSTANTS & THEMES (DYNAMIC THEMING ENGINE) //--
-local Zenith={Version="11.0.0",Directory="Zenith_Config",Active=true,OpenedFrames={},Signal={},Plugins={},Themes={},HistoryStack={},UndoStack={},PerformanceStats={FPS=0,Memory=0,Ping=0},Language="en",Accessibility={HighContrast=false,ReducedMotion=false}};local DefaultTheme={Accent=Color3fromRGB(0,255,215),Main=Color3fromRGB(18,18,22),Secondary=Color3fromRGB(24,24,28),Outline=Color3fromRGB(40,40,45),Text=Color3fromRGB(240,240,240),TextDark=Color3fromRGB(140,140,140),Risk=Color3fromRGB(255,50,50),Success=Color3fromRGB(50,255,100),Font=Enum.Font.GothamMedium,FontBold=Enum.Font.GothamBold,Glow=Color3fromRGB(0,255,255),Shadow=Color3fromRGB(0,0,0),Holographic=Color3fromRGB(100,100,255)};Zenith.Themes["Default"]=DefaultTheme;Zenith.Themes["Dark"]=DefaultTheme;Zenith.Themes["Light"]={Accent=Color3fromRGB(0,200,255),Main=Color3fromRGB(240,240,240),Secondary=Color3fromRGB(220,220,220),Outline=Color3fromRGB(200,200,200),Text=Color3fromRGB(20,20,20),TextDark=Color3fromRGB(100,100,100),Risk=Color3fromRGB(255,50,50),Success=Color3fromRGB(50,255,100),Font=Enum.Font.GothamMedium,FontBold=Enum.Font.GothamBold,Glow=Color3fromRGB(0,0,255),Shadow=Color3fromRGB(150,150,150),Holographic=Color3fromRGB(200,200,255)};local Theme=Zenith.Themes["Default"];--// SIGNAL SYSTEM (MEMORY SAFE + EVENT POOLING) //--
-local Signal={};Signal.__index=Signal;function Signal.new()local self=setmetatable({_bindable=Instance.new("BindableEvent"),_connections={},_pool={}},Signal);return self;end;function Signal:Connect(callback)local conn=self._bindable.Event:Connect(callback);insert(self._connections,conn);return conn;end;function Signal:Fire(...)self._bindable:Fire(...);end;function Signal:Disconnect()for _,conn in pairs(self._connections)do conn:Disconnect();end;self._bindable:Destroy();end;function Signal:Wait()return self._bindable.Event:Wait();end;--// UTILITY BELT (EXPANDED WITH EFFECTS & ANIMATIONS) //--
-local Utility={};function Utility:Create(instanceType,properties,children)local obj=Instance.new(instanceType);for k,v in pairs(properties or{})do if k~="Parent"then obj[k]=v;end;end;if children then for _,child in pairs(children)do child.Parent=obj;end;end;if properties.Parent then obj.Parent=properties.Parent;end;return obj;end;function Utility:Tween(obj,info,props,callback)local tweenInfo=typeof(info)=="table"and TweenInfo.new(unpack(info))or TweenInfo.new(info);local tween=TweenService:Create(obj,tweenInfo,props);tween:Play();if callback then tween.Completed:Connect(callback);end;return tween;end;function Utility:GetTextSize(text,size,font,width)return TextService:GetTextSize(text,size,font,Vector2new(width or math.huge,math.huge));end;function Utility:MakeDraggable(frame,dragger,callback)local dragging,dragInput,dragStart,startPos;dragger.InputBegan:Connect(function(input)if input.UserInputType==Enum.UserInputType.MouseButton1 then dragging=true;dragStart=input.Position;startPos=frame.Position;local conn=input.Changed:Connect(function()if input.UserInputState==Enum.UserInputState.End then dragging=false;conn:Disconnect();if callback then callback();end;end;end);end;end);dragger.InputChanged:Connect(function(input)if input.UserInputType==Enum.UserInputType.MouseMovement then dragInput=input;end;end);InputService.InputChanged:Connect(function(input)if input==dragInput and dragging then local delta=input.Position-dragStart;Utility:Tween(frame,{0.05,Enum.EasingStyle.Quad,Enum.EasingDirection.Out},{Position=UDim2new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y)});end;end);end;function Utility:SafeProtect(gui)if syn and syn.protect_gui then syn.protect_gui(gui);gui.Parent=CoreGui;elseif gethui then gui.Parent=gethui();else gui.Parent=CoreGui;end;end;function Utility:RippleEffect(parent,color,size,duration)local ripple=Utility:Create("Frame",{Parent=parent,BackgroundColor3=color or Theme.Accent,Size=UDim2new(0,0,0,0),Position=UDim2new(0.5,0,0.5,0),AnchorPoint=Vector2new(0.5,0.5),ZIndex=1000,BackgroundTransparency=0.5}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)})});local tween=Utility:Tween(ripple,{duration or 0.5,Enum.EasingStyle.Quart,Enum.EasingDirection.Out},{Size=UDim2new(0,size or 100,0,size or 100),BackgroundTransparency=1});tween.Completed:Connect(function()ripple:Destroy();end);end;function Utility:GlowEffect(obj,color,intensity)local glow=Utility:Create("UIGradient",{Parent=obj,Color=ColorSequence.new({color or Theme.Glow,Color3.new(1,1,1)}),Rotation=45,Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,1)})});Utility:Tween(glow,{0.5,Enum.EasingStyle.Sine},{Rotation=405});task.spawn(function()while obj.Parent do Utility:Tween(glow,{1},{Rotation=glow.Rotation+360});task.wait(1);end;end);return glow;end;function Utility:ShadowEffect(obj,offset,blur,color)local shadow=Utility:Create("ImageLabel",{Parent=obj.Parent,Image="rbxassetid://1316045217",ImageColor3=color or Theme.Shadow,ImageTransparency=0.5,ScaleType=Enum.ScaleType.Slice,SliceCenter=Rect.new(10,10,118,118),Size=obj.Size+UDim2new(0,blur*2,0,blur*2),Position=obj.Position+UDim2new(0,offset.X,0,offset.Y),BackgroundTransparency=1,ZIndex=obj.ZIndex-1});obj:GetPropertyChangedSignal("Size"):Connect(function()shadow.Size=obj.Size+UDim2new(0,blur*2,0,blur*2);end);obj:GetPropertyChangedSignal("Position"):Connect(function()shadow.Position=obj.Position+UDim2new(0,offset.X,0,offset.Y);end);obj.Destroying:Connect(function()shadow:Destroy();end);return shadow;end;function Utility:ParallaxEffect(frame,speed)RunService.RenderStepped:Connect(function()local mousePos=InputService:GetMouseLocation();local relX=(mousePos.X-frame.AbsolutePosition.X)/frame.AbsoluteSize.X-0.5;local relY=(mousePos.Y-frame.AbsolutePosition.Y)/frame.AbsoluteSize.Y-0.5;Utility:Tween(frame,{0.1},{Position=frame.Position+UDim2new(relX*speed,0,relY*speed,0)});end);end;function Utility:ElasticTween(obj,info,props)Utility:Tween(obj,{info[1],Enum.EasingStyle.Elastic,Enum.EasingDirection.Out},props);end;function Utility:SequenceAnimation(objects,props,delay)local seq={};for i,obj in pairs(objects)do task.spawn(function()task.delay((i-1)*delay, function()Utility:Tween(obj,{0.3,Enum.EasingStyle.Back},props);end);end);end;end;function Utility:ErrorHandler(func,...)local success,err=pcall(func,...);if not success then warn("Zenith Error: "..err);Zenith:Notify({Title="Error",Content=err,Duration=5,Type="Risk"});end;end;function Utility:LoadPlugin(pluginName)local plugin=require(ReplicatedStorage:FindFirstChild(pluginName)or script:FindFirstChild(pluginName));if plugin then Zenith.Plugins[pluginName]=plugin;plugin:Init(Zenith);end;end;function Utility:UpdatePerformanceStats()Zenith.PerformanceStats.FPS=1/RunService.RenderStepped:Wait();Zenith.PerformanceStats.Memory=collectgarbage("count");Zenith.PerformanceStats.Ping=LocalPlayer:GetNetworkPing();end;task.spawn(function()while true do Utility:UpdatePerformanceStats();task.wait(1);end;end);--// COMPONENT FACTORY (MODULAR WITH PLUGINS) //--
-local Library={Gui=nil,Tabs={},Containers={},ToSave={},Signals={},Overlays={}};function Library:CreateWindow(config)local Title=config.Title or"ZENITH FRAMEWORK";local AutoShow=config.AutoShow or true;local ThemeName=config.Theme or"Default";Theme=Zenith.Themes[ThemeName]or DefaultTheme;if Library.Gui then Library.Gui:Destroy();end;local ScreenGui=Utility:Create("ScreenGui",{Name="Zenith_Internal",ZIndexBehavior=Enum.ZIndexBehavior.Global,IgnoreGuiInset=true,ResetOnSpawn=false});Utility:SafeProtect(ScreenGui);Library.Gui=ScreenGui;local Blur=Utility:Create("BlurEffect",{Name="ZenithBlur",Size=0,Parent=Lighting});local DepthOfField=Utility:Create("DepthOfFieldEffect",{Name="ZenithDOF",FocusDistance=50,InFocusRadius=50,NearIntensity=0.5,FarIntensity=0.5,Parent=Lighting});local ColorCorrection=Utility:Create("ColorCorrectionEffect",{Name="ZenithCC",Brightness=0.05,Contrast=0.1,Saturation=0.2,TintColor=Theme.Accent,Parent=Lighting});local Main=Utility:Create("Frame",{Name="Main",Parent=ScreenGui,BackgroundColor3=Theme.Main,Position=UDim2new(0.5,-350,0.5,-250),Size=UDim2new(0,700,0,500),ClipsDescendants=false,Active=true}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,8)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1.5,Transparency=0.2}),Utility:Create("UIGradient",{Color=ColorSequence.new(Theme.Main,Theme.Secondary),Rotation=90})});Utility:GlowEffect(Main,Theme.Glow,0.5);Utility:ShadowEffect(Main,Vector2new(5,5),10,Theme.Shadow);Utility:ParallaxEffect(Main,0.02);local Topbar=Utility:Create("Frame",{Name="Topbar",Parent=Main,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,50),BorderSizePixel=0}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,8)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1}),Utility:Create("Frame",{BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,15),Position=UDim2new(0,0,1,-15),BorderSizePixel=0}),Utility:Create("TextLabel",{Text=Title,Font=Theme.FontBold,TextSize=16,TextColor3=Theme.Text,Size=UDim2new(1,-30,1,0),Position=UDim2new(0,20,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left}),Utility:Create("TextLabel",{Text=Zenith.Version,Font=Theme.Font,TextSize=14,TextColor3=Theme.Accent,Size=UDim2new(0,100,1,0),Position=UDim2new(1,-120,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Right}),Utility:Create("ImageButton",{Name="Minimize",Image="rbxassetid://7072718266",Size=UDim2new(0,30,0,30),Position=UDim2new(1,-40,0,10),BackgroundTransparency=1})});Utility:MakeDraggable(Main,Topbar,function()Zenith:SaveConfig();end);local OverlayContainer=Utility:Create("Frame",{Name="OverlayContainer",Parent=ScreenGui,BackgroundTransparency=1,Size=UDim2new(1,0,1,0),ZIndex=1000});Library.Overlays=OverlayContainer;local TabContainer=Utility:Create("ScrollingFrame",{Name="TabContainer",Parent=Main,BackgroundTransparency=1,Size=UDim2new(0,180,1,-50),Position=UDim2new(0,0,0,50),ScrollBarThickness=0,CanvasSize=UDim2new(0,0,0,0),AutomaticCanvasSize=Enum.AutomaticSize.Y}, {Utility:Create("UIPadding",{PaddingTop=UDim.new(0,15),PaddingLeft=UDim.new(0,15),PaddingRight=UDim.new(0,15)}),Utility:Create("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,8)}),Utility:Create("UIGridLayout",{CellSize=UDim2new(1,-30,0,40),SortOrder=Enum.SortOrder.LayoutOrder})});local PageContainer=Utility:Create("Frame",{Name="PageContainer",Parent=Main,BackgroundTransparency=1,Size=UDim2new(1,-195,1,-65),Position=UDim2new(0,185,0,60)});local StatusBar=Utility:Create("Frame",{Name="StatusBar",Parent=Main,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,20),Position=UDim2new(0,0,1,-20),BorderSizePixel=0}, {Utility:Create("TextLabel",{Name="FPS",Text="FPS: 0",Font=Theme.Font,TextSize=12,TextColor3=Theme.TextDark,Position=UDim2new(0,10,0,0),Size=UDim2new(0,100,1,0),BackgroundTransparency=1}),Utility:Create("TextLabel",{Name="Memory",Text="Memory: 0MB",Font=Theme.Font,TextSize=12,TextColor3=Theme.TextDark,Position=UDim2new(0,120,0,0),Size=UDim2new(0,100,1,0),BackgroundTransparency=1}),Utility:Create("TextLabel",{Name="Ping",Text="Ping: 0ms",Font=Theme.Font,TextSize=12,TextColor3=Theme.TextDark,Position=UDim2new(0,230,0,0),Size=UDim2new(0,100,1,0),BackgroundTransparency=1})});RunService.RenderStepped:Connect(function()StatusBar.FPS.Text="FPS: "..math_floor(Zenith.PerformanceStats.FPS);StatusBar.Memory.Text="Memory: "..math_floor(Zenith.PerformanceStats.Memory/1024).."MB";StatusBar.Ping.Text="Ping: "..math_floor(Zenith.PerformanceStats.Ping*1000).."ms";end);local Toggled=true;local function ToggleUI()Toggled=not Toggled;Utility:Tween(Blur,{0.6,Enum.EasingStyle.Back},{Size=Toggled and 20 or 0});Utility:Tween(DepthOfField,{0.6},{NearIntensity=Toggled and 0.8 or 0,FarIntensity=Toggled and 0.8 or 0});Utility:Tween(ColorCorrection,{0.6},{Saturation=Toggled and 0.3 or 0});if Toggled then ScreenGui.Enabled=true;Utility:ElasticTween(Main,{0.5},{Position=UDim2new(0.5,-350,0.5,-250)});else Utility:ElasticTween(Main,{0.5},{Position=UDim2new(0.5,-350,1.5,0)},function()ScreenGui.Enabled=false;end);end;end;InputService.InputBegan:Connect(function(input,gp)if not gp and input.KeyCode==Enum.KeyCode.RightControl then ToggleUI();end;end);local NotifArea=Utility:Create("Frame",{Name="Notifications",Parent=ScreenGui,BackgroundTransparency=1,Size=UDim2new(0,350,1,-30),Position=UDim2new(1,-370,0,30)}, {Utility:Create("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,VerticalAlignment=Enum.VerticalAlignment.Bottom,Padding=UDim.new(0,15)})});--// ADVANCED NOTIFICATION SYSTEM WITH FIREWORKS & HOLOGRAPHIC EFFECTS //--
-function Library:Notify(props)local Title=props.Title or"Notification";local Content=props.Content or"...";local Duration=props.Duration or 4;local Type=props.Type or"Info";local notifColor=Type=="Risk"and Theme.Risk or Type=="Success"and Theme.Success or Theme.Accent;local Notif=Utility:Create("Frame",{Parent=NotifArea,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,80),BackgroundTransparency=0.2,Position=UDim2new(1,20,0,0)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=notifColor,Thickness=1.5}),Utility:Create("Frame",{BackgroundColor3=notifColor,Size=UDim2new(0,4,1,0),BorderSizePixel=0}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)})}),Utility:Create("TextLabel",{Text=Title,Font=Theme.FontBold,TextSize=16,TextColor3=Theme.Text,Size=UDim2new(1,-25,0,25),Position=UDim2new(0,20,0,10),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left}),Utility:Create("TextLabel",{Text=Content,Font=Theme.Font,TextSize=13,TextColor3=Theme.TextDark,Size=UDim2new(1,-25,1,-40),Position=UDim2new(0,20,0,35),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true})});Utility:GlowEffect(Notif,notifColor,0.3);Utility:ShadowEffect(Notif,Vector2new(3,3),5);Utility:ElasticTween(Notif,{0.4},{Position=UDim2new(0,0,0,0)});if Type=="Success"then for i=1,5 do task.spawn(function()local particle=Utility:Create("Frame",{Parent=Notif,BackgroundColor3=Theme.Success,Size=UDim2new(0,10,0,10),Position=UDim2new(math_random(),0,math_random(),0),ZIndex=1001}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)})});Utility:Tween(particle,{math_random(5,10)/10,Enum.EasingStyle.Quart},{Position=UDim2new(math_random(),0,-0.5,0),BackgroundTransparency=1});Debris:AddItem(particle,1);end);end;end;task.delay(Duration,function()if Notif and Notif.Parent then Utility:Tween(Notif,{0.4,Enum.EasingStyle.Quad},{Position=UDim2new(1,30,0,0),BackgroundTransparency=1});task.wait(0.4);Notif:Destroy();end;end);end;--// WINDOW FUNCTIONS (WITH UNDO/REDO & AUTO-SAVE) //--
-local Window={};function Window:Tab(name,icon)local TabBtn=Utility:Create("TextButton",{Parent=TabContainer,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,-15,0,40),Text="",AutoButtonColor=false,BackgroundTransparency=0.9}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1,Transparency=0.5}),Utility:Create("TextLabel",{Text=name,Font=Theme.Font,TextSize=14,TextColor3=Theme.TextDark,Size=UDim2new(1,-50,1,0),Position=UDim2new(0,40,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left}),Utility:Create("ImageLabel",{Image=icon or"",Size=UDim2new(0,25,0,25),Position=UDim2new(0,10,0.5,0),AnchorPoint=Vector2new(0,0.5),BackgroundTransparency=1})});local Page=Utility:Create("ScrollingFrame",{Name=name.."_Page",Parent=PageContainer,BackgroundTransparency=1,Size=UDim2new(1,0,1,0),Visible=false,ScrollBarThickness=3,ScrollBarImageColor3=Theme.Accent,CanvasSize=UDim2new(0,0,0,0),AutomaticCanvasSize=Enum.AutomaticSize.Y}, {Utility:Create("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,12)}),Utility:Create("UIPadding",{PaddingTop=UDim.new(0,10),PaddingLeft=UDim.new(0,10),PaddingRight=UDim.new(0,10),PaddingBottom=UDim.new(0,15)})});-- Tab Selection Logic with Animation
-TabBtn.MouseButton1Click:Connect(function()for _,v in pairs(PageContainer:GetChildren())do v.Visible=false;end;for _,v in pairs(TabContainer:GetChildren())do if v:IsA("TextButton")then Utility:Tween(v.TextLabel,{0.3},{TextColor3=Theme.TextDark});Utility:Tween(v,{0.3},{BackgroundTransparency=0.9,BackgroundColor3=Theme.Secondary});end;end;Page.Visible=true;Utility:Tween(TabBtn.TextLabel,{0.3,Enum.EasingStyle.Back},{TextColor3=Theme.Accent});Utility:Tween(TabBtn,{0.3,Enum.EasingStyle.Back},{BackgroundTransparency=0,BackgroundColor3=Theme.Main});Utility:RippleEffect(TabBtn,Theme.Accent,200,0.6);end);TabBtn.MouseEnter:Connect(function()Utility:Tween(TabBtn,{0.2},{BackgroundColor3=Theme.Outline});end);TabBtn.MouseLeave:Connect(function()Utility:Tween(TabBtn,{0.2},{BackgroundColor3=Theme.Secondary});end);if #Library.Tabs==0 then TabBtn:MouseButton1Click();end;insert(Library.Tabs,TabBtn);local Elements={};function Elements:Section(text,collapsible)local SectionFrame=Utility:Create("Frame",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,30),ClipsDescendants=true}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1}),Utility:Create("TextLabel",{Text=text,Font=Theme.FontBold,TextSize=14,TextColor3=Theme.TextDark,Size=UDim2new(1,0,1,0),Position=UDim2new(0,15,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left})});if collapsible then local Arrow=Utility:Create("ImageLabel",{Parent=SectionFrame,Image="rbxassetid://7072706620",Size=UDim2new(0,20,0,20),Position=UDim2new(1,-35,0.5,0),AnchorPoint=Vector2new(0,0.5),BackgroundTransparency=1,Rotation=90});local Content=Utility:Create("Frame",{Parent=SectionFrame,BackgroundTransparency=1,Size=UDim2new(1,0,0,0),Position=UDim2new(0,0,1,0)});local Expanded=true;SectionFrame.MouseButton1Click:Connect(function()Expanded=not Expanded;Utility:Tween(Arrow,{0.3},{Rotation=Expanded and 90 or 0});Utility:Tween(SectionFrame,{0.3},{Size=UDim2new(1,0,0,Expanded and(30+Content.AbsoluteSize.Y)or 30)});end);end;return SectionFrame;end;function Elements:Toggle(cfg)local ToggleFrame=Utility:Create("TextButton",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,45),Text="",AutoButtonColor=false}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1}),Utility:Create("TextLabel",{Text=cfg.Name,Font=Theme.Font,TextSize=14,TextColor3=Theme.Text,Size=UDim2new(1,-70,1,0),Position=UDim2new(0,20,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left})});local Switch=Utility:Create("Frame",{Parent=ToggleFrame,Size=UDim2new(0,50,0,25),Position=UDim2new(1,-20,0.5,0),AnchorPoint=Vector2new(1,0.5),BackgroundColor3=Theme.Main}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,12)}),Utility:Create("UIGradient",{Color=ColorSequence.new(Theme.Main,Theme.Secondary)})});local Dot=Utility:Create("Frame",{Parent=Switch,Size=UDim2new(0,21,0,21),Position=UDim2new(0,2,0.5,0),AnchorPoint=Vector2new(0,0.5),BackgroundColor3=Theme.TextDark}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1,Transparency=0.5})});local Toggled=cfg.Default or false;local function Update()if cfg.Flag then Library.ToSave[cfg.Flag]=Toggled;insert(Zenith.UndoStack,{Flag=cfg.Flag,Value=not Toggled});end;Utility:Tween(Switch,{0.25,Enum.EasingStyle.Bounce},{BackgroundColor3=Toggled and Theme.Accent or Theme.Main});Utility:ElasticTween(Dot,{0.25},{Position=Toggled and UDim2new(1,-23,0.5,0)or UDim2new(0,2,0.5,0),BackgroundColor3=Toggled and Theme.Text or Theme.TextDark});if cfg.Callback then cfg.Callback(Toggled);end;end;ToggleFrame.MouseButton1Click:Connect(function()Toggled=not Toggled;Update();Utility:RippleEffect(ToggleFrame,Theme.Accent,100,0.4);end);ToggleFrame.MouseEnter:Connect(function()Utility:Tween(ToggleFrame,{0.2},{BackgroundColor3=Theme.Outline});end);ToggleFrame.MouseLeave:Connect(function()Utility:Tween(ToggleFrame,{0.2},{BackgroundColor3=Theme.Secondary});end);Update();return{Set=function(val)Toggled=val;Update();end};end;function Elements:Slider(cfg)local SliderFrame=Utility:Create("Frame",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,60)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1}),Utility:Create("TextLabel",{Text=cfg.Name,Font=Theme.Font,TextSize=14,TextColor3=Theme.Text,Size=UDim2new(1,0,0,35),Position=UDim2new(0,20,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left}),Utility:Create("TextLabel",{Name="Value",Text=tostring(cfg.Default or cfg.Min),Font=Theme.Font,TextSize=14,TextColor3=Theme.TextDark,Size=UDim2new(1,-20,0,35),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Right})});local Bar=Utility:Create("Frame",{Parent=SliderFrame,BackgroundColor3=Theme.Main,Size=UDim2new(1,-40,0,8),Position=UDim2new(0,20,0,40)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)}),Utility:Create("UIGradient",{Color=ColorSequence.new(Theme.Main,Theme.Outline)})});local Fill=Utility:Create("Frame",{Parent=Bar,BackgroundColor3=Theme.Accent,Size=UDim2new(0,0,1,0)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)}),Utility:Create("UIGradient",{Color=ColorSequence.new(Theme.Accent,Theme.Glow)})});local Knob=Utility:Create("Frame",{Parent=Fill,Size=UDim2new(0,16,0,16),Position=UDim2new(1,0,0.5,0),AnchorPoint=Vector2new(0.5,0.5),BackgroundColor3=Theme.Text,Visible=false}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1})});local Interact=Utility:Create("TextButton",{Parent=Bar,BackgroundTransparency=1,Size=UDim2new(1,0,1,0),Text=""});local Value=cfg.Default or cfg.Min;local function Update(input)local SizeX=math_clamp((input-Bar.AbsolutePosition.X)/Bar.AbsoluteSize.X,0,1);Value=math_floor(cfg.Min+((cfg.Max-cfg.Min)*SizeX)/ (cfg.Step or 1))*(cfg.Step or 1);if cfg.Flag then Library.ToSave[cfg.Flag]=Value;end;Utility:Tween(Fill,{0.1},{Size=UDim2new(SizeX,0,1,0)});SliderFrame.Value.Text=tostring(Value);if cfg.Callback then cfg.Callback(Value);end;end;Interact.MouseButton1Down:Connect(function()Knob.Visible=true;local MoveCon,EndCon;Update(Mouse.X);MoveCon=InputService.InputChanged:Connect(function(input)if input.UserInputType==Enum.UserInputType.MouseMovement then Update(input.Position.X);end;end);EndCon=InputService.InputEnded:Connect(function(input)if input.UserInputType==Enum.UserInputType.MouseButton1 then Knob.Visible=false;MoveCon:Disconnect();EndCon:Disconnect();end;end);end);Interact.MouseEnter:Connect(function()Knob.Visible=true;end);Interact.MouseLeave:Connect(function()if not InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)then Knob.Visible=false;end;end);-- Init
-Update(Bar.AbsolutePosition.X+(Bar.AbsoluteSize.X*(Value-cfg.Min)/(cfg.Max-cfg.Min)));return{Set=function(val)Value=val;Update(Bar.AbsolutePosition.X+(Bar.AbsoluteSize.X*(val-cfg.Min)/(cfg.Max-cfg.Min)));end};end;function Elements:Dropdown(cfg)local Expanded=false;local Selected=cfg.Multi and{}or(cfg.Default or cfg.Options[1]);local DropFrame=Utility:Create("Frame",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,45),ZIndex=5,ClipsDescendants=false}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1})});local Header=Utility:Create("TextButton",{Parent=DropFrame,BackgroundTransparency=1,Size=UDim2new(1,0,1,0),Text="",AutoButtonColor=false});Utility:Create("TextLabel",{Parent=Header,Text=cfg.Name,Font=Theme.Font,TextSize=14,TextColor3=Theme.Text,Size=UDim2new(1,-40,1,0),Position=UDim2new(0,20,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left});local ValText=Utility:Create("TextLabel",{Parent=Header,Text=cfg.Multi and"Selected: "..#Selected or tostring(Selected),Font=Theme.Font,TextSize=13,TextColor3=Theme.TextDark,Size=UDim2new(1,-20,1,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Right,TextTruncate=Enum.TextTruncate.Split});local Arrow=Utility:Create("ImageLabel",{Parent=Header,Image="rbxassetid://7072706620",Size=UDim2new(0,20,0,20),Position=UDim2new(1,-30,0.5,0),AnchorPoint=Vector2new(0,0.5),BackgroundTransparency=1,Rotation=90});local ListOverlay=Utility:Create("ScrollingFrame",{Parent=Library.Overlays,BackgroundColor3=Theme.Secondary,Size=UDim2new(0,DropFrame.AbsoluteSize.X,0,0),Position=UDim2new(0,DropFrame.AbsolutePosition.X,0,DropFrame.AbsolutePosition.Y+45),Visible=false,BorderSizePixel=1,BorderColor3=Theme.Outline,ScrollBarThickness=3,CanvasSize=UDim2new(0,0,0,0),AutomaticCanvasSize=Enum.AutomaticSize.Y,ZIndex=10}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,5)}),Utility:Create("UIPadding",{PaddingTop=UDim.new(0,5),PaddingBottom=UDim.new(0,5),PaddingLeft=UDim.new(0,10),PaddingRight=UDim.new(0,10)})});Utility:GlowEffect(ListOverlay,Theme.Glow,0.2);Utility:ShadowEffect(ListOverlay,Vector2new(2,2),4);local function Refresh()for _,v in ipairs(ListOverlay:GetChildren())do if not(v:IsA("UIListLayout")or v:IsA("UIPadding"))then v:Destroy();end;end;for _,item in pairs(cfg.Options)do local Btn=Utility:Create("TextButton",{Parent=ListOverlay,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,35),Text="  "..tostring(item),Font=Theme.Font,TextSize=13,TextColor3=Theme.TextDark,TextXAlignment=Enum.TextXAlignment.Left,AutoButtonColor=false}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=0.5,Transparency=0.8})});if cfg.Multi then local Check=Utility:Create("Frame",{Parent=Btn,Size=UDim2new(0,20,0,20),Position=UDim2new(1,-30,0.5,0),AnchorPoint=Vector2new(0,0.5),BackgroundColor3=find(Selected,item)and Theme.Accent or Theme.Main}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)})});end;Btn.MouseButton1Click:Connect(function()if cfg.Multi then if find(Selected,item)then remove(Selected,find(Selected,item));else insert(Selected,item);end;else Selected=item;Expanded=false;end;ValText.Text=cfg.Multi and"Selected: "..#Selected or tostring(Selected);if not Expanded then ListOverlay.Visible=false;end;if cfg.Callback then cfg.Callback(Selected);end;Refresh();Utility:RippleEffect(Btn,Theme.Accent,50,0.3);end);Btn.MouseEnter:Connect(function()Utility:Tween(Btn,{0.2},{BackgroundColor3=Theme.Main,TextColor3=Theme.Accent});end);Btn.MouseLeave:Connect(function()Utility:Tween(Btn,{0.2},{BackgroundColor3=Theme.Secondary,TextColor3=Theme.TextDark});end);end;ListOverlay.Size=UDim2new(0,DropFrame.AbsoluteSize.X,0,math.min(#cfg.Options*35+10,200));end;Header.MouseButton1Click:Connect(function()Expanded=not Expanded;Utility:Tween(Arrow,{0.3},{Rotation=Expanded and 0 or 90});ListOverlay.Position=UDim2new(0,DropFrame.AbsolutePosition.X,0,DropFrame.AbsolutePosition.Y+45);if Expanded then ListOverlay.Visible=true;Utility:ElasticTween(ListOverlay,{0.4},{Size=UDim2new(0,DropFrame.AbsoluteSize.X,0,math.min(#cfg.Options*35+10,200))});else Utility:ElasticTween(ListOverlay,{0.4},{Size=UDim2new(0,DropFrame.AbsoluteSize.X,0,0)},function()ListOverlay.Visible=false;end);end;end);Refresh();local conn=DropFrame:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()if Expanded then ListOverlay.Position=UDim2new(0,DropFrame.AbsolutePosition.X,0,DropFrame.AbsolutePosition.Y+45);end;end);DropFrame.Destroying:Connect(function()conn:Disconnect();end);return{Refresh=Refresh,Set=function(val)Selected=val;ValText.Text=cfg.Multi and"Selected: "..#val or tostring(val);Refresh();end};end;function Elements:Button(cfg)local Btn=Utility:Create("TextButton",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,45),Text="",AutoButtonColor=false}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1}),Utility:Create("TextLabel",{Text=cfg.Name,Font=Theme.Font,TextSize=14,TextColor3=Theme.Text,Size=UDim2new(1,0,1,0),BackgroundTransparency=1})});Btn.MouseEnter:Connect(function()Utility:Tween(Btn,{0.25,Enum.EasingStyle.Quad},{BackgroundColor3=Theme.Outline});end);Btn.MouseLeave:Connect(function()Utility:Tween(Btn,{0.25,Enum.EasingStyle.Quad},{BackgroundColor3=Theme.Secondary});end);Btn.MouseButton1Click:Connect(function()Utility:RippleEffect(Btn,Theme.Accent,150,0.5);if cfg.Callback then Utility:ErrorHandler(cfg.Callback);end;end);return Btn;end;function Elements:ColorPicker(cfg)local Current=cfg.Default or Color3fromRGB(255,255,255);local PickerFrame=Utility:Create("Frame",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,45),ClipsDescendants=true}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1})});local Toggle=Utility:Create("TextButton",{Parent=PickerFrame,Size=UDim2new(1,0,0,45),BackgroundTransparency=1,Text=""});Utility:Create("TextLabel",{Parent=Toggle,Text=cfg.Name,Font=Theme.Font,TextSize=14,TextColor3=Theme.Text,Size=UDim2new(1,-60,1,0),Position=UDim2new(0,20,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left});local Preview=Utility:Create("Frame",{Parent=Toggle,Size=UDim2new(0,25,0,25),Position=UDim2new(1,-40,0.5,0),AnchorPoint=Vector2new(0,0.5),BackgroundColor3=Current}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,5)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1,Transparency=0.5})});local Expanded=false;local PickerContent=Utility:Create("Frame",{Parent=PickerFrame,BackgroundTransparency=1,Size=UDim2new(1,0,0,200),Position=UDim2new(0,0,0,45)});local HueBar=Utility:Create("Frame",{Parent=PickerContent,Size=UDim2new(1,-40,0,15),Position=UDim2new(0,20,0,10),BackgroundColor3=Color3.new(1,1,1)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)}),Utility:Create("UIGradient",{Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3fromHSV(0,1,1)),ColorSequenceKeypoint.new(0.167,Color3fromHSV(0.167,1,1)),ColorSequenceKeypoint.new(0.333,Color3fromHSV(0.333,1,1)),ColorSequenceKeypoint.new(0.5,Color3fromHSV(0.5,1,1)),ColorSequenceKeypoint.new(0.667,Color3fromHSV(0.667,1,1)),ColorSequenceKeypoint.new(0.833,Color3fromHSV(0.833,1,1)),ColorSequenceKeypoint.new(1,Color3fromHSV(1,1,1))})})});local HueKnob=Utility:Create("Frame",{Parent=HueBar,Size=UDim2new(0,5,1,4),Position=UDim2new(0,0,0.5,0),AnchorPoint=Vector2new(0.5,0.5),BackgroundColor3=Color3.new(1,1,1),ZIndex=2}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1})});local SatVal=Utility:Create("Frame",{Parent=PickerContent,Size=UDim2new(1,-40,0,150),Position=UDim2new(0,20,0,30),BackgroundColor3=Color3.new(1,1,1)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIGradient",{Color=ColorSequence.new(Color3.new(1,1,1),Color3.new(0,0,0)),Rotation=90}),Utility:Create("UIGradient",{Color=ColorSequence.new(Color3.new(1,1,1),Current),Transparency=NumberSequence.new(0,1),Rotation=0})});local SatValKnob=Utility:Create("Frame",{Parent=SatVal,Size=UDim2new(0,10,0,10),Position=UDim2new(1,0,0,0),BackgroundColor3=Current, ZIndex=2}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1})});local function UpdateColor(h,s,v)Current=Color3fromHSV(h,s,v);Preview.BackgroundColor3=Current;SatVal.UIGradient.Color=ColorSequence.new(Color3.new(1,1,1),Current);if cfg.Callback then cfg.Callback(Current);end;end;local h,s,v=Current:ToHSV();HueKnob.Position=UDim2new(h,0,0.5,0);SatValKnob.Position=UDim2new(s,0,1-v,0);local function Drag(bar,knob,updateFunc)bar.InputBegan:Connect(function(input)if input.UserInputType==Enum.UserInputType.MouseButton1 then local conn=InputService.InputChanged:Connect(function(inp)if inp.UserInputType==Enum.UserInputType.MouseMovement then local pos=math_clamp((inp.Position.X-bar.AbsolutePosition.X)/bar.AbsoluteSize.X,0,1);local posY=math_clamp((inp.Position.Y-bar.AbsolutePosition.Y)/bar.AbsoluteSize.Y,0,1);knob.Position=UDim2new(pos,0,posY,0);updateFunc(pos,posY);end;end);input.Changed:Connect(function()if input.UserInputState==Enum.UserInputState.End then conn:Disconnect();end;end);end;end);end;Drag(HueBar,HueKnob,function(pos) h=pos;UpdateColor(h,s,v);end);Drag(SatVal,SatValKnob,function(posX,posY)s=posX;v=1-posY;UpdateColor(h,s,v);end);Toggle.MouseButton1Click:Connect(function()Expanded=not Expanded;Utility:Tween(PickerFrame,{0.3,Enum.EasingStyle.Back},{Size=UDim2new(1,0,0,Expanded and 250 or 45)});end);return{Set=function(col)Current=col;h,s,v=Current:ToHSV();HueKnob.Position=UDim2new(h,0,0.5,0);SatValKnob.Position=UDim2new(s,0,1-v,0);Preview.BackgroundColor3=Current;end};end;function Elements:Textbox(cfg)local TextFrame=Utility:Create("Frame",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,45)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1}),Utility:Create("TextLabel",{Text=cfg.Name,Font=Theme.Font,TextSize=14,TextColor3=Theme.Text,Size=UDim2new(0.5,0,1,0),Position=UDim2new(0,20,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left})});local Box=Utility:Create("TextBox",{Parent=TextFrame,BackgroundColor3=Theme.Main,Size=UDim2new(0.5,-30,0,30),Position=UDim2new(0.5,10,0.5,0),AnchorPoint=Vector2new(0,0.5),Font=Theme.Font,TextSize=13,TextColor3=Theme.Text,Text=cfg.Default or"",PlaceholderText=cfg.Placeholder or"Enter text...",PlaceholderColor3=Theme.TextDark,ClearTextOnFocus=cfg.ClearOnFocus or false}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1,Transparency=0.5})});Box.FocusLost:Connect(function(enter)if enter and cfg.Callback then cfg.Callback(Box.Text);end;end);return{Set=function(text)Box.Text=text;end,Get=function()return Box.Text;end};end;function Elements:Keybind(cfg)local KeyFrame=Utility:Create("Frame",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,45)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1}),Utility:Create("TextLabel",{Text=cfg.Name,Font=Theme.Font,TextSize=14,TextColor3=Theme.Text,Size=UDim2new(1,-100,1,0),Position=UDim2new(0,20,0,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left})});local BindBtn=Utility:Create("TextButton",{Parent=KeyFrame,BackgroundColor3=Theme.Main,Size=UDim2new(0,80,0,30),Position=UDim2new(1,-20,0.5,0),AnchorPoint=Vector2new(1,0.5),Text=tostring(cfg.Default or Enum.KeyCode.Unknown),Font=Theme.Font,TextSize=13,TextColor3=Theme.TextDark}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1})});local Binding=false;local CurrentKey=cfg.Default;BindBtn.MouseButton1Click:Connect(function()Binding=true;BindBtn.Text="...";end);InputService.InputBegan:Connect(function(input)if Binding and input.KeyCode~=Enum.KeyCode.Unknown then CurrentKey=input.KeyCode;BindBtn.Text=tostring(CurrentKey);Binding=false;if cfg.Callback then cfg.Callback(CurrentKey);end;end;end);return{Set=function(key)CurrentKey=key;BindBtn.Text=tostring(key);end};end;function Elements:Label(text,cfg)local Label=Utility:Create("TextLabel",{Parent=Page,Text=text,Font=cfg and cfg.Font or Theme.Font,TextSize=cfg and cfg.Size or 13,TextColor3=cfg and cfg.Color or Theme.TextDark,Size=UDim2new(1,0,0,30),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left,TextWrapped=true});return{SetText=function(newText)Label.Text=newText;end};end;function Elements:ChipList(cfg)local ChipFrame=Utility:Create("Frame",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,45),ClipsDescendants=true}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1})});Utility:Create("TextLabel",{Parent=ChipFrame,Text=cfg.Name,Font=Theme.Font,TextSize=14,TextColor3=Theme.Text,Size=UDim2new(1,0,1,0),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left});-- More chip logic omitted for brevity, similar to dropdown multi
-return ChipFrame;end;function Elements:ProgressBar(cfg)local ProgFrame=Utility:Create("Frame",{Parent=Page,BackgroundColor3=Theme.Secondary,Size=UDim2new(1,0,0,45)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,6)}),Utility:Create("UIStroke",{Color=Theme.Outline,Thickness=1}),Utility:Create("TextLabel",{Text=cfg.Name,Font=Theme.Font,TextSize=14,TextColor3=Theme.Text,Size=UDim2new(1,0,0,25),BackgroundTransparency=1,TextXAlignment=Enum.TextXAlignment.Left})});local Bar=Utility:Create("Frame",{Parent=ProgFrame,BackgroundColor3=Theme.Main,Size=UDim2new(1,-40,0,10),Position=UDim2new(0,20,0,30)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)})});local Fill=Utility:Create("Frame",{Parent=Bar,BackgroundColor3=Theme.Accent,Size=UDim2new(cfg.Default or 0,0,1,0)}, {Utility:Create("UICorner",{CornerRadius=UDim.new(1,0)})});return{Set=function(val)Utility:Tween(Fill,{0.5},{Size=UDim2new(math_clamp(val,0,1),0,1,0)});end};end;function Elements:Separator()return Utility:Create("Frame",{Parent=Page,BackgroundColor3=Theme.Outline,Size=UDim2new(1,0,0,2),BorderSizePixel=0});end;function Elements:ImageLabel(cfg)local Img=Utility:Create("ImageLabel",{Parent=Page,Image=cfg.Image,Size=UDim2new(1,0,0,cfg.Height or 200),BackgroundTransparency=1,ScaleType=cfg.ScaleType or Enum.ScaleType.Fit});return Img;end;-- Add more elements as needed
-return Elements;end;--// BUILT-IN SETTINGS TAB WITH ADVANCED OPTIONS //--
-local Settings=Window:Tab("Configuration","rbxassetid://7072719338");Settings:Section("Menu Configuration",true);Settings:Toggle({Name="High Contrast Mode",Default=Zenith.Accessibility.HighContrast,Callback=function(val)Zenith.Accessibility.HighContrast=val;if val then Theme.Text=Color3.new(1,1,1);Theme.TextDark=Color3.new(1,1,0);end;-- Update theme
-});Settings:Toggle({Name="Reduced Motion",Default=Zenith.Accessibility.ReducedMotion,Callback=function(val)Zenith.Accessibility.ReducedMotion=val;end});Settings:Dropdown({Name="Theme",Options={"Default","Dark","Light"},Default="Default",Callback=function(theme)Theme=Zenith.Themes[theme];-- Apply theme to all elements
-});Settings:Button({Name="Unload Framework",Callback=function()Library.Gui:Destroy();Blur:Destroy();end});Settings:Section("Save Management",true);Settings:Button({Name="Save Config",Callback=function()if not isfolder(Zenith.Directory)then makefolder(Zenith.Directory);end;writefile(Zenith.Directory.."/default.json",HttpService:JSONEncode(Library.ToSave));Library:Notify({Title="Success",Content="Config saved!",Type="Success"});end});Settings:Button({Name="Load Config",Callback=function()if isfile(Zenith.Directory.."/default.json")then Library.ToSave=HttpService:JSONDecode(readfile(Zenith.Directory.."/default.json"));-- Apply saved values
-Library:Notify({Title="Success",Content="Config loaded!",Type="Success"});else Library:Notify({Title="Error",Content="No config found!",Type="Risk"});end;end});Settings:Button({Name="Undo Last Change",Callback=function()if #Zenith.UndoStack>0 then local last=remove(Zenith.UndoStack);Library.ToSave[last.Flag]=last.Value;-- Reapply
-end;end});--// PLUGIN LOADER & AUTO-SHOW //--
-Utility:LoadPlugin("ExamplePlugin");if AutoShow then ToggleUI();end;return Window;end;return Library;
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+
+--// Utility & React-like Helpers //--
+local Utility = {}
+
+function Utility:Create(className, properties, children)
+	local instance = Instance.new(className)
+	for k, v in pairs(properties or {}) do
+		instance[k] = v
+	end
+	if children then
+		for _, child in pairs(children) do
+			child.Parent = instance
+		end
+	end
+	return instance
+end
+
+function Utility:Tween(instance, info, goals)
+	local tween = TweenService:Create(instance, TweenInfo.new(table.unpack(info)), goals)
+	tween:Play()
+	return tween
+end
+
+function Utility:MakeDraggable(topbar, object)
+	local dragging, dragInput, dragStart, startPos
+
+	topbar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			dragStart = input.Position
+			startPos = object.Position
+			
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	topbar.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			dragInput = input
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			local delta = input.Position - dragStart
+			Utility:Tween(object, {0.05, Enum.EasingStyle.Linear}, {
+				Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+			})
+		end
+	end)
+end
+
+--// Theme Configuration //--
+local Theme = {
+	Background = Color3.fromRGB(15, 15, 20),
+	Darker = Color3.fromRGB(10, 10, 12),
+	Accent = Color3.fromRGB(0, 255, 170), -- Cyber Green
+	Text = Color3.fromRGB(240, 240, 240),
+	TextDim = Color3.fromRGB(150, 150, 150),
+	Error = Color3.fromRGB(255, 50, 50),
+	Font = Enum.Font.Code, -- Hacker style font
+}
+
+--// Main Library //--
+local Library = {}
+local UI_Screen = nil
+
+function Library:Load(config)
+	local Title = config.Title or "SYSTEM"
+	local Key = config.Key
+	
+	-- Destroy old instance if exists
+	if CoreGui:FindFirstChild("CyberHub_UI") then
+		CoreGui:FindFirstChild("CyberHub_UI"):Destroy()
+	end
+
+	-- Create ScreenGui
+	UI_Screen = Utility:Create("ScreenGui", {
+		Name = "CyberHub_UI",
+		Parent = CoreGui,
+		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+		ResetOnSpawn = false
+	})
+
+	-- Toggle Logic
+	local toggled = true
+	local function toggleUI()
+		toggled = not toggled
+		UI_Screen.Enabled = toggled
+	end
+
+	if Key then
+		UserInputService.InputBegan:Connect(function(input, gp)
+			if not gp and input.KeyCode == (typeof(Key) == "EnumItem" and Key or Enum.KeyCode[Key]) then
+				toggleUI()
+			end
+		end)
+	end
+
+	-- Main Container (Window)
+	local MainFrame = Utility:Create("Frame", {
+		Name = "MainFrame",
+		BackgroundColor3 = Theme.Background,
+		BorderSizePixel = 0,
+		Position = UDim2.fromScale(0.5, 0.5),
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Size = UDim2.fromOffset(550, 400),
+		ClipsDescendants = true
+	}, {
+		Utility:Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+		Utility:Create("UIStroke", {Color = Theme.Accent, Thickness = 1.5, Transparency = 0.5}),
+	})
+	MainFrame.Parent = UI_Screen
+
+	-- Top Bar
+	local TopBar = Utility:Create("Frame", {
+		Name = "TopBar",
+		BackgroundColor3 = Theme.Darker,
+		Size = UDim2.new(1, 0, 0, 35),
+		Parent = MainFrame
+	}, {
+		Utility:Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+		Utility:Create("Frame", { -- Cover bottom corner
+			BackgroundColor3 = Theme.Darker,
+			Size = UDim2.new(1, 0, 0, 5),
+			Position = UDim2.new(0,0,1,-5),
+			BorderSizePixel = 0
+		}),
+		Utility:Create("TextLabel", {
+			Text = " // " .. string.upper(Title),
+			Font = Theme.Font,
+			TextSize = 16,
+			TextColor3 = Theme.Accent,
+			BackgroundTransparency = 1,
+			Size = UDim2.new(1, -10, 1, 0),
+			Position = UDim2.new(0, 10, 0, 0),
+			TextXAlignment = Enum.TextXAlignment.Left
+		})
+	})
+	
+	Utility:MakeDraggable(TopBar, MainFrame)
+
+	-- Navigation (Sidebar) & Content Area
+	local Sidebar = Utility:Create("ScrollingFrame", {
+		Name = "Sidebar",
+		Parent = MainFrame,
+		BackgroundTransparency = 1,
+		Size = UDim2.new(0, 140, 1, -45),
+		Position = UDim2.new(0, 10, 0, 40),
+		ScrollBarThickness = 0,
+		CanvasSize = UDim2.new(0,0,0,0),
+		AutomaticCanvasSize = Enum.AutomaticSize.Y
+	})
+	
+	local SidebarLayout = Utility:Create("UIListLayout", {
+		Parent = Sidebar,
+		Padding = UDim.new(0, 5),
+		SortOrder = Enum.SortOrder.LayoutOrder
+	})
+
+	local ContentArea = Utility:Create("Frame", {
+		Name = "ContentArea",
+		Parent = MainFrame,
+		BackgroundColor3 = Theme.Darker,
+		Size = UDim2.new(1, -165, 1, -50),
+		Position = UDim2.new(0, 155, 0, 40)
+	}, {
+		Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+		Utility:Create("UIStroke", {Color = Color3.fromRGB(40,40,40), Thickness = 1})
+	})
+
+	--// Window Object //--
+	local Window = {}
+	local firstTab = true
+
+	function Window:New(config)
+		local TabTitle = config.Title or "Tab"
+		local TabIcon = config.ImageId -- Optional
+
+		-- Tab Button (Sidebar)
+		local TabBtn = Utility:Create("TextButton", {
+			Parent = Sidebar,
+			Text = TabTitle,
+			Font = Theme.Font,
+			TextColor3 = Theme.TextDim,
+			BackgroundColor3 = Theme.Darker,
+			Size = UDim2.new(1, 0, 0, 32),
+			AutoButtonColor = false,
+			TextSize = 14
+		}, {
+			Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)})
+		})
+
+		-- Tab Container
+		local TabFrame = Utility:Create("ScrollingFrame", {
+			Name = TabTitle.."_Frame",
+			Parent = ContentArea,
+			BackgroundTransparency = 1,
+			Size = UDim2.new(1, -10, 1, -10),
+			Position = UDim2.new(0, 5, 0, 5),
+			ScrollBarThickness = 2,
+			ScrollBarImageColor3 = Theme.Accent,
+			Visible = false,
+			AutomaticCanvasSize = Enum.AutomaticSize.Y
+		})
+
+		local TabList = Utility:Create("UIListLayout", {
+			Parent = TabFrame,
+			Padding = UDim.new(0, 6),
+			SortOrder = Enum.SortOrder.LayoutOrder
+		})
+
+		-- Activation Logic
+		local function Activate()
+			for _, v in pairs(ContentArea:GetChildren()) do
+				if v:IsA("ScrollingFrame") then v.Visible = false end
+			end
+			for _, v in pairs(Sidebar:GetChildren()) do
+				if v:IsA("TextButton") then 
+					Utility:Tween(v, {0.2}, {TextColor3 = Theme.TextDim, BackgroundColor3 = Theme.Darker})
+				end
+			end
+			TabFrame.Visible = true
+			Utility:Tween(TabBtn, {0.2}, {TextColor3 = Theme.Accent, BackgroundColor3 = Color3.fromRGB(25, 25, 30)})
+		end
+
+		TabBtn.MouseButton1Click:Connect(Activate)
+
+		if firstTab then
+			Activate()
+			firstTab = false
+		end
+
+		--// Component System //--
+		local Elements = {}
+
+		function Elements:Button(props)
+			local Title = props.Title
+			local Callback = props.Callback or function() end
+			
+			local ButtonFrame = Utility:Create("TextButton", {
+				Parent = TabFrame,
+				BackgroundColor3 = Theme.Background,
+				Size = UDim2.new(1, 0, 0, 35),
+				Text = "",
+				AutoButtonColor = false
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("UIStroke", {Color = Color3.fromRGB(40,40,40), Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border}),
+				Utility:Create("TextLabel", {
+					Text = Title,
+					Font = Theme.Font,
+					TextColor3 = Theme.Text,
+					TextSize = 14,
+					BackgroundTransparency = 1,
+					Size = UDim2.new(1, -20, 1, 0),
+					Position = UDim2.new(0, 10, 0, 0),
+					TextXAlignment = Enum.TextXAlignment.Left
+				}),
+				Utility:Create("ImageLabel", { -- Icon for action
+					Image = "rbxassetid://6031094670",
+					BackgroundTransparency = 1,
+					Size = UDim2.fromOffset(20,20),
+					Position = UDim2.new(1, -30, 0.5, -10),
+					ImageColor3 = Theme.TextDim
+				})
+			})
+
+			ButtonFrame.MouseEnter:Connect(function()
+				Utility:Tween(ButtonFrame.UIStroke, {0.2}, {Color = Theme.Accent})
+				Utility:Tween(ButtonFrame.TextLabel, {0.2}, {TextColor3 = Theme.Accent})
+			end)
+			
+			ButtonFrame.MouseLeave:Connect(function()
+				Utility:Tween(ButtonFrame.UIStroke, {0.2}, {Color = Color3.fromRGB(40,40,40)})
+				Utility:Tween(ButtonFrame.TextLabel, {0.2}, {TextColor3 = Theme.Text})
+			end)
+
+			ButtonFrame.MouseButton1Click:Connect(function()
+				local ripple = Utility:Create("Frame", {
+					BackgroundColor3 = Theme.Accent,
+					BackgroundTransparency = 0.6,
+					Position = UDim2.fromScale(0.5,0.5),
+					AnchorPoint = Vector2.new(0.5,0.5),
+					Size = UDim2.fromScale(0,0),
+					Parent = ButtonFrame
+				}, {Utility:Create("UICorner", {CornerRadius = UDim.new(1,0)})})
+				
+				Utility:Tween(ripple, {0.4}, {Size = UDim2.fromScale(1.5, 2.5), BackgroundTransparency = 1})
+				game.Debris:AddItem(ripple, 0.45)
+				Callback()
+			end)
+			
+			local Funcs = {}
+			function Funcs:SetTitle(t) ButtonFrame.TextLabel.Text = t end
+			function Funcs:SetCallback(f) Callback = f end
+			function Funcs:Fire() Callback() end
+			return Funcs
+		end
+
+		function Elements:Toggle(props)
+			local Title = props.Title
+			local Enabled = props.Enabled or false
+			local Callback = props.Callback or function() end
+
+			local ToggleFrame = Utility:Create("TextButton", {
+				Parent = TabFrame,
+				BackgroundColor3 = Theme.Background,
+				Size = UDim2.new(1, 0, 0, 35),
+				Text = "",
+				AutoButtonColor = false
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("TextLabel", {
+					Text = Title,
+					Font = Theme.Font,
+					TextColor3 = Theme.Text,
+					TextSize = 14,
+					BackgroundTransparency = 1,
+					Size = UDim2.new(1, -50, 1, 0),
+					Position = UDim2.new(0, 10, 0, 0),
+					TextXAlignment = Enum.TextXAlignment.Left
+				})
+			})
+
+			local Checkbox = Utility:Create("Frame", {
+				Parent = ToggleFrame,
+				Size = UDim2.fromOffset(20, 20),
+				Position = UDim2.new(1, -30, 0.5, -10),
+				BackgroundColor3 = Theme.Darker
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("UIStroke", {Color = Color3.fromRGB(60,60,60), Thickness = 1})
+			})
+
+			local Checkmark = Utility:Create("Frame", {
+				Parent = Checkbox,
+				Size = UDim2.fromScale(0, 0), -- Animated size
+				Position = UDim2.fromScale(0.5, 0.5),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundColor3 = Theme.Accent
+			}, {Utility:Create("UICorner", {CornerRadius = UDim.new(0, 2)})})
+
+			local function UpdateState(state)
+				Enabled = state
+				if Enabled then
+					Utility:Tween(Checkmark, {0.2, Enum.EasingStyle.Back}, {Size = UDim2.fromScale(0.7, 0.7)})
+					Utility:Tween(Checkbox.UIStroke, {0.2}, {Color = Theme.Accent})
+				else
+					Utility:Tween(Checkmark, {0.2}, {Size = UDim2.fromScale(0, 0)})
+					Utility:Tween(Checkbox.UIStroke, {0.2}, {Color = Color3.fromRGB(60,60,60)})
+				end
+				Callback(Enabled)
+			end
+
+			ToggleFrame.MouseButton1Click:Connect(function()
+				UpdateState(not Enabled)
+			end)
+			
+			-- Initialize
+			UpdateState(Enabled)
+
+			local Funcs = {}
+			function Funcs:Set(v) UpdateState(v) end
+			return Funcs
+		end
+
+		function Elements:Slide(props)
+			local Title = props.Title
+			local Min = props.Min or 0
+			local Max = props.Max or 100
+			local Default = props.Default or Min
+			local Callback = props.Callback or function() end
+			
+			local Value = Default
+
+			local SliderFrame = Utility:Create("Frame", {
+				Parent = TabFrame,
+				BackgroundColor3 = Theme.Background,
+				Size = UDim2.new(1, 0, 0, 50)
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("TextLabel", {
+					Text = Title,
+					Font = Theme.Font,
+					TextColor3 = Theme.Text,
+					TextSize = 14,
+					BackgroundTransparency = 1,
+					Size = UDim2.new(1, 0, 0, 25),
+					Position = UDim2.new(0, 10, 0, 0),
+					TextXAlignment = Enum.TextXAlignment.Left
+				}),
+				Utility:Create("TextLabel", {
+					Name = "ValueLabel",
+					Text = tostring(Value),
+					Font = Theme.Font,
+					TextColor3 = Theme.Accent,
+					TextSize = 14,
+					BackgroundTransparency = 1,
+					Size = UDim2.new(1, -20, 0, 25),
+					Position = UDim2.new(0, 0, 0, 0),
+					TextXAlignment = Enum.TextXAlignment.Right
+				})
+			})
+
+			local SliderBar = Utility:Create("Frame", {
+				Parent = SliderFrame,
+				BackgroundColor3 = Theme.Darker,
+				Size = UDim2.new(1, -20, 0, 6),
+				Position = UDim2.new(0, 10, 0, 32)
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+			})
+
+			local Fill = Utility:Create("Frame", {
+				Parent = SliderBar,
+				BackgroundColor3 = Theme.Accent,
+				Size = UDim2.fromScale(0, 1)
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(1, 0)}),
+				Utility:Create("Frame", { -- Glow tip
+					BackgroundColor3 = Theme.Text,
+					Size = UDim2.new(0, 2, 1, 4),
+					Position = UDim2.new(1, -1, 0.5, 0),
+					AnchorPoint = Vector2.new(0, 0.5),
+					BackgroundTransparency = 0.5
+				})
+			})
+			
+			local Interact = Utility:Create("TextButton", {
+				Parent = SliderBar,
+				BackgroundTransparency = 1,
+				Size = UDim2.fromScale(1, 1),
+				Text = ""
+			})
+
+			local function Update(val)
+				Value = math.clamp(val, Min, Max)
+				local percent = (Value - Min) / (Max - Min)
+				Fill:TweenSize(UDim2.new(percent, 0, 1, 0), "Out", "Quad", 0.1, true)
+				SliderFrame.ValueLabel.Text = string.format("%.1f", Value) -- Supports float
+				Callback(Value)
+			end
+			
+			Interact.MouseButton1Down:Connect(function()
+				local move, kill
+				move = UserInputService.InputChanged:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseMovement then
+						local sizeX = SliderBar.AbsoluteSize.X
+						local relativeX = math.clamp(input.Position.X - SliderBar.AbsolutePosition.X, 0, sizeX)
+						local percent = relativeX / sizeX
+						Update(Min + (Max - Min) * percent)
+					end
+				end)
+				kill = UserInputService.InputEnded:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+						move:Disconnect()
+						kill:Disconnect()
+					end
+				end)
+				-- Trigger once on click
+				local sizeX = SliderBar.AbsoluteSize.X
+				local relativeX = math.clamp(UserInputService:GetMouseLocation().X - SliderBar.AbsolutePosition.X, 0, sizeX)
+				Update(Min + (Max - Min) * (relativeX / sizeX))
+			end)
+			
+			Update(Default)
+			
+			local Funcs = {}
+			function Funcs:Set(v) Update(v) end
+			return Funcs
+		end
+
+		function Elements:Dropdown(props)
+			local Title = props.Title
+			local Items = props.Table or {}
+			local Callback = props.Callback or function() end
+			local AutoText = props.AutoTextChose or false
+			
+			local DropHeight = 35
+			local Open = false
+			
+			local DropFrame = Utility:Create("Frame", {
+				Parent = TabFrame,
+				BackgroundColor3 = Theme.Background,
+				Size = UDim2.new(1, 0, 0, DropHeight),
+				ClipsDescendants = true
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("UIStroke", {Color = Color3.fromRGB(40,40,40), Thickness = 1})
+			})
+
+			local Header = Utility:Create("TextButton", {
+				Parent = DropFrame,
+				BackgroundTransparency = 1,
+				Size = UDim2.new(1, 0, 0, 35),
+				Text = "",
+				AutoButtonColor = false
+			})
+
+			local Label = Utility:Create("TextLabel", {
+				Parent = Header,
+				Text = Title,
+				Font = Theme.Font,
+				TextColor3 = Theme.Text,
+				TextSize = 14,
+				BackgroundTransparency = 1,
+				Size = UDim2.new(1, -30, 1, 0),
+				Position = UDim2.new(0, 10, 0, 0),
+				TextXAlignment = Enum.TextXAlignment.Left
+			})
+
+			local Arrow = Utility:Create("ImageLabel", {
+				Parent = Header,
+				Image = "rbxassetid://6031091004", -- Arrow icon
+				BackgroundTransparency = 1,
+				Size = UDim2.fromOffset(20, 20),
+				Position = UDim2.new(1, -25, 0.5, -10),
+				ImageColor3 = Theme.TextDim
+			})
+
+			local ItemContainer = Utility:Create("Frame", {
+				Parent = DropFrame,
+				BackgroundTransparency = 1,
+				Position = UDim2.new(0, 0, 0, 35),
+				Size = UDim2.new(1, 0, 0, 0)
+			}, {
+				Utility:Create("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder})
+			})
+
+			local function Refresh(newItems)
+				for _, v in pairs(ItemContainer:GetChildren()) do
+					if v:IsA("TextButton") then v:Destroy() end
+				end
+				
+				for _, item in pairs(newItems) do
+					local ItemBtn = Utility:Create("TextButton", {
+						Parent = ItemContainer,
+						Text = "  > " .. tostring(item),
+						Font = Theme.Font,
+						TextColor3 = Theme.TextDim,
+						BackgroundColor3 = Theme.Darker,
+						Size = UDim2.new(1, 0, 0, 25),
+						TextXAlignment = Enum.TextXAlignment.Left,
+						AutoButtonColor = false
+					})
+					
+					ItemBtn.MouseEnter:Connect(function() ItemBtn.TextColor3 = Theme.Accent end)
+					ItemBtn.MouseLeave:Connect(function() ItemBtn.TextColor3 = Theme.TextDim end)
+					
+					ItemBtn.MouseButton1Click:Connect(function()
+						Callback(item)
+						if AutoText then Label.Text = Title .. ": " .. tostring(item) end
+						-- Close
+						Open = false
+						Utility:Tween(DropFrame, {0.3}, {Size = UDim2.new(1, 0, 0, 35)})
+						Utility:Tween(Arrow, {0.3}, {Rotation = 0})
+					end)
+				end
+			end
+			
+			Header.MouseButton1Click:Connect(function()
+				Open = not Open
+				local count = #ItemContainer:GetChildren() - 1 -- minus Layout
+				local totalHeight = 35 + (Open and (count * 25) or 0)
+				
+				Utility:Tween(DropFrame, {0.3}, {Size = UDim2.new(1, 0, 0, totalHeight)})
+				Utility:Tween(Arrow, {0.3}, {Rotation = Open and 180 or 0})
+			end)
+
+			Refresh(Items)
+			
+			local Funcs = {}
+			function Funcs:SetTable(t) Refresh(t) end
+			return Funcs
+		end
+
+		function Elements:Textbox(props)
+			local Title = props.Title
+			local Callback = props.Callback or function() end
+			local Placeholder = props.TextboxTitle or "Type here..."
+			local ClearOnFocus = props.ClearTextOnFocus or false
+
+			local BoxFrame = Utility:Create("Frame", {
+				Parent = TabFrame,
+				BackgroundColor3 = Theme.Background,
+				Size = UDim2.new(1, 0, 0, 55)
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("TextLabel", {
+					Text = Title,
+					Font = Theme.Font,
+					TextColor3 = Theme.Text,
+					TextSize = 14,
+					BackgroundTransparency = 1,
+					Size = UDim2.new(1, 0, 0, 25),
+					Position = UDim2.new(0, 10, 0, 0),
+					TextXAlignment = Enum.TextXAlignment.Left
+				})
+			})
+
+			local Input = Utility:Create("TextBox", {
+				Parent = BoxFrame,
+				BackgroundColor3 = Theme.Darker,
+				Size = UDim2.new(1, -20, 0, 25),
+				Position = UDim2.new(0, 10, 0, 25),
+				Font = Theme.Font,
+				Text = "",
+				PlaceholderText = Placeholder,
+				TextColor3 = Theme.Accent,
+				PlaceholderColor3 = Color3.fromRGB(100,100,100),
+				TextSize = 14,
+				ClearTextOnFocus = ClearOnFocus
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("UIStroke", {Color = Color3.fromRGB(60,60,60), Thickness = 1})
+			})
+
+			Input.FocusLost:Connect(function(enter)
+				Callback(Input.Text)
+				Utility:Tween(Input.UIStroke, {0.2}, {Color = Color3.fromRGB(60,60,60)})
+			end)
+
+			Input.Focused:Connect(function()
+				Utility:Tween(Input.UIStroke, {0.2}, {Color = Theme.Accent})
+			end)
+			
+			local Funcs = {}
+			function Funcs:Set(t) Input.Text = t end
+			return Funcs
+		end
+
+		function Elements:KeyBox(props)
+			local Title = props.Title
+			local Callback = props.Callback or function() end
+			local DefaultKey = props.Key or Enum.KeyCode.E
+
+			local KeyFrame = Utility:Create("Frame", {
+				Parent = TabFrame,
+				BackgroundColor3 = Theme.Background,
+				Size = UDim2.new(1, 0, 0, 35)
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("TextLabel", {
+					Text = Title,
+					Font = Theme.Font,
+					TextColor3 = Theme.Text,
+					TextSize = 14,
+					BackgroundTransparency = 1,
+					Size = UDim2.new(0.7, 0, 1, 0),
+					Position = UDim2.new(0, 10, 0, 0),
+					TextXAlignment = Enum.TextXAlignment.Left
+				})
+			})
+
+			local BindBtn = Utility:Create("TextButton", {
+				Parent = KeyFrame,
+				BackgroundColor3 = Theme.Darker,
+				Size = UDim2.new(0, 80, 0, 20),
+				Position = UDim2.new(1, -90, 0.5, -10),
+				Text = DefaultKey.Name,
+				Font = Theme.Font,
+				TextColor3 = Theme.TextDim,
+				TextSize = 12
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("UIStroke", {Color = Color3.fromRGB(60,60,60), Thickness = 1})
+			})
+
+			local Listening = false
+
+			BindBtn.MouseButton1Click:Connect(function()
+				Listening = true
+				BindBtn.Text = "..."
+				BindBtn.TextColor3 = Theme.Accent
+				BindBtn.UIStroke.Color = Theme.Accent
+				
+				local conn
+				conn = UserInputService.InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.Keyboard then
+						Listening = false
+						BindBtn.Text = input.KeyCode.Name
+						BindBtn.TextColor3 = Theme.TextDim
+						BindBtn.UIStroke.Color = Color3.fromRGB(60,60,60)
+						Callback(input.KeyCode)
+						conn:Disconnect()
+					end
+				end)
+			end)
+			
+			return {}
+		end
+
+		function Elements:ColorPicker(props)
+			local Title = props.Title
+			local Callback = props.Callback or function() end
+			local Default = props.Default or Color3.fromRGB(255, 255, 255)
+			
+			local ColorH, ColorS, ColorV = Default:ToHSV()
+			local IsOpen = false
+
+			local PickerFrame = Utility:Create("Frame", {
+				Parent = TabFrame,
+				BackgroundColor3 = Theme.Background,
+				Size = UDim2.new(1, 0, 0, 35),
+				ClipsDescendants = true
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("UIStroke", {Color = Color3.fromRGB(40,40,40), Thickness = 1})
+			})
+			
+			local Header = Utility:Create("TextButton", {
+				Parent = PickerFrame,
+				BackgroundTransparency = 1,
+				Size = UDim2.new(1, 0, 0, 35),
+				Text = "",
+				AutoButtonColor = false
+			})
+
+			Utility:Create("TextLabel", {
+				Parent = Header,
+				Text = Title,
+				Font = Theme.Font,
+				TextColor3 = Theme.Text,
+				TextSize = 14,
+				BackgroundTransparency = 1,
+				Size = UDim2.new(1, -50, 1, 0),
+				Position = UDim2.new(0, 10, 0, 0),
+				TextXAlignment = Enum.TextXAlignment.Left
+			})
+
+			local CurrentColorPreview = Utility:Create("Frame", {
+				Parent = Header,
+				BackgroundColor3 = Default,
+				Size = UDim2.fromOffset(20, 20),
+				Position = UDim2.new(1, -30, 0.5, -10)
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("UIStroke", {Color = Color3.fromRGB(255,255,255), Thickness = 1, Transparency = 0.8})
+			})
+
+			-- Container for picker logic
+			local Container = Utility:Create("Frame", {
+				Parent = PickerFrame,
+				BackgroundTransparency = 1,
+				Position = UDim2.new(0, 0, 0, 35),
+				Size = UDim2.new(1, 0, 0, 150)
+			})
+
+			-- Saturation/Value Square
+			local SVMap = Utility:Create("ImageLabel", {
+				Parent = Container,
+				Size = UDim2.fromOffset(120, 120),
+				Position = UDim2.new(0, 10, 0, 10),
+				Image = "rbxassetid://4155801252", -- Color wheel square
+				BackgroundColor3 = Color3.fromHSV(ColorH, 1, 1),
+				BorderSizePixel = 0
+			}, {Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)})})
+			
+			local Cursor = Utility:Create("Frame", {
+				Parent = SVMap,
+				Size = UDim2.fromOffset(6, 6),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundColor3 = Color3.new(1,1,1),
+				BorderSizePixel = 0,
+				Position = UDim2.fromScale(ColorS, 1 - ColorV)
+			}, {Utility:Create("UICorner", {CornerRadius = UDim.new(1, 0)})})
+
+			-- Hue Bar
+			local HueBar = Utility:Create("ImageLabel", {
+				Parent = Container,
+				Size = UDim2.new(0, 20, 0, 120),
+				Position = UDim2.new(0, 140, 0, 10),
+				Image = "rbxassetid://16786657529", -- Rainbow gradient asset or create via UIGradient
+				ScaleType = Enum.ScaleType.Crop, -- Fix just in case
+				BackgroundColor3 = Color3.new(1,1,1)
+			}, {
+				Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+				Utility:Create("UIGradient", {
+					Rotation = 90,
+					Color = ColorSequence.new({
+						ColorSequenceKeypoint.new(0, Color3.fromRGB(255,0,0)),
+						ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255,255,0)),
+						ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0,255,0)),
+						ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0,255,255)),
+						ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0,0,255)),
+						ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255,0,255)),
+						ColorSequenceKeypoint.new(1, Color3.fromRGB(255,0,0))
+					})
+				})
+			})
+			
+			local HueCursor = Utility:Create("Frame", {
+				Parent = HueBar,
+				Size = UDim2.new(1, 0, 0, 2),
+				Position = UDim2.fromScale(0, ColorH),
+				BackgroundColor3 = Color3.new(1,1,1),
+				BorderSizePixel = 0
+			})
+
+			-- RGB Inputs (Modern addition)
+			local RGBBox = Utility:Create("Frame", {
+				Parent = Container,
+				BackgroundTransparency = 1,
+				Size = UDim2.new(0, 120, 0, 120),
+				Position = UDim2.new(0, 170, 0, 10)
+			})
+			
+			local RInput = Utility:Create("TextBox", { Parent = RGBBox, Text = "255", PlaceholderText = "R", Size = UDim2.new(1,0,0,25), Position = UDim2.new(0,0,0,0), BackgroundColor3 = Theme.Darker, TextColor3 = Color3.fromRGB(255,100,100), Font = Theme.Font, TextSize = 14 }, {Utility:Create("UICorner", {CornerRadius = UDim.new(0,4)})})
+			local GInput = Utility:Create("TextBox", { Parent = RGBBox, Text = "255", PlaceholderText = "G", Size = UDim2.new(1,0,0,25), Position = UDim2.new(0,0,0,30), BackgroundColor3 = Theme.Darker, TextColor3 = Color3.fromRGB(100,255,100), Font = Theme.Font, TextSize = 14 }, {Utility:Create("UICorner", {CornerRadius = UDim.new(0,4)})})
+			local BInput = Utility:Create("TextBox", { Parent = RGBBox, Text = "255", PlaceholderText = "B", Size = UDim2.new(1,0,0,25), Position = UDim2.new(0,0,0,60), BackgroundColor3 = Theme.Darker, TextColor3 = Color3.fromRGB(100,100,255), Font = Theme.Font, TextSize = 14 }, {Utility:Create("UICorner", {CornerRadius = UDim.new(0,4)})})
+			local HexLabel = Utility:Create("TextLabel", { Parent = RGBBox, Text = "#FFFFFF", Size = UDim2.new(1,0,0,25), Position = UDim2.new(0,0,0,95), BackgroundTransparency = 1, TextColor3 = Theme.TextDim, Font = Theme.Font, TextSize = 14 })
+
+			--// Logic Functions //--
+			local function UpdateColor()
+				local NewColor = Color3.fromHSV(ColorH, ColorS, ColorV)
+				CurrentColorPreview.BackgroundColor3 = NewColor
+				SVMap.BackgroundColor3 = Color3.fromHSV(ColorH, 1, 1)
+				
+				RInput.Text = math.floor(NewColor.R * 255)
+				GInput.Text = math.floor(NewColor.G * 255)
+				BInput.Text = math.floor(NewColor.B * 255)
+				HexLabel.Text = "#" .. NewColor:ToHex():upper()
+				
+				Callback(NewColor)
+			end
+
+			-- Input Logic
+			local function HandleInput(inputObj, isHue)
+				local Mouse = UserInputService:GetMouseLocation()
+				local ObjPos = inputObj.AbsolutePosition
+				local ObjSize = inputObj.AbsoluteSize
+				
+				local X = math.clamp((Mouse.X - ObjPos.X) / ObjSize.X, 0, 1)
+				local Y = math.clamp((Mouse.Y - ObjPos.Y - 36) / ObjSize.Y, 0, 1) -- -36 for GuiInset
+				
+				if isHue then
+					ColorH = Y
+					HueCursor.Position = UDim2.fromScale(0, Y)
+				else
+					ColorS = X
+					ColorV = 1 - Y
+					Cursor.Position = UDim2.fromScale(X, Y)
+				end
+				UpdateColor()
+			end
+
+			-- Event Binding
+			SVMap.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					local move, kill
+					move = UserInputService.InputChanged:Connect(function(m)
+						if m.UserInputType == Enum.UserInputType.MouseMovement then HandleInput(SVMap, false) end
+					end)
+					kill = UserInputService.InputEnded:Connect(function(m)
+						if m.UserInputType == Enum.UserInputType.MouseButton1 then move:Disconnect() kill:Disconnect() end
+					end)
+					HandleInput(SVMap, false)
+				end
+			end)
+			
+			HueBar.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					local move, kill
+					move = UserInputService.InputChanged:Connect(function(m)
+						if m.UserInputType == Enum.UserInputType.MouseMovement then HandleInput(HueBar, true) end
+					end)
+					kill = UserInputService.InputEnded:Connect(function(m)
+						if m.UserInputType == Enum.UserInputType.MouseButton1 then move:Disconnect() kill:Disconnect() end
+					end)
+					HandleInput(HueBar, true)
+				end
+			end)
+
+			Header.MouseButton1Click:Connect(function()
+				IsOpen = not IsOpen
+				Utility:Tween(PickerFrame, {0.3}, {Size = UDim2.new(1, 0, 0, IsOpen and 190 or 35)})
+			end)
+
+			UpdateColor() -- Init
+			return {}
+		end
+
+		return Elements
+	end
+
+	return Window
+end
+
+return Library
