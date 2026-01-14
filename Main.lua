@@ -1281,7 +1281,7 @@ function Library:Init(config)
                 Library.Options[Flag] = Funcs
                 Library.Flags[Flag] = Selected
 
-                Funcs:Set(Color) -- Init
+                Funcs:Set(Selected) 
                 return Funcs
             end
             
