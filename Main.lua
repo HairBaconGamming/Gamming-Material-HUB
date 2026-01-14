@@ -136,7 +136,7 @@ function Utility:AddScanline(parent)
     local Scan = Utility:Create("ImageLabel", {
         Parent = parent,
         BackgroundTransparency = 1,
-        Image = "rbxassetid://6031097225", -- Grid/Scanline texture
+        Image = "rbxassetid://107479513719782", -- Grid/Scanline texture
         ImageColor3 = ThemeManager.Current.Accent,
         ImageTransparency = 0.96,
         TileSize = UDim2.new(0, 15, 0, 15),
