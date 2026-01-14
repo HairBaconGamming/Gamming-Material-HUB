@@ -959,6 +959,55 @@ function Library:Init(config)
                  local F={} function F:Set(v) Utility:Tween(Fill,{0.3},{Size=UDim2.fromScale(math.clamp(v/100,0,1),1)}) end return F
             end
 
+            function Group:AddStatusLabel(text, default)
+                local Frame = Utility:Create("Frame", {
+                    Parent = Content,
+                    Size = UDim2.new(1, 0, 0, 20),
+                    BackgroundTransparency = 1
+                })
+                
+                -- Phần Tiêu đề (Bên trái, màu trắng mờ)
+                local Title = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = text,
+                    Size = UDim2.new(0.6, 0, 1, 0),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Text,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+                ThemeManager:Register(Title, "TextColor3", "Text")
+                
+                -- Phần Giá trị (Bên phải, màu Neon Accent)
+                local Value = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = default or "WAITING...",
+                    Size = UDim2.new(0.4, 0, 1, 0),
+                    Position = UDim2.new(0.6, 0, 0, 0),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Accent,
+                    Font = ThemeManager.Current.FontBold, -- Font đậm để nổi bật thông số
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Right
+                })
+                ThemeManager:Register(Value, "TextColor3", "Accent")
+                
+                local Funcs = {}
+                
+                -- Hàm cập nhật nội dung
+                function Funcs:Set(t) 
+                    Value.Text = tostring(t) 
+                end
+                
+                -- Hàm đổi màu nóng (Ví dụ: Ping cao thì đổi sang đỏ)
+                function Funcs:SetColor(c) 
+                    Value.TextColor3 = c 
+                end
+                
+                return Funcs
+            end
+
             return Group
         end
         return Tab
