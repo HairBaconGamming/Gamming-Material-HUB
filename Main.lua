@@ -1203,34 +1203,315 @@ function Library:Init(config)
             end
             
             function Group:AddColorPicker(text, default, callback, config)
-                 local opts = config or {}
-                 local Flag = opts.Flag or text
-                 local Color = default or Color3.fromRGB(255,255,255)
-                 local IsOpen = false
-                 
-                 local Frame = Utility:Create("Frame", {Parent = Content, Size = UDim2.new(1,0,0,30), BackgroundTransparency = 1, ClipsDescendants = true})
-                 local Label = Utility:Create("TextLabel", {Parent = Frame, Text=text, Size=UDim2.new(1,-40,1,0), BackgroundTransparency=1, TextColor3=ThemeManager.Current.Text, Font=ThemeManager.Current.FontMain, TextSize=12, TextXAlignment=Enum.TextXAlignment.Left})
-                 local Preview = Utility:Create("TextButton", {
-                     Parent = Frame, Size=UDim2.new(0,30,0,16), Position=UDim2.new(1,-30,0.5,-8), BackgroundColor3=Color, Text=""
-                 }, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)}), Utility:Create("UIStroke",{Color=ThemeManager.Current.Stroke,Thickness=1})})
-                 
-                 local PickerFrame = Utility:Create("Frame", {Parent=Frame, Size=UDim2.new(1,0,0,110), Position=UDim2.new(0,0,0,30), BackgroundTransparency=1, Visible=false})
-                 local SV = Utility:Create("ImageButton", {Parent=PickerFrame, Size=UDim2.new(0,100,0,100), Image="rbxassetid://4155801252", BackgroundColor3=Color})
-                 local H = Utility:Create("ImageButton", {Parent=PickerFrame, Size=UDim2.new(0,20,0,100), Position=UDim2.new(0,110,0,0), Image="rbxassetid://3641079629"})
-                 
-                 Preview.MouseButton1Click:Connect(function()
-                     IsOpen = not IsOpen
-                     PickerFrame.Visible = IsOpen
-                     Utility:Tween(Frame, {0.3}, {Size = UDim2.new(1,0,0, IsOpen and 145 or 30)})
-                 end)
+                local opts = config or {}
+                local Flag = opts.Flag or text
+                local Color = default or Color3.fromRGB(255, 255, 255)
+                local H, S, V = Color:ToHSV()
+                local IsOpen = false
+                local IsRainbow = false
+                
+                -- 1. CONTAINER CHÍNH
+                local Frame = Utility:Create("Frame", {
+                    Parent = Content,
+                    Size = UDim2.new(1, 0, 0, 30),
+                    BackgroundTransparency = 1,
+                    ZIndex = 20
+                })
+                AddTooltip(Frame, opts.Tooltip)
 
-                 RegisterSearch(text, Frame)
-                 AddTooltip(Frame, opts.Tooltip)
-                 
-                 -- Minimal logic for brevity, full logic assumed from base or similar to slider
-                 local F = {} function F:Set(c) Color = c; Preview.BackgroundColor3 = c; Library.Flags[Flag] = {R=c.R,G=c.G,B=c.B}; pcall(callback, c) end
-                 Library.Options[Flag] = F; Library.Flags[Flag] = {R=Color.R,G=Color.G,B=Color.B}
-                 return F
+                -- Label
+                local Label = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = text,
+                    Size = UDim2.new(1, -50, 1, 0),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Text,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+                ThemeManager:Register(Label, "TextColor3", "Text")
+
+                -- Nút Preview (Hiển thị màu hiện tại)
+                local Preview = Utility:Create("TextButton", {
+                    Parent = Frame,
+                    Size = UDim2.fromOffset(40, 18),
+                    Position = UDim2.new(1, -40, 0.5, -9),
+                    BackgroundColor3 = Color,
+                    Text = "",
+                    AutoButtonColor = false
+                }, {
+                    Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1}),
+                    Utility:Create("ImageLabel", { -- Họa tiết caro (Transparency grid)
+                        BackgroundTransparency = 1,
+                        Image = "rbxassetid://3887014957",
+                        ImageTransparency = 0.5,
+                        TileSize = UDim2.new(0, 8, 0, 8),
+                        ScaleType = Enum.ScaleType.Tile,
+                        Size = UDim2.fromScale(1,1),
+                        ZIndex = 0
+                    })
+                })
+
+                -- 2. PICKER POPUP (Bảng chọn màu)
+                local PickerFrame = Utility:Create("Frame", {
+                    Parent = Frame,
+                    Size = UDim2.new(1, 0, 0, 0), -- Ban đầu ẩn
+                    Position = UDim2.new(0, 0, 1, 5),
+                    BackgroundColor3 = ThemeManager.Current.Main,
+                    ClipsDescendants = true,
+                    Visible = false,
+                    ZIndex = 50 -- Nổi lên trên cùng
+                }, {
+                    Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Accent, Thickness = 1})
+                })
+                ThemeManager:Register(PickerFrame, "BackgroundColor3", "Main")
+                
+                -- Saturation/Value Area (Hình vuông lớn)
+                local SVBox = Utility:Create("ImageButton", {
+                    Parent = PickerFrame,
+                    Size = UDim2.new(0, 120, 0, 100),
+                    Position = UDim2.new(0, 10, 0, 10),
+                    Image = "rbxassetid://4155801252", -- Color Wheel Image
+                    BackgroundColor3 = Color3.fromHSV(H, 1, 1),
+                    AutoButtonColor = false,
+                    ZIndex = 51
+                }, {Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)})})
+                
+                local SVCursor = Utility:Create("Frame", {
+                    Parent = SVBox,
+                    Size = UDim2.fromOffset(6, 6),
+                    AnchorPoint = Vector2.new(0.5, 0.5),
+                    BackgroundColor3 = Color3.new(1, 1, 1),
+                    Position = UDim2.fromScale(S, 1 - V),
+                    ZIndex = 52
+                }, {Utility:Create("UICorner", {CornerRadius = UDim.new(1, 0)})})
+
+                -- Hue Bar (Thanh cầu vồng dọc)
+                local HueBox = Utility:Create("ImageButton", {
+                    Parent = PickerFrame,
+                    Size = UDim2.new(0, 20, 0, 100),
+                    Position = UDim2.new(0, 140, 0, 10),
+                    BackgroundColor3 = Color3.new(1,1,1),
+                    AutoButtonColor = false,
+                    ZIndex = 51
+                }, {
+                    Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+                    Utility:Create("UIGradient", { -- Tạo Gradient 7 màu
+                        Rotation = 90,
+                        Color = ColorSequence.new{
+                            ColorSequenceKeypoint.new(0, Color3.fromRGB(255,0,0)),
+                            ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255,255,0)),
+                            ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0,255,0)),
+                            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0,255,255)),
+                            ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0,0,255)),
+                            ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255,0,255)),
+                            ColorSequenceKeypoint.new(1, Color3.fromRGB(255,0,0))
+                        }
+                    })
+                })
+
+                local HueCursor = Utility:Create("Frame", {
+                    Parent = HueBox,
+                    Size = UDim2.new(1, 0, 0, 2),
+                    BackgroundColor3 = Color3.new(1, 1, 1),
+                    Position = UDim2.fromScale(0, 1 - H),
+                    BorderSizePixel = 0,
+                    ZIndex = 52
+                })
+
+                -- RGB Inputs Container
+                local InputContainer = Utility:Create("Frame", {
+                    Parent = PickerFrame,
+                    Size = UDim2.new(1, -20, 0, 30),
+                    Position = UDim2.new(0, 10, 0, 115),
+                    BackgroundTransparency = 1,
+                    ZIndex = 51
+                })
+
+                local function CreateRGBInput(name, posX, defaultVal)
+                    local Box = Utility:Create("TextBox", {
+                        Parent = InputContainer,
+                        Size = UDim2.new(0.2, 0, 1, 0),
+                        Position = UDim2.new(posX, 0, 0, 0),
+                        BackgroundColor3 = ThemeManager.Current.Secondary,
+                        Text = tostring(defaultVal),
+                        TextColor3 = ThemeManager.Current.Text,
+                        Font = ThemeManager.Current.FontMain,
+                        TextSize = 12,
+                        ZIndex = 52
+                    }, {
+                        Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+                        Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1})
+                    })
+                    return Box
+                end
+
+                local RInput = CreateRGBInput("R", 0, math.floor(Color.R * 255))
+                local GInput = CreateRGBInput("G", 0.25, math.floor(Color.G * 255))
+                local BInput = CreateRGBInput("B", 0.5, math.floor(Color.B * 255))
+                
+                -- Rainbow Toggle Button
+                local RainbowBtn = Utility:Create("TextButton", {
+                    Parent = InputContainer,
+                    Size = UDim2.new(0.2, 0, 1, 0),
+                    Position = UDim2.new(0.8, 0, 0, 0),
+                    BackgroundColor3 = ThemeManager.Current.Secondary,
+                    Text = "RAIN",
+                    TextColor3 = ThemeManager.Current.TextDark,
+                    Font = ThemeManager.Current.FontBold,
+                    TextSize = 10,
+                    ZIndex = 52
+                }, {
+                    Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1})
+                })
+
+                -- 3. LOGIC XỬ LÝ
+                local Funcs = {}
+                
+                -- Cập nhật màu từ H, S, V
+                local function UpdateColor()
+                    Color = Color3.fromHSV(H, S, V)
+                    Preview.BackgroundColor3 = Color
+                    SVBox.BackgroundColor3 = Color3.fromHSV(H, 1, 1)
+                    
+                    -- Cập nhật Textbox
+                    RInput.Text = math.floor(Color.R * 255)
+                    GInput.Text = math.floor(Color.G * 255)
+                    BInput.Text = math.floor(Color.B * 255)
+                    
+                    -- Callback & Save
+                    pcall(callback, Color)
+                    Library.Flags[Flag] = {R=Color.R, G=Color.G, B=Color.B}
+                end
+
+                -- Logic kéo thả chuột (Fix)
+                local function StartDrag(element, type)
+                    local dragging = true
+                    
+                    local inputMove = UserInputService.InputChanged:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseMovement then
+                            if type == "SV" then
+                                local rX = math.clamp(input.Position.X - SVBox.AbsolutePosition.X, 0, SVBox.AbsoluteSize.X)
+                                local rY = math.clamp(input.Position.Y - SVBox.AbsolutePosition.Y, 0, SVBox.AbsoluteSize.Y)
+                                S = rX / SVBox.AbsoluteSize.X
+                                V = 1 - (rY / SVBox.AbsoluteSize.Y)
+                                SVCursor.Position = UDim2.fromScale(S, rY / SVBox.AbsoluteSize.Y)
+                            elseif type == "Hue" then
+                                local rY = math.clamp(input.Position.Y - HueBox.AbsolutePosition.Y, 0, HueBox.AbsoluteSize.Y)
+                                H = 1 - (rY / HueBox.AbsoluteSize.Y)
+                                HueCursor.Position = UDim2.fromScale(0, rY / HueBox.AbsoluteSize.Y)
+                            end
+                            UpdateColor()
+                        end
+                    end)
+                    
+                    local inputEnd
+                    inputEnd = UserInputService.InputEnded:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = false
+                            inputMove:Disconnect()
+                            inputEnd:Disconnect()
+                        end
+                    end)
+                end
+
+                -- Event Trigger cho SV và Hue
+                SVBox.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                        -- Update ngay khi click
+                        local rX = math.clamp(input.Position.X - SVBox.AbsolutePosition.X, 0, SVBox.AbsoluteSize.X)
+                        local rY = math.clamp(input.Position.Y - SVBox.AbsolutePosition.Y, 0, SVBox.AbsoluteSize.Y)
+                        S = rX / SVBox.AbsoluteSize.X
+                        V = 1 - (rY / SVBox.AbsoluteSize.Y)
+                        SVCursor.Position = UDim2.fromScale(S, rY / SVBox.AbsoluteSize.Y)
+                        UpdateColor()
+                        StartDrag(SVBox, "SV")
+                    end
+                end)
+
+                HueBox.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                        local rY = math.clamp(input.Position.Y - HueBox.AbsolutePosition.Y, 0, HueBox.AbsoluteSize.Y)
+                        H = 1 - (rY / HueBox.AbsoluteSize.Y)
+                        HueCursor.Position = UDim2.fromScale(0, rY / HueBox.AbsoluteSize.Y)
+                        UpdateColor()
+                        StartDrag(HueBox, "Hue")
+                    end
+                end)
+                
+                -- Rainbow Logic
+                RainbowBtn.MouseButton1Click:Connect(function()
+                    IsRainbow = not IsRainbow
+                    RainbowBtn.TextColor3 = IsRainbow and ThemeManager.Current.Accent or ThemeManager.Current.TextDark
+                    if IsRainbow then
+                        task.spawn(function()
+                            while IsRainbow and PickerFrame.Visible do
+                                H = (H + 0.005) % 1
+                                HueCursor.Position = UDim2.fromScale(0, 1 - H)
+                                UpdateColor()
+                                RunService.RenderStepped:Wait()
+                            end
+                        end)
+                    end
+                end)
+                
+                -- RGB Input Logic
+                local function UpdateFromRGB()
+                    local r = tonumber(RInput.Text) or 0
+                    local g = tonumber(GInput.Text) or 0
+                    local b = tonumber(BInput.Text) or 0
+                    Color = Color3.fromRGB(r, g, b)
+                    H, S, V = Color:ToHSV()
+                    
+                    -- Cập nhật con trỏ Visual
+                    SVCursor.Position = UDim2.fromScale(S, 1-V)
+                    HueCursor.Position = UDim2.fromScale(0, 1-H)
+                    SVBox.BackgroundColor3 = Color3.fromHSV(H, 1, 1)
+                    Preview.BackgroundColor3 = Color
+                    
+                    pcall(callback, Color)
+                    Library.Flags[Flag] = {R=Color.R, G=Color.G, B=Color.B}
+                end
+                
+                RInput.FocusLost:Connect(UpdateFromRGB)
+                GInput.FocusLost:Connect(UpdateFromRGB)
+                BInput.FocusLost:Connect(UpdateFromRGB)
+
+                -- Toggle Popup
+                Preview.MouseButton1Click:Connect(function()
+                    IsOpen = not IsOpen
+                    PickerFrame.Visible = IsOpen
+                    if IsOpen then
+                        Utility:Tween(Frame, {0.2}, {Size = UDim2.new(1, 0, 0, 180)}) -- Mở rộng
+                        Utility:Tween(PickerFrame, {0.2}, {Size = UDim2.new(1, 0, 0, 150)})
+                    else
+                        Utility:Tween(Frame, {0.2}, {Size = UDim2.new(1, 0, 0, 30)}) -- Thu nhỏ
+                        Utility:Tween(PickerFrame, {0.2}, {Size = UDim2.new(1, 0, 0, 0)})
+                    end
+                end)
+
+                -- Set Function (Dùng cho Config Load)
+                function Funcs:Set(c)
+                    if type(c) == "table" and c.R then c = Color3.new(c.R, c.G, c.B) end
+                    Color = c
+                    H, S, V = Color:ToHSV()
+                    UpdateColor()
+                    
+                    -- Cập nhật vị trí con trỏ
+                    SVCursor.Position = UDim2.fromScale(S, 1-V)
+                    HueCursor.Position = UDim2.fromScale(0, 1-H)
+                end
+
+                -- Init
+                Library.Options[Flag] = Funcs
+                Library.Flags[Flag] = {R=Color.R, G=Color.G, B=Color.B}
+                Funcs:Set(Color)
+
+                return Funcs
             end
 
             function Group:AddKeybind(text, default, callback, config)
