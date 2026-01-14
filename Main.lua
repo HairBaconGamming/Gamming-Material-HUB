@@ -555,23 +555,26 @@ function Library:Init(config)
         self.ScreenGui.Enabled = not self.ScreenGui.Enabled 
     end)
 
+    -- [TRONG Library:Init, PHẦN TẠO TOPBAR]
+        
     local SearchBar = Utility:Create("TextBox", {
         Name = "SearchBar",
-        Parent = Topbar, -- Nằm trên thanh tiêu đề
-        Size = UDim2.new(0, 200, 0, 25),
-        Position = UDim2.new(1, -100, 0.5, 0), -- Căn giữa Topbar
-        AnchorPoint = Vector2.new(1, 0.5),
+        Parent = Topbar,
+        Size = UDim2.new(0, 200, 0, 24),
+        Position = UDim2.new(0.5, -100, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = ThemeManager.Current.Main,
         Text = "",
         PlaceholderText = "SEARCH MODULES...",
         TextColor3 = ThemeManager.Current.Accent,
         PlaceholderColor3 = ThemeManager.Current.TextDark,
         Font = ThemeManager.Current.FontMain,
-        TextSize = 12
+        TextSize = 12,
+        ClearTextOnFocus = false
     }, {
         Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
         Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1}),
-        Utility:Create("ImageLabel", { -- Icon kính lúp
+        Utility:Create("ImageLabel", { -- Icon Kính lúp
             Image = Assets.Icons.Search,
             Size = UDim2.fromOffset(14, 14),
             Position = UDim2.new(1, -20, 0.5, -7),
@@ -580,32 +583,60 @@ function Library:Init(config)
         })
     })
 
-    -- LOGIC TÌM KIẾM
-    SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+    --// LOGIC TÌM KIẾM HOÀN THIỆN //--
+    local function UpdateSearch()
         local query = SearchBar.Text:lower()
+        local isSearching = query ~= ""
         
-        -- Duyệt qua tất cả element đã đăng ký
+        -- 1. Lọc Elements
         for _, item in pairs(Library.SearchableElements) do
-            if query == "" then
-                -- Nếu xóa trắng ô tìm kiếm -> Hiện lại tất cả
-                item.Instance.Visible = true
-                item.Group.Visible = true 
-            else
-                -- Nếu tên element chứa từ khóa tìm kiếm
+            if isSearching then
                 if item.Name:lower():find(query) then
+                    -- Tìm thấy: Hiện nút & Highlight màu chữ
                     item.Instance.Visible = true
-                    item.Group.Visible = true -- Hiện Group chứa nó
                     
-                    -- Tự động mở Group nếu đang đóng (nếu bạn dùng Collapsible)
-                    -- (Code tùy chọn nếu bạn muốn tự động mở group)
+                    -- Nếu element có TextLabel con, đổi màu nó sang Accent
+                    local label = item.Instance:FindFirstChildOfClass("TextLabel")
+                    if label then label.TextColor3 = ThemeManager.Current.Accent end
+                    
+                    -- Đánh dấu Group cha là "Có chứa kết quả"
+                    item.GroupData.HasMatch = true
+                    
+                    -- Tự động mở Group nếu đang đóng
+                    if item.GroupData.SetCollapse then 
+                        item.GroupData.SetCollapse(false) 
+                    end
                 else
+                    -- Không khớp: Ẩn nút
                     item.Instance.Visible = false
                 end
+            else
+                -- Không tìm kiếm: Reset lại trạng thái ban đầu
+                item.Instance.Visible = true
+                local label = item.Instance:FindFirstChildOfClass("TextLabel")
+                if label then label.TextColor3 = ThemeManager.Current.Text end -- Trả lại màu trắng
+                
+                -- Reset cờ của Group
+                item.GroupData.HasMatch = false
             end
         end
-        
-        -- Logic phụ: Ẩn Group nếu không còn element nào hiện trong đó (Optional, hơi nặng)
-    end)
+
+        -- 2. Xử lý Groupbox (Ẩn Group rỗng)
+        for _, groupData in pairs(Library.AllGroupboxes) do
+            if isSearching then
+                -- Nếu Group có ít nhất 1 match -> Hiện, ngược lại -> Ẩn
+                groupData.Instance.Visible = groupData.HasMatch
+            else
+                -- Nếu không tìm kiếm -> Hiện tất cả Group
+                groupData.Instance.Visible = true
+            end
+            
+            -- Reset cờ cho lần search sau
+            groupData.HasMatch = false 
+        end
+    end
+
+    SearchBar:GetPropertyChangedSignal("Text"):Connect(UpdateSearch)
 
     -- Layout Containers
     local TabContainer = Utility:Create("ScrollingFrame", {
