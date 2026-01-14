@@ -451,11 +451,32 @@ function Library:Init(config)
         BackgroundTransparency = 1, ClipsDescendants = true
     })
 
-    -- Tooltip Logic Update
+    --// Tooltip Logic (Updated: Smart Bounds + Offset Y -15)
     RunService.RenderStepped:Connect(function()
         if self.Tooltip.Visible then
-            local mouse = UserInputService:GetMouseLocation()
-            self.Tooltip.Position = UDim2.fromOffset(mouse.X + 15, mouse.Y + 15)
+            local Mouse = UserInputService:GetMouseLocation()
+            local Screen = self.ScreenGui.AbsoluteSize
+            local TipSize = self.Tooltip.AbsoluteSize
+            
+            -- Offset mặc định: Cách chuột 15px sang phải, 15px lên trên (Y = -15)
+            local X = Mouse.X + 15
+            local Y = Mouse.Y - 15 
+            
+            -- [Smart Bounds] Kiểm tra tràn màn hình
+            
+            -- Nếu Tooltip bị tràn ra mép phải -> Đẩy sang bên trái chuột
+            if (X + TipSize.X) > Screen.X then
+                X = Mouse.X - TipSize.X - 10
+            end
+            
+            -- Nếu Tooltip bị tràn xuống mép dưới -> Đẩy lên cao hơn nữa
+            -- (Mặc định Y-15 đã là lên trên, nhưng check thêm cho chắc)
+            if (Y + TipSize.Y) > Screen.Y then
+                Y = Mouse.Y - TipSize.Y - 10
+            end
+            
+            -- Cập nhật vị trí
+            self.Tooltip.Position = UDim2.fromOffset(X, Y)
         end
     end)
     
@@ -580,16 +601,34 @@ function Library:Init(config)
                 end
             end)
 
-            -- LOCAL HELPER: TOOLTIP
+            -- LOCAL HELPER: TOOLTIP (Updated: Smooth Fade In)
             local function AddTooltip(element, text)
                 if not text or text == "" then return end
+                
                 element.MouseEnter:Connect(function()
                     Library.Tooltip.Text = text
-                    local b = TextService:GetTextSize(text, 12, ThemeManager.Current.FontMain, Vector2.new(200, 1000))
-                    Library.Tooltip.Size = UDim2.fromOffset(b.X + 12, b.Y + 8)
+                    
+                    -- Tự động tính toán kích thước khung dựa trên độ dài chữ
+                    local TextService = game:GetService("TextService")
+                    local Bounds = TextService:GetTextSize(text, 12, ThemeManager.Current.FontMain, Vector2.new(250, 1000))
+                    Library.Tooltip.Size = UDim2.fromOffset(Bounds.X + 14, Bounds.Y + 10)
+                    
+                    -- Reset trạng thái trong suốt trước khi hiện
+                    Library.Tooltip.BackgroundTransparency = 1
+                    Library.Tooltip.TextTransparency = 1
+                    Library.Tooltip.UIStroke.Transparency = 1
                     Library.Tooltip.Visible = true
+                    
+                    -- Hiệu ứng Fade In (Cyber Style)
+                    Utility:Tween(Library.Tooltip, {0.15}, {BackgroundTransparency = 0.1})
+                    Utility:Tween(Library.Tooltip, {0.15}, {TextTransparency = 0})
+                    Utility:Tween(Library.Tooltip.UIStroke, {0.15}, {Transparency = 0})
                 end)
-                element.MouseLeave:Connect(function() Library.Tooltip.Visible = false end)
+                
+                element.MouseLeave:Connect(function()
+                    -- Ẩn ngay lập tức hoặc Fade out tùy ý (ở đây ẩn luôn cho nhanh nhạy)
+                    Library.Tooltip.Visible = false
+                end)
             end
 
             --// ELEMENTS //--
