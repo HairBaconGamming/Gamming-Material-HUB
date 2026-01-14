@@ -28,8 +28,8 @@ local Assets = {
         Check = "rbxassetid://6031094667",
         Search = "rbxassetid://6031090990",
         Config = "rbxassetid://6031280882",
-        Warning = "rbxassetid://6031094670",
-        Info = "rbxassetid://6031094678"
+        Warning = "rbxassetid://11745872952",
+        Info = "rbxassetid://283952330"
     },
     Sounds = {
         Hover = "rbxassetid://6895079853", -- Tech blip
@@ -497,7 +497,7 @@ function Library:Init(config)
         Utility:Create("ImageLabel", { -- Glow Shadow
             Name = "Shadow", BackgroundTransparency = 1, Image = "rbxassetid://6015897843",
             Size = UDim2.new(1, 44, 1, 44), Position = UDim2.new(0, -22, 0, -22),
-            ImageColor3 = ThemeManager.Current.Accent, ImageTransparency = 0.9, ZIndex = 0
+            ImageColor3 = ThemeManager.Current.Accent, ImageTransparency = 1, ZIndex = 0
         })
     })
     ThemeManager:Register(self.MainFrame, "BackgroundColor3", "Main")
@@ -637,7 +637,7 @@ function Library:Init(config)
             
             -- Offset mặc định: Cách chuột 15px sang phải, 15px lên trên (Y = -15)
             local X = Mouse.X + 15
-            local Y = Mouse.Y - 36
+            local Y = Mouse.Y - 40
             
             -- [Smart Bounds] Kiểm tra tràn màn hình
             
