@@ -1387,7 +1387,9 @@ function Library:Init(config)
                     Text="", PlaceholderText=opts.Placeholder or "...", TextColor3=ThemeManager.Current.Accent, Font=ThemeManager.Current.FontMain, TextSize=12, TextXAlignment=Enum.TextXAlignment.Left
                 }, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)}), Utility:Create("UIStroke",{Color=ThemeManager.Current.Stroke,Thickness=1})})
                 AddTooltip(Frame, opts.Tooltip)
-                RegisterObject(Frame, Box)
+                RegisterSearch(text, Frame)
+                ThemeManager:Register(Box, "BackgroundColor3", "Main")
+                ThemeManager:Register(Box, "TextColor3", "Accent")
                 
                 local F = {} function F:Get() return Box.Text end
                 Box.FocusLost:Connect(function() Library.Flags[Flag] = Box.Text; if opts.Callback then opts.Callback(Box.Text) end end)
@@ -1398,7 +1400,10 @@ function Library:Init(config)
             function Group:AddDivider(text)
                 local Frame = Utility:Create("Frame", {Parent = Content, Size = UDim2.new(1,0,0,20), BackgroundTransparency = 1})
                 Utility:Create("Frame", {Parent=Frame, Size=UDim2.new(1,0,0,1), Position=UDim2.new(0,0,0.5,0), BackgroundColor3=ThemeManager.Current.Divider, BorderSizePixel=0})
-                if text then Utility:Create("TextLabel", {Parent=Frame, Text=text, Size=UDim2.new(0,0,1,0), Position=UDim2.new(0.5,0,0,0), BackgroundColor3=ThemeManager.Current.Main, TextColor3=ThemeManager.Current.TextDark, Font=ThemeManager.Current.FontBold, TextSize=11}) end
+                if text then Utility:Create("TextLabel", {Parent=Frame, Text=text, Size=UDim2.new(0,0,1,0), Position=UDim2.new(0.5,0,0,0), BackgroundColor3=ThemeManager.Current.Main, TextColor3=ThemeManager.Current.TextDark, Font=ThemeManager.Current.FontBold, TextSize=11}) end  
+                ThemeManager:Register(Frame.Frame, "BackgroundColor3", "Divider")
+                ThemeManager:Register(Frame.TextLabel, "BackgroundColor3", "Main")
+                ThemeManager:Register(Frame.TextLabel, "TextColor3", "TextDark")
             end
             
             function Group:AddProgressBar(text, config)
@@ -1406,6 +1411,9 @@ function Library:Init(config)
                  Utility:Create("TextLabel", {Parent=Frame, Text=text, Size=UDim2.new(1,0,0,15), BackgroundTransparency=1, TextColor3=ThemeManager.Current.Text, Font=ThemeManager.Current.FontMain, TextSize=12, TextXAlignment=Enum.TextXAlignment.Left})
                  local Bar = Utility:Create("Frame", {Parent=Frame, Size=UDim2.new(1,0,0,14), Position=UDim2.new(0,0,0,18), BackgroundColor3=ThemeManager.Current.Main}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)}), Utility:Create("UIStroke",{Color=ThemeManager.Current.Stroke,Thickness=1})})
                  local Fill = Utility:Create("Frame", {Parent=Bar, Size=UDim2.fromScale(0.5,1), BackgroundColor3=ThemeManager.Current.Accent}, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)})})
+                 ThemeManager:Register(Bar, "BackgroundColor3", "Main")
+                 ThemeManager:Register(Bar.UIStroke, "Color", "Stroke")
+                 ThemeManager:Register(Fill, "BackgroundColor3", "Accent")
                  local F={} function F:Set(v) Utility:Tween(Fill,{0.3},{Size=UDim2.fromScale(math.clamp(v/100,0,1),1)}) end return F
             end
 
