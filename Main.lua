@@ -172,8 +172,295 @@ local Library = {
     ScreenGui = nil,
     MainFrame = nil,
     Tooltip = nil,
-    ActiveDropdown = nil
+    ActiveDropdown = nil,
+
+    Flags = {},
+    Options = {},
+    ConfigFolder = "TitanConfig"
 }
+
+function Library:Notify(config)
+    local Title = config.Title or "Notification"
+    local Content = config.Content or "Message..."
+    local Duration = config.Duration or 3
+    local Image = config.Image or "rbxassetid://6031094678" -- Icon info
+
+    -- Tạo container nếu chưa có
+    if not self.NotifyContainer then
+        self.NotifyContainer = Utility:Create("Frame", {
+            Name = "NotifyContainer",
+            Parent = self.ScreenGui,
+            Size = UDim2.new(0, 300, 1, 0),
+            Position = UDim2.new(1, -310, 0, 20),
+            BackgroundTransparency = 1,
+            ZIndex = 100
+        }, {
+            Utility:Create("UIListLayout", {
+                SortOrder = Enum.SortOrder.LayoutOrder,
+                Padding = UDim.new(0, 10),
+                VerticalAlignment = Enum.VerticalAlignment.Bottom
+            })
+        })
+    end
+
+    -- Tạo khung thông báo
+    local Frame = Utility:Create("Frame", {
+        Parent = self.NotifyContainer,
+        Size = UDim2.new(1, 0, 0, 0), -- Bắt đầu size 0 để animation
+        BackgroundColor3 = ThemeManager.Current.Secondary,
+        ClipsDescendants = true,
+        BackgroundTransparency = 0.1
+    }, {
+        Utility:Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+        Utility:Create("UIStroke", {Color = ThemeManager.Current.Accent, Thickness = 1}),
+        Utility:Create("ImageLabel", { -- Icon
+            Size = UDim2.fromOffset(24, 24),
+            Position = UDim2.new(0, 10, 0, 13),
+            BackgroundTransparency = 1,
+            Image = Image,
+            ImageColor3 = ThemeManager.Current.Accent
+        }),
+        Utility:Create("TextLabel", { -- Title
+            Text = Title,
+            Size = UDim2.new(1, -50, 0, 20),
+            Position = UDim2.new(0, 45, 0, 5),
+            BackgroundTransparency = 1,
+            TextColor3 = ThemeManager.Current.Text,
+            Font = ThemeManager.Current.FontBold,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left
+        }),
+        Utility:Create("TextLabel", { -- Content
+            Text = Content,
+            Size = UDim2.new(1, -50, 0, 20),
+            Position = UDim2.new(0, 45, 0, 25),
+            BackgroundTransparency = 1,
+            TextColor3 = ThemeManager.Current.TextDark,
+            Font = ThemeManager.Current.FontMain,
+            TextSize = 12,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            TextWrapped = true
+        })
+    })
+
+    -- Animation In
+    Utility:Tween(Frame, {0.3}, {Size = UDim2.new(1, 0, 0, 60)})
+    
+    -- Sound Effect (Optional)
+    local Sound = Instance.new("Sound", workspace)
+    Sound.SoundId = "rbxassetid://4590657391"
+    Sound.Volume = 0.5
+    Sound:Play()
+    game.Debris:AddItem(Sound, 1)
+
+    -- Auto Close
+    task.delay(Duration, function()
+        Utility:Tween(Frame, {0.3}, {Size = UDim2.new(1, 0, 0, 0), BackgroundTransparency = 1})
+        task.wait(0.3)
+        Frame:Destroy()
+    end)
+end
+
+function Library:Watermark(text)
+    if self.WatermarkFrame then self.WatermarkFrame:Destroy() end
+
+    self.WatermarkFrame = Utility:Create("Frame", {
+        Name = "Watermark",
+        Parent = self.ScreenGui,
+        Size = UDim2.fromOffset(200, 26), -- Chiều rộng sẽ tự động chỉnh
+        Position = UDim2.new(0, 20, 0, 20),
+        BackgroundColor3 = ThemeManager.Current.Main,
+        ZIndex = 50
+    }, {
+        Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+        Utility:Create("UIStroke", {Color = ThemeManager.Current.Accent, Thickness = 1}),
+        Utility:Create("TextLabel", {
+            Name = "Text",
+            Size = UDim2.new(1, -20, 1, 0),
+            Position = UDim2.new(0, 10, 0, 0),
+            BackgroundTransparency = 1,
+            TextColor3 = ThemeManager.Current.Text,
+            Font = ThemeManager.Current.FontMain,
+            TextSize = 13,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Text = text or "Titan UI | FPS: 60 | Ping: 50ms"
+        })
+    })
+
+    -- Logic cập nhật FPS và Ping
+    RunService.RenderStepped:Connect(function()
+        if not self.WatermarkFrame.Parent then return end
+        
+        local fps = math.floor(1 / RunService.RenderStepped:Wait())
+        local ping = math.floor(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue())
+        local time = os.date("%H:%M:%S")
+        
+        local content = string.format("%s | FPS: %d | Ping: %dms | %s", text, fps, ping, time)
+        self.WatermarkFrame.Text.Text = content
+        
+        -- Auto resize
+        local size = TextService:GetTextSize(content, 13, ThemeManager.Current.FontMain, Vector2.new(1000, 26))
+        self.WatermarkFrame.Size = UDim2.fromOffset(size.X + 24, 26)
+    end)
+end
+
+function Library:Modal(config)
+    local Title = config.Title or "Alert"
+    local Content = config.Content or "Are you sure?"
+    local OnConfirm = config.OnConfirm or function() end
+    local OnCancel = config.OnCancel or function() end
+    
+    -- Tạo màng đen che mờ UI
+    local Overlay = Utility:Create("Frame", {
+        Parent = self.ScreenGui,
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundColor3 = Color3.fromRGB(0,0,0),
+        BackgroundTransparency = 1,
+        ZIndex = 200
+    })
+    Utility:Tween(Overlay, {0.2}, {BackgroundTransparency = 0.6})
+    
+    -- Khung Modal
+    local ModalFrame = Utility:Create("Frame", {
+        Parent = Overlay,
+        Size = UDim2.fromOffset(300, 150),
+        Position = UDim2.fromScale(0.5, 0.5),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = ThemeManager.Current.Main,
+        ClipsDescendants = true
+    }, {
+        Utility:Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
+        Utility:Create("UIStroke", {Color = ThemeManager.Current.Accent, Thickness = 1}),
+        Utility:Create("UIScale", {Scale = 0}) -- Dùng Scale để animation popup
+    })
+    
+    Utility:Tween(ModalFrame.UIScale, {0.3, Enum.EasingStyle.Back}, {Scale = 1})
+
+    -- Text
+    Utility:Create("TextLabel", {
+        Parent = ModalFrame,
+        Text = Title,
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundTransparency = 1,
+        TextColor3 = ThemeManager.Current.Accent,
+        Font = ThemeManager.Current.FontBold,
+        TextSize = 18
+    })
+    
+    Utility:Create("TextLabel", {
+        Parent = ModalFrame,
+        Text = Content,
+        Size = UDim2.new(1, -20, 0, 60),
+        Position = UDim2.new(0, 10, 0, 35),
+        BackgroundTransparency = 1,
+        TextColor3 = ThemeManager.Current.Text,
+        Font = ThemeManager.Current.FontMain,
+        TextSize = 14,
+        TextWrapped = true
+    })
+    
+    -- Buttons Container
+    local BtnHolder = Utility:Create("Frame", {
+        Parent = ModalFrame,
+        Size = UDim2.new(1, -20, 0, 35),
+        Position = UDim2.new(0, 10, 1, -45),
+        BackgroundTransparency = 1
+    }, {
+        Utility:Create("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal, 
+            Padding = UDim.new(0, 10),
+            HorizontalAlignment = Enum.HorizontalAlignment.Center
+        })
+    })
+    
+    local function CreateBtn(txt, color, callback)
+        local btn = Utility:Create("TextButton", {
+            Parent = BtnHolder,
+            Size = UDim2.new(0.48, 0, 1, 0),
+            BackgroundColor3 = color,
+            Text = txt,
+            TextColor3 = ThemeManager.Current.Text,
+            Font = ThemeManager.Current.FontBold,
+            TextSize = 13
+        }, {Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)})})
+        
+        btn.MouseButton1Click:Connect(function()
+            Utility:Tween(ModalFrame.UIScale, {0.2}, {Scale = 0})
+            Utility:Tween(Overlay, {0.2}, {BackgroundTransparency = 1})
+            task.delay(0.2, function() Overlay:Destroy() end)
+            callback()
+        end)
+    end
+    
+    CreateBtn("Confirm", ThemeManager.Current.Accent, OnConfirm)
+    CreateBtn("Cancel", ThemeManager.Current.Secondary, OnCancel)
+end
+
+-- Tạo Folder nếu chưa có
+if not isfolder(Library.ConfigFolder) then makefolder(Library.ConfigFolder) end
+
+function Library:SaveConfig(name)
+    if not isfolder(Library.ConfigFolder) then makefolder(Library.ConfigFolder) end
+    
+    local json = HttpService:JSONEncode(Library.Flags)
+    writefile(Library.ConfigFolder .. "/" .. name .. ".json", json)
+    Library:Notify({Title = "Config", Content = "Successfully saved: " .. name})
+end
+
+function Library:LoadConfig(name)
+    local file = Library.ConfigFolder .. "/" .. name .. ".json"
+    if not isfile(file) then
+        Library:Notify({Title = "Error", Content = "Config file not found!", Image = "rbxassetid://6031094670"})
+        return
+    end
+
+    local success, data = pcall(function()
+        return HttpService:JSONDecode(readfile(file))
+    end)
+
+    if not success then
+        Library:Notify({Title = "Error", Content = "Corrupted JSON file!"})
+        return
+    end
+
+    -- Bắt đầu load từng giá trị
+    for flag, value in pairs(data) do
+        local element = Library.Options[flag]
+        
+        if element then
+            -- Xử lý đặc biệt cho Color3 (Vì JSON lưu màu dưới dạng table {R, G, B})
+            if type(value) == "table" and value.R and value.G and value.B then
+                value = Color3.new(value.R, value.G, value.B)
+            end
+            
+            -- Xử lý đặc biệt cho Keybind (JSON lưu dưới dạng string tên phím)
+            if type(value) == "string" and element.Type == "Keybind" then
+                -- Logic convert String -> Enum.KeyCode nằm ở element Keybind
+                -- Ở đây ta cứ truyền string, element tự lo
+            end
+
+            -- Gọi hàm Set của element để cập nhật UI + Trigger Callback
+            if element.Set then
+                element:Set(value)
+            end
+        end
+    end
+    
+    Library:Notify({Title = "Config", Content = "Loaded configuration: " .. name})
+end
+
+function Library:GetConfigs()
+    local cfgs = {}
+    if isfolder(Library.ConfigFolder) then
+        for _, file in ipairs(listfiles(Library.ConfigFolder)) do
+            if file:sub(-5) == ".json" then
+                local pos = file:find(Library.ConfigFolder)
+                table.insert(cfgs, file:sub(pos + #Library.ConfigFolder + 1, -6))
+            end
+        end
+    end
+    return cfgs
+end
 
 function Library:Init(config)
     local Title = config.Title or "Titan UI"
@@ -377,17 +664,20 @@ function Library:Init(config)
         --// GROUPBOX SYSTEM (For Columns) //--
         function Tab:AddGroupbox(config)
             local Title = config.Title or "Group"
-            local Side = config.Side or "Left" -- "Left" or "Right"
+            local Side = config.Side or "Left"
             local ParentCol = (Side == "Left" and LeftCol) or RightCol
             
             local Group = {}
+            local IsCollapsed = false
             
+            -- Frame chính
             local BoxFrame = Utility:Create("Frame", {
                 Name = Title.."_Group",
                 Parent = ParentCol,
                 BackgroundColor3 = ThemeManager.Current.Secondary,
-                Size = UDim2.new(1, 0, 0, 0), -- Auto scaled
-                AutomaticSize = Enum.AutomaticSize.Y
+                Size = UDim2.new(1, 0, 0, 0), -- Auto
+                AutomaticSize = Enum.AutomaticSize.Y,
+                ClipsDescendants = true -- Quan trọng để giấu nội dung khi thu nhỏ
             }, {
                 Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
                 Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1}),
@@ -395,11 +685,18 @@ function Library:Init(config)
             ThemeManager:Register(BoxFrame, "BackgroundColor3", "Secondary")
             ThemeManager:Register(BoxFrame.UIStroke, "Color", "Stroke")
 
-            local BoxTitle = Utility:Create("TextLabel", {
+            -- Header (Tiêu đề + Nút đóng mở)
+            local Header = Utility:Create("Frame", {
                 Parent = BoxFrame,
+                Size = UDim2.new(1, 0, 0, 30),
+                BackgroundTransparency = 1
+            })
+
+            local BoxTitle = Utility:Create("TextLabel", {
+                Parent = Header,
                 Text = Title,
-                Size = UDim2.new(1, -20, 0, 20),
-                Position = UDim2.new(0, 10, 0, 5),
+                Size = UDim2.new(1, -40, 1, 0),
+                Position = UDim2.new(0, 10, 0, 0),
                 BackgroundTransparency = 1,
                 TextColor3 = ThemeManager.Current.Accent,
                 Font = ThemeManager.Current.FontBold,
@@ -408,28 +705,59 @@ function Library:Init(config)
             })
             ThemeManager:Register(BoxTitle, "TextColor3", "Accent")
 
+            -- Nút Mũi tên (Toggle Collapse)
+            local CollapseBtn = Utility:Create("ImageButton", {
+                Parent = Header,
+                Size = UDim2.fromOffset(20, 20),
+                Position = UDim2.new(1, -25, 0.5, -10),
+                BackgroundTransparency = 1,
+                Image = "rbxassetid://6031090990", -- Arrow Up
+                ImageColor3 = ThemeManager.Current.TextDark
+            })
+
+            -- Container chứa Elements
             local Content = Utility:Create("Frame", {
                 Name = "Content",
                 Parent = BoxFrame,
                 BackgroundTransparency = 1,
                 Size = UDim2.new(1, -16, 0, 0),
-                Position = UDim2.new(0, 8, 0, 30),
+                Position = UDim2.new(0, 8, 0, 35), -- Dịch xuống dưới Header
                 AutomaticSize = Enum.AutomaticSize.Y
             }, {
                 Utility:Create("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 6)}),
                 Utility:Create("UIPadding", {PaddingBottom = UDim.new(0, 8)})
             })
 
-            -- Tooltip Helper
-            local function AddTooltip(obj, text)
-                if not text then return end
-                obj.MouseEnter:Connect(function()
-                    Library.Tooltip.Text = text
-                    Library.Tooltip.Size = UDim2.fromOffset(Utility:GetTextSize(text, ThemeManager.Current.FontMain, 12).X + 12, 24)
-                    Library.Tooltip.Visible = true
-                end)
-                obj.MouseLeave:Connect(function() Library.Tooltip.Visible = false end)
-            end
+            -- Logic đóng mở
+            local ContentHeight = 0
+            
+            -- Cập nhật chiều cao thực tế khi element thay đổi
+            Content.ChildAdded:Connect(function() 
+                if not IsCollapsed then BoxFrame.Size = UDim2.new(1, 0, 0, 0) end -- Reset để AutomaticSize tính lại
+            end)
+
+            CollapseBtn.MouseButton1Click:Connect(function()
+                IsCollapsed = not IsCollapsed
+                
+                if IsCollapsed then
+                    -- Lưu chiều cao hiện tại trước khi đóng
+                    ContentHeight = Content.AbsoluteSize.Y + 45
+                    -- Tắt AutomaticSize để tween được
+                    BoxFrame.AutomaticSize = Enum.AutomaticSize.None
+                    Content.Visible = false
+                    Utility:Tween(BoxFrame, {0.3}, {Size = UDim2.new(1, 0, 0, 30)}) -- Chiều cao chỉ bằng Header
+                    Utility:Tween(CollapseBtn, {0.3}, {Rotation = 180})
+                else
+                    Content.Visible = true
+                    local t = Utility:Tween(BoxFrame, {0.3}, {Size = UDim2.new(1, 0, 0, ContentHeight)})
+                    Utility:Tween(CollapseBtn, {0.3}, {Rotation = 0})
+                    
+                    -- Bật lại AutoSize sau khi tween xong
+                    t.Completed:Connect(function()
+                        BoxFrame.AutomaticSize = Enum.AutomaticSize.Y
+                    end)
+                end
+            end)
 
             --// ELEMENTS //--
             
@@ -890,6 +1218,15 @@ function Library:Init(config)
                 end)
 
                 RefreshDisplay()
+
+                local Funcs = {}
+                function Funcs:Refresh(newItems)
+                    items = newItems
+                    Selected = Multi and {} or newItems[1]
+                    Populate()
+                    RefreshDisplay()
+                end
+                function Funcs:Get() return Selected end
             end
             
             function Group:AddColorPicker(text, default, callback)
@@ -1008,6 +1345,339 @@ function Library:Init(config)
                 end)
             end
 
+            function Group:AddKeybind(text, default, callback, config)
+                local opts = config or {}
+                local Key = default or Enum.KeyCode.RightAlt
+                local IsBinding = false
+                
+                -- Container
+                local Frame = Utility:Create("Frame", {
+                    Parent = Content,
+                    Size = UDim2.new(1, 0, 0, 30),
+                    BackgroundTransparency = 1,
+                })
+                AddTooltip(Frame, opts.Tooltip)
+
+                -- Label
+                local Label = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = text,
+                    Size = UDim2.new(1, -90, 1, 0),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Text,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 13,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+                ThemeManager:Register(Label, "TextColor3", "Text")
+
+                -- Key Button
+                local BindBtn = Utility:Create("TextButton", {
+                    Parent = Frame,
+                    Size = UDim2.new(0, 80, 0, 20),
+                    Position = UDim2.new(1, -80, 0.5, -10),
+                    BackgroundColor3 = ThemeManager.Current.Main,
+                    Text = "[" .. Key.Name .. "]",
+                    TextColor3 = ThemeManager.Current.TextDark,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 12,
+                    AutoButtonColor = false
+                }, {
+                    Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1})
+                })
+                ThemeManager:Register(BindBtn, "BackgroundColor3", "Main")
+                ThemeManager:Register(BindBtn.UIStroke, "Color", "Stroke")
+                ThemeManager:Register(BindBtn, "TextColor3", "TextDark")
+
+                -- Logic Binding
+                BindBtn.MouseButton1Click:Connect(function()
+                    if IsBinding then return end
+                    IsBinding = true
+                    BindBtn.Text = "[...]"
+                    BindBtn.TextColor3 = ThemeManager.Current.Accent
+                    
+                    local inputWait
+                    inputWait = UserInputService.InputBegan:Connect(function(input)
+                        -- Chấp nhận Keyboard hoặc MouseButton
+                        if input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType.Name:find("MouseButton") then
+                            IsBinding = false
+                            
+                            -- Nếu ấn Escape thì hủy bind (giữ phím cũ) hoặc clear (tùy chọn)
+                            if input.KeyCode == Enum.KeyCode.Escape then
+                                -- Giữ nguyên hoặc đặt thành None
+                            else
+                                Key = (input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode) or input.UserInputType
+                            end
+                            
+                            -- Cập nhật Text
+                            local keyName = (typeof(Key) == "EnumItem") and Key.Name or Key
+                            BindBtn.Text = "[" .. tostring(keyName) .. "]"
+                            BindBtn.TextColor3 = ThemeManager.Current.TextDark
+                            
+                            -- Gọi callback báo key mới đã được set (Optional)
+                            -- pcall(callback, Key) 
+                            
+                            inputWait:Disconnect()
+                        end
+                    end)
+                end)
+
+                -- Logic Trigger (Kích hoạt callback khi ấn phím)
+                UserInputService.InputBegan:Connect(function(input, gp)
+                    if not gp and not IsBinding then
+                        local inputKey = (input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode) or input.UserInputType
+                        if inputKey == Key then
+                            pcall(callback, Key) -- Trigger hành động
+                            
+                            -- Visual Effect nhỏ khi ấn
+                            Utility:Tween(BindBtn, {0.1}, {TextColor3 = ThemeManager.Current.Accent})
+                            task.delay(0.1, function()
+                                Utility:Tween(BindBtn, {0.2}, {TextColor3 = ThemeManager.Current.TextDark})
+                            end)
+                        end
+                    end
+                end)
+                
+                -- Trả về helper để script ngoài có thể đổi key
+                local Funcs = {}
+                function Funcs:Set(newKey)
+                    Key = newKey
+                    BindBtn.Text = "[" .. tostring(Key.Name) .. "]"
+                end
+                return Funcs
+            end
+
+            function Group:AddInput(text, config)
+                local opts = config or {}
+                local Default = opts.Default or ""
+                local Callback = opts.Callback or function() end
+                local Numeric = opts.Numeric or false
+                local Finished = opts.Finished or true -- True: Chỉ gọi callback khi Enter/Mất focus
+                
+                local Frame = Utility:Create("Frame", {
+                    Parent = Content,
+                    Size = UDim2.new(1, 0, 0, 45),
+                    BackgroundTransparency = 1,
+                })
+                AddTooltip(Frame, opts.Tooltip)
+                
+                local Label = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = text,
+                    Size = UDim2.new(1, 0, 0, 15),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Text,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 13,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+                ThemeManager:Register(Label, "TextColor3", "Text")
+                
+                local InputFrame = Utility:Create("Frame", {
+                    Parent = Frame,
+                    Size = UDim2.new(1, 0, 0, 25),
+                    Position = UDim2.new(0, 0, 0, 20),
+                    BackgroundColor3 = ThemeManager.Current.Main,
+                }, {
+                    Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1})
+                })
+                ThemeManager:Register(InputFrame, "BackgroundColor3", "Main")
+                ThemeManager:Register(InputFrame.UIStroke, "Color", "Stroke")
+                
+                local Box = Utility:Create("TextBox", {
+                    Parent = InputFrame,
+                    Size = UDim2.new(1, -10, 1, 0),
+                    Position = UDim2.new(0, 5, 0, 0),
+                    BackgroundTransparency = 1,
+                    Text = Default,
+                    PlaceholderText = opts.Placeholder or "Type here...",
+                    TextColor3 = ThemeManager.Current.Text,
+                    PlaceholderColor3 = ThemeManager.Current.TextDark,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    ClearTextOnFocus = false
+                })
+                ThemeManager:Register(Box, "TextColor3", "Text")
+                ThemeManager:Register(Box, "PlaceholderColor3", "TextDark")
+                
+                -- Focus Animation
+                Box.Focused:Connect(function()
+                    Utility:Tween(InputFrame.UIStroke, {0.2}, {Color = ThemeManager.Current.Accent})
+                end)
+                
+                Box.FocusLost:Connect(function(enter)
+                    Utility:Tween(InputFrame.UIStroke, {0.2}, {Color = ThemeManager.Current.Stroke})
+                    if Numeric then
+                        local num = tonumber(Box.Text)
+                        if not num then Box.Text = Default else Box.Text = tostring(num) end
+                    end
+                    if Finished then Callback(Box.Text) end
+                end)
+                
+                if not Finished then
+                    Box:GetPropertyChangedSignal("Text"):Connect(function()
+                        if Numeric and not tonumber(Box.Text) and Box.Text ~= "" then 
+                            Box.Text = Box.Text:sub(1, -2) 
+                        else
+                            Callback(Box.Text)
+                        end
+                    end)
+                end
+                
+                local Funcs = {}
+                function Funcs:Set(t) Box.Text = t; Callback(t) end
+                function Funcs:Get() return Box.Text end
+                return Funcs
+            end
+
+            --// 2. PROGRESS BAR (Thanh tiến trình) //--
+            function Group:AddProgressBar(text, config)
+                local opts = config or {}
+                local Default = opts.Default or 0
+                local Max = opts.Max or 100
+                
+                local Frame = Utility:Create("Frame", {
+                    Parent = Content,
+                    Size = UDim2.new(1, 0, 0, 35),
+                    BackgroundTransparency = 1
+                })
+                AddTooltip(Frame, opts.Tooltip)
+                
+                local Label = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = text,
+                    Size = UDim2.new(1, 0, 0, 15),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Text,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 13,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+                ThemeManager:Register(Label, "TextColor3", "Text")
+                
+                local ValueLabel = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = math.floor((Default/Max)*100).."%",
+                    Size = UDim2.new(1, 0, 0, 15),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.TextDark,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Right
+                })
+                ThemeManager:Register(ValueLabel, "TextColor3", "TextDark")
+                
+                local BarBG = Utility:Create("Frame", {
+                    Parent = Frame,
+                    Size = UDim2.new(1, 0, 0, 14),
+                    Position = UDim2.new(0, 0, 0, 18),
+                    BackgroundColor3 = ThemeManager.Current.Main
+                }, {
+                    Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1})
+                })
+                ThemeManager:Register(BarBG, "BackgroundColor3", "Main")
+                ThemeManager:Register(BarBG.UIStroke, "Color", "Stroke")
+                
+                local BarFill = Utility:Create("Frame", {
+                    Parent = BarBG,
+                    Size = UDim2.fromScale(math.clamp(Default/Max, 0, 1), 1),
+                    BackgroundColor3 = ThemeManager.Current.Accent
+                }, {Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)})})
+                ThemeManager:Register(BarFill, "BackgroundColor3", "Accent")
+                
+                local Funcs = {}
+                function Funcs:Set(val)
+                    local percent = math.clamp(val/Max, 0, 1)
+                    ValueLabel.Text = math.floor(percent*100).."%"
+                    Utility:Tween(BarFill, {0.3}, {Size = UDim2.fromScale(percent, 1)})
+                end
+                return Funcs
+            end
+
+            --// 3. DIVIDER (Đường kẻ phân cách) //--
+            function Group:AddDivider(text)
+                local Frame = Utility:Create("Frame", {
+                    Parent = Content,
+                    Size = UDim2.new(1, 0, 0, 20),
+                    BackgroundTransparency = 1
+                })
+                
+                local Line1 = Utility:Create("Frame", {
+                    Parent = Frame,
+                    BackgroundColor3 = ThemeManager.Current.Divider,
+                    Size = UDim2.new(text and 0.35 or 1, 0, 0, 1),
+                    Position = UDim2.new(0, 0, 0.5, 0),
+                    BorderSizePixel = 0
+                })
+                ThemeManager:Register(Line1, "BackgroundColor3", "Divider")
+                
+                if text then
+                    local Label = Utility:Create("TextLabel", {
+                        Parent = Frame,
+                        Text = text,
+                        Size = UDim2.new(0.3, 0, 1, 0),
+                        Position = UDim2.new(0.35, 0, 0, 0),
+                        BackgroundTransparency = 1,
+                        TextColor3 = ThemeManager.Current.TextDark,
+                        Font = ThemeManager.Current.FontBold,
+                        TextSize = 11
+                    })
+                    ThemeManager:Register(Label, "TextColor3", "TextDark")
+                    
+                    local Line2 = Utility:Create("Frame", {
+                        Parent = Frame,
+                        BackgroundColor3 = ThemeManager.Current.Divider,
+                        Size = UDim2.new(0.35, 0, 0, 1),
+                        Position = UDim2.new(0.65, 0, 0.5, 0),
+                        BorderSizePixel = 0
+                    })
+                    ThemeManager:Register(Line2, "BackgroundColor3", "Divider")
+                end
+            end
+            
+            --// 4. DYNAMIC LABEL (Label hiển thị Status) //--
+            function Group:AddStatusLabel(text, default)
+                local Frame = Utility:Create("Frame", {
+                    Parent = Content,
+                    Size = UDim2.new(1, 0, 0, 20),
+                    BackgroundTransparency = 1
+                })
+                
+                local Title = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = text,
+                    Size = UDim2.new(0.5, 0, 1, 0),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Text,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 13,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+                ThemeManager:Register(Title, "TextColor3", "Text")
+                
+                local Value = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = default or "...",
+                    Size = UDim2.new(0.5, 0, 1, 0),
+                    Position = UDim2.new(0.5, 0, 0, 0),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Accent,
+                    Font = ThemeManager.Current.FontBold,
+                    TextSize = 13,
+                    TextXAlignment = Enum.TextXAlignment.Right
+                })
+                ThemeManager:Register(Value, "TextColor3", "Accent")
+                
+                local Funcs = {}
+                function Funcs:Set(t) Value.Text = t end
+                function Funcs:SetColor(c) Value.TextColor3 = c end
+                return Funcs
+            end
+
             return Group
         end
 
@@ -1015,7 +1685,7 @@ function Library:Init(config)
     end
 
     --// SETTINGS TAB (Built-in) //--
-    local Settings = Window:AddTab("Settings")
+    local Settings = Window:AddTab("UI Settings")
     local ThemeGroup = Settings:AddGroupbox({Title = "Theme Manager", Side = "Left"})
     
     ThemeGroup:AddButton("Dark Theme", function()
@@ -1025,7 +1695,7 @@ function Library:Init(config)
             Text = Color3.fromRGB(240,240,240),
             Accent = Color3.fromRGB(0, 160, 255)
         })
-    end)
+    end, {Tooltip = "Switch to a dark color theme"})
     
     ThemeGroup:AddButton("Light Theme", function()
         ThemeManager:UpdateTheme({
@@ -1036,12 +1706,38 @@ function Library:Init(config)
             TextDark = Color3.fromRGB(100, 100, 100),
             Accent = Color3.fromRGB(0, 120, 215)
         })
-    end)
+    end, {Tooltip = "Switch to a light color theme"})
     
     local KeybindGroup = Settings:AddGroupbox({Title = "Menu Key", Side = "Right"})
 
     KeybindGroup:AddKeybind("Toggle Menu", Enum.KeyCode.RightControl, function(key)
         Library:Toggle(key)
+    end, {Tooltip = "Press to show/hide the menu"})
+
+    local ConfigGroup = Settings:AddGroupbox({Title = "Config Manager", Side = "Right"})
+        
+    local ConfigName = ConfigGroup:AddInput("Config Name", {Placeholder = "MySetting"})
+    local ConfigList = ConfigGroup:AddDropdown("Available Configs", Library:GetConfigs(), false, function() end)
+    
+    ConfigGroup:AddButton("Save Config", function()
+        local name = ConfigName:Get()
+        if name and name ~= "" then
+            Library:SaveConfig(name)
+            ConfigList:Refresh(Library:GetConfigs()) -- Cần thêm hàm Refresh cho Dropdown (xem bên dưới)
+        else
+                Library:Notify({Title="Error", Content="Please enter a config name"})
+        end
+    end)
+    
+    ConfigGroup:AddButton("Load Config", function()
+        local selected = ConfigList:Get() -- Cần hàm Get cho Dropdown
+        if selected then
+                Library:LoadConfig(selected)
+        end
+    end)
+    
+    ConfigGroup:AddButton("Refresh List", function()
+        ConfigList:Refresh(Library:GetConfigs())
     end)
     return Window
 end
