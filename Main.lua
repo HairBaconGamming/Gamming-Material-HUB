@@ -759,6 +759,31 @@ function Library:Init(config)
                 end
             end)
 
+            local function AddTooltip(element, text)
+                if not text or text == "" then return end
+                
+                -- Sự kiện khi di chuột vào
+                element.MouseEnter:Connect(function()
+                    local ScreenSize = Library.ScreenGui.AbsoluteSize
+                    local MousePos = UserInputService:GetMouseLocation()
+                    
+                    Library.Tooltip.Text = text
+                    
+                    -- Tính toán kích thước text để resize khung Tooltip
+                    local TextService = game:GetService("TextService")
+                    local Fonts = ThemeManager.Current.FontMain
+                    local Bounds = TextService:GetTextSize(text, 12, Fonts, Vector2.new(200, 1000)) -- Max width 200px
+                    
+                    Library.Tooltip.Size = UDim2.fromOffset(Bounds.X + 12, Bounds.Y + 8)
+                    Library.Tooltip.Visible = true
+                end)
+                
+                -- Sự kiện khi di chuột ra
+                element.MouseLeave:Connect(function()
+                    Library.Tooltip.Visible = false
+                end)
+            end
+
             --// ELEMENTS //--
             
             function Group:AddLabel(text, config)
