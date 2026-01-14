@@ -33,7 +33,7 @@ local Assets = {
     },
     Sounds = {
         Hover = "rbxassetid://6895079853", -- Tech blip
-        Click = "rbxassetid://4210586953", -- Mechanical click
+        Click = "rbxassetid://88442833509532", -- Mechanical click
         Notify = "rbxassetid://4590657391"
     }
 }
@@ -124,7 +124,7 @@ function Utility:AddTechBorder(parent, thickness, transparency)
     local stroke = Utility:Create("UIStroke", {
         Parent = parent,
         Color = ThemeManager.Current.Stroke,
-        Thickness = thickness or 1,
+        Thickness = thickness or 0.2,
         Transparency = transparency or 0,
         ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     })
@@ -144,6 +144,44 @@ function Utility:AddScanline(parent)
         ZIndex = 1
     })
     ThemeManager:Register(Scan, "ImageColor3", "Accent")
+end
+
+function Utility:MakeResizable(frame, handle, minSize)
+    local dragging = false
+    local startSize = Vector2.new(0,0)
+    local startMouse = Vector2.new(0,0)
+
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            startSize = frame.AbsoluteSize
+            startMouse = UserInputService:GetMouseLocation()
+            
+            -- Visual Effect: Sáng lên khi đang kéo
+            Utility:Tween(handle, {0.2}, {ImageColor3 = ThemeManager.Current.Accent})
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+            -- Visual Effect: Trở về màu cũ
+            Utility:Tween(handle, {0.2}, {ImageColor3 = ThemeManager.Current.TextDark})
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local currentMouse = UserInputService:GetMouseLocation()
+            local delta = currentMouse - startMouse
+            local newSizeX = math.max(minSize.X, startSize.X + delta.X)
+            local newSizeY = math.max(minSize.Y, startSize.Y + delta.Y)
+            
+            -- Sử dụng Tween để resize mượt hơn một chút hoặc set trực tiếp để performance cao
+            -- Ở đây set trực tiếp để phản hồi nhanh nhất (Snappy cyber feel)
+            frame.Size = UDim2.fromOffset(newSizeX, newSizeY)
+        end
+    end)
 end
 
 --// LIBRARY CORE //--
@@ -401,6 +439,26 @@ function Library:Init(config)
     
     Utility:AddScanline(self.MainFrame) -- Add Tech Background
 
+    local ResizeHandle = Utility:Create("ImageButton", {
+        Name = "ResizeHandle",
+        Parent = self.MainFrame,
+        Size = UDim2.fromOffset(20, 20),
+        Position = UDim2.new(1, 0, 1, 0),
+        AnchorPoint = Vector2.new(1, 1),
+        BackgroundTransparency = 1,
+        Image = "rbxassetid://6153965706", -- Icon gạch chéo góc (Resize Icon)
+        ImageColor3 = ThemeManager.Current.TextDark,
+        ImageTransparency = 0.5,
+        ZIndex = 10 -- Đảm bảo nó nằm trên cùng
+    })
+    
+    -- Đăng ký theme cho nút resize
+    ThemeManager:Register(ResizeHandle, "ImageColor3", "TextDark")
+
+    -- Kích hoạt tính năng Resizable
+    -- MinSize là 500x350 để tránh UI bị vỡ khi kéo quá nhỏ
+    Utility:MakeResizable(self.MainFrame, ResizeHandle, Vector2.new(500, 350))
+
     -- Topbar (Header)
     local Topbar = Utility:Create("Frame", {
         Name = "Topbar", Parent = self.MainFrame,
@@ -460,7 +518,7 @@ function Library:Init(config)
             
             -- Offset mặc định: Cách chuột 15px sang phải, 15px lên trên (Y = -15)
             local X = Mouse.X + 15
-            local Y = Mouse.Y - 15 
+            local Y = Mouse.Y - 36
             
             -- [Smart Bounds] Kiểm tra tràn màn hình
             
@@ -551,7 +609,7 @@ function Library:Init(config)
                 ClipsDescendants = true, BackgroundTransparency = 0.5
             }, {
                 Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-                Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1, Transparency = 0.6}),
+                Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 0.2, Transparency = 0.6}),
             })
             ThemeManager:Register(BoxFrame, "BackgroundColor3", "Main")
             ThemeManager:Register(BoxFrame.UIStroke, "Color", "Stroke")
@@ -677,7 +735,7 @@ function Library:Init(config)
                     Text = "", AutoButtonColor = false, BackgroundTransparency = 0.5
                 }, {
                     Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1, Transparency = 0.5}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 0.2, Transparency = 0.5}),
                     Utility:Create("TextLabel", {
                         Text = text, Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1,
                         TextColor3 = ThemeManager.Current.Text, Font = ThemeManager.Current.FontMain, TextSize = 12
@@ -719,7 +777,7 @@ function Library:Init(config)
                     BackgroundColor3 = ThemeManager.Current.Main
                 }, {
                     Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1})
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 0.2})
                 })
                 ThemeManager:Register(Checkbox, "BackgroundColor3", "Main")
                 ThemeManager:Register(Checkbox.UIStroke, "Color", "Stroke")
@@ -842,7 +900,7 @@ function Library:Init(config)
                     BackgroundColor3 = ThemeManager.Current.Main, Text = "", AutoButtonColor = false, BackgroundTransparency = 0.5
                 }, {
                     Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 0.2}),
                     Utility:Create("ImageLabel", {
                         Image = Assets.Icons.Arrow, Size = UDim2.fromOffset(16, 16), Position = UDim2.new(1, -20, 0.5, -8),
                         BackgroundTransparency = 1, ImageColor3 = ThemeManager.Current.TextDark
@@ -861,7 +919,7 @@ function Library:Init(config)
                     BackgroundColor3 = ThemeManager.Current.Main, ClipsDescendants = true, Visible = false, ZIndex = 30
                 }, {
                     Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Accent, Thickness = 1})
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Accent, Thickness = 0.2})
                 })
                 ThemeManager:Register(ListFrame, "BackgroundColor3", "Main")
 
