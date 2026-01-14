@@ -877,6 +877,7 @@ function Library:Init(config)
 
             function Group:AddToggle(text, default, callback, config)
                 local opts = config or {}
+                local Flag = opts.Flag or text
                 local State = default or false
                 
                 local Container = Utility:Create("TextButton", {
@@ -920,8 +921,12 @@ function Library:Init(config)
                 ThemeManager:Register(Indicator, "BackgroundColor3", "TextDark")
                 
                 AddTooltip(Container, opts.Tooltip)
-
-                local function Update()
+                
+                local Funcs = {}
+                
+                -- Hàm Set cập nhật giá trị
+                function Funcs:Set(val)
+                    State = val
                     if State then
                         Utility:Tween(Checkbox, {0.2}, {BackgroundColor3 = ThemeManager.Current.Accent})
                         Utility:Tween(Indicator, {0.2}, {Position = UDim2.new(1, -18, 0.5, -8), BackgroundColor3 = ThemeManager.Current.Text})
@@ -929,22 +934,28 @@ function Library:Init(config)
                         Utility:Tween(Checkbox, {0.2}, {BackgroundColor3 = ThemeManager.Current.Main})
                         Utility:Tween(Indicator, {0.2}, {Position = UDim2.new(0, 2, 0.5, -8), BackgroundColor3 = ThemeManager.Current.TextDark})
                     end
+                    -- QUAN TRỌNG: Lưu vào Flags
+                    Library.Flags[Flag] = State
                     pcall(callback, State)
                 end
                 
-                Container.MouseButton1Click:Connect(function()
-                    State = not State
-                    Update()
-                end)
-                Update()
+                -- Đăng ký vào hệ thống
+                Library.Options[Flag] = Funcs
+                Library.Flags[Flag] = State -- Lưu giá trị mặc định ban đầu
                 
-                local Funcs = {}
-                function Funcs:Set(v) State = v; Update() end
+                -- Khởi chạy trạng thái ban đầu
+                Funcs:Set(State)
+                -- Event Click (Sửa lại để dùng hàm Set)
+                Container.MouseButton1Click:Connect(function()
+                    Funcs:Set(not State)
+                end)
+            
                 return Funcs
             end
 
             function Group:AddSlider(text, min, max, default, callback, config)
                 local opts = config or {}
+                local Flag = opts.Flag or text
                 local Value = default or min
                 
                 local Frame = Utility:Create("Frame", {
@@ -998,15 +1009,27 @@ function Library:Init(config)
                 ThemeManager:Register(Fill, "BackgroundColor3", "Accent")
                 
                 local Interact = Utility:Create("TextButton", {Parent = Track, Size = UDim2.fromScale(1,1), BackgroundTransparency = 1, Text = ""})
+
+                local Funcs = {}
                 
-                local function Update(val)
-                    Value = math.clamp(val, min, max)
+                function Funcs:Set(val)
+                    Value = math.clamp(tonumber(val) or min, min, max)
+                    
+                    -- Update UI
                     local percent = (Value - min) / (max - min)
                     Fill:TweenSize(UDim2.new(percent, 0, 1, 0), "Out", "Quad", 0.1, true)
                     ValLabel.Text = string.format("%.1f", Value)
+                    
+                    -- Lưu data
+                    Library.Flags[Flag] = Value
                     pcall(callback, Value)
                 end
+            
+                Library.Options[Flag] = Funcs
+                Library.Flags[Flag] = Value
                 
+                Funcs:Set(Value) -- Init
+
                 Interact.MouseButton1Down:Connect(function()
                     local move, kill
                     move = UserInputService.InputChanged:Connect(function(io)
@@ -1019,14 +1042,15 @@ function Library:Init(config)
                         if io.UserInputType == Enum.UserInputType.MouseButton1 then move:Disconnect(); kill:Disconnect() end
                     end)
                     local scale = math.clamp((UserInputService:GetMouseLocation().X - Track.AbsolutePosition.X) / Track.AbsoluteSize.X, 0, 1)
-                    Update(min + (max-min)*scale)
+                    Funcs:Set(min + (max-min)*scale)
                 end)
-                Update(Value)
+                return Funcs
             end
 
             --// COMPLEX DROPDOWN (Multi-Select + Search) //--
             function Group:AddDropdown(text, items, multi, callback, config)
                 local opts = config or {}
+                local Flag = opts.Flag or text
                 local Multi = multi or false
                 local Selected = Multi and {} or items[1]
                 local IsOpen = false
@@ -1220,17 +1244,26 @@ function Library:Init(config)
                 RefreshDisplay()
 
                 local Funcs = {}
-                function Funcs:Refresh(newItems)
-                    items = newItems
-                    Selected = Multi and {} or newItems[1]
-                    Populate()
-                    RefreshDisplay()
+                    
+                function Funcs:Set(val)
+                    Selected = val
+                    RefreshDisplay() 
+                    
+                    Library.Flags[Flag] = Selected
+                    pcall(callback, Selected)
                 end
-                function Funcs:Get() return Selected end
+                
+                Library.Options[Flag] = Funcs
+                Library.Flags[Flag] = Selected
+
+                Funcs:Set(Color) -- Init
+                return Funcs
             end
             
             function Group:AddColorPicker(text, default, callback)
                 local Color = default or Color3.fromRGB(255,255,255)
+                local opts = config or {}
+                local Flag = opts.Flag or text
                 local H, S, V = Color:ToHSV()
                 local IsOpen = false
                 
@@ -1299,12 +1332,20 @@ function Library:Init(config)
                     Parent = HueImg, Size = UDim2.new(1,0,0,2), BackgroundColor3 = Color3.new(0,0,0),
                     Position = UDim2.fromScale(0, 1-H), BorderSizePixel = 0
                 })
+
+                local Funcs = {}         
                 
                 local function Update()
                     Color = Color3.fromHSV(H, S, V)
                     Preview.BackgroundColor3 = Color
                     SVImg.BackgroundColor3 = Color3.fromHSV(H, 1, 1)
+                    Library.Flags[Flag] = {R = Color.R, G = Color.G, B = Color.B}
                     pcall(callback, Color)
+                end
+
+                function Funcs:Set(val)
+                    H,S,V = val:ToHSV()
+                    Update()
                 end
                 
                 local function HandleInput(input, type)
@@ -1343,6 +1384,11 @@ function Library:Init(config)
                     PickerFrame.Visible = IsOpen
                     Utility:Tween(Frame, {0.3}, {Size = UDim2.new(1, 0, 0, IsOpen and 160 or 30)})
                 end)
+            
+                Library.Options[Flag] = Funcs
+                Library.Flags[Flag] = {R = Color.R, G = Color.G, B = Color.B}
+                Funcs:Set(Color) -- Init
+                return Funcs
             end
 
             function Group:AddKeybind(text, default, callback, config)
