@@ -192,12 +192,12 @@ local Library = {
     Tooltip = nil,
     ActiveDropdown = nil,
     NotifyContainer = nil,
-    
+
     Flags = {},
     Options = {},
     ConfigFolder = "TitanHub_Configs",
-
-    SearchableElements = {}
+    SearchableElements = {},
+    AllGroupboxes = {}
 }
 
 --// NOTIFICATION SYSTEM //--
@@ -559,8 +559,8 @@ function Library:Init(config)
         Name = "SearchBar",
         Parent = Topbar, -- Nằm trên thanh tiêu đề
         Size = UDim2.new(0, 200, 0, 25),
-        Position = UDim2.new(0.5, -100, 0.5, 0), -- Căn giữa Topbar
-        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = UDim2.new(1, -100, 0.5, 0), -- Căn giữa Topbar
+        AnchorPoint = Vector2.new(1, 0.5),
         BackgroundColor3 = ThemeManager.Current.Main,
         Text = "",
         PlaceholderText = "SEARCH MODULES...",
@@ -741,6 +741,9 @@ function Library:Init(config)
             })
             ThemeManager:Register(BoxFrame, "BackgroundColor3", "Main")
             ThemeManager:Register(BoxFrame.UIStroke, "Color", "Stroke")
+
+            -- Add to global groupboxes list for hide/show toggle
+            table.insert(Library.AllGroupboxes, BoxFrame)
 
             local Header = Utility:Create("Frame", {Parent = BoxFrame, Size = UDim2.new(1, 0, 0, 30), BackgroundTransparency = 1})
             
