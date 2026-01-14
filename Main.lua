@@ -195,7 +195,9 @@ local Library = {
     
     Flags = {},
     Options = {},
-    ConfigFolder = "TitanHub_Configs"
+    ConfigFolder = "TitanHub_Configs",
+
+    SearchableElements = {}
 }
 
 --// NOTIFICATION SYSTEM //--
