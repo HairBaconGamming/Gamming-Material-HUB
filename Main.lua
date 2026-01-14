@@ -424,7 +424,7 @@ function Library:Init(config)
     -- Close Button (Visual only for now or Minimize)
     local CloseBtn = Utility:Create("TextButton", {
         Parent = Topbar, Size = UDim2.fromOffset(25, 25), Position = UDim2.new(1, -30, 0.5, -12.5),
-        Text = "X", BackgroundTransparency = 1, TextColor3 = ThemeManager.Current.Error, Font = ThemeManager.Current.FontBold
+        Text = "X", BackgroundTransparency = 1, TextColor3 = ThemeManager.Current.Error, Font = ThemeManager.Current.FontBold, TextScaled = true
     })
     CloseBtn.MouseButton1Click:Connect(function() 
         self.ScreenGui.Enabled = not self.ScreenGui.Enabled 
