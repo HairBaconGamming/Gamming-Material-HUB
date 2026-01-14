@@ -1463,35 +1463,167 @@ function Library:Init(config)
         return Tab
     end
     
-    --// BUILT-IN SETTINGS //--
-    local Settings = Window:AddTab("SETTINGS")
-    local Themes = Settings:AddGroupbox({Title = "INTERFACE", Side = "Left"})
-    Themes:AddButton("UNLOAD UI", function() Library.ScreenGui:Destroy() end)
-    Themes:AddLabel("Theme Selection", {Color = ThemeManager.Current.TextDark})
-    Themes:AddButton("CYBER DARK (DEFAULT)", function()
-        ThemeManager:UpdateTheme({
-            Main = Color3.fromRGB(10, 12, 16),
-            Stroke = Color3.fromRGB(0, 255, 170),
-            Accent = Color3.fromRGB(0, 255, 170)
-        })
+    --// SETTINGS TAB (PROFESSIONAL THEME MANAGER) //--
+    local Settings = Window:AddTab("SYSTEM")
+    
+    -- 1. THEME MANAGER GROUP
+    local ThemeGroup = Settings:AddGroupbox({Title = "THEME STUDIO", Side = "Left"})
+    
+    -- Danh sách các Theme mẫu (Presets)
+    local BuiltInThemes = {
+        ["Default Cyber"] = {
+            Main = Color3.fromRGB(10, 12, 16), Secondary = Color3.fromRGB(20, 25, 30), 
+            Stroke = Color3.fromRGB(0, 255, 170), Accent = Color3.fromRGB(0, 255, 170), 
+            Divider = Color3.fromRGB(40, 50, 60), Text = Color3.fromRGB(230, 255, 240), 
+            TextDark = Color3.fromRGB(100, 150, 130)
+        },
+        ["Crimson Villain"] = {
+            Main = Color3.fromRGB(15, 10, 10), Secondary = Color3.fromRGB(25, 15, 15), 
+            Stroke = Color3.fromRGB(255, 50, 60), Accent = Color3.fromRGB(255, 50, 60), 
+            Divider = Color3.fromRGB(60, 30, 30), Text = Color3.fromRGB(255, 240, 240), 
+            TextDark = Color3.fromRGB(180, 100, 100)
+        },
+        ["Dracula"] = {
+            Main = Color3.fromRGB(40, 42, 54), Secondary = Color3.fromRGB(68, 71, 90), 
+            Stroke = Color3.fromRGB(189, 147, 249), Accent = Color3.fromRGB(189, 147, 249), 
+            Divider = Color3.fromRGB(98, 114, 164), Text = Color3.fromRGB(248, 248, 242), 
+            TextDark = Color3.fromRGB(140, 140, 160)
+        },
+        ["Nordic Snow"] = {
+            Main = Color3.fromRGB(46, 52, 64), Secondary = Color3.fromRGB(59, 66, 82), 
+            Stroke = Color3.fromRGB(136, 192, 208), Accent = Color3.fromRGB(136, 192, 208), 
+            Divider = Color3.fromRGB(76, 86, 106), Text = Color3.fromRGB(236, 239, 244), 
+            TextDark = Color3.fromRGB(216, 222, 233)
+        },
+        ["Synthwave 80s"] = {
+            Main = Color3.fromRGB(28, 11, 43), Secondary = Color3.fromRGB(45, 17, 56), 
+            Stroke = Color3.fromRGB(255, 0, 212), Accent = Color3.fromRGB(0, 247, 255), 
+            Divider = Color3.fromRGB(86, 21, 94), Text = Color3.fromRGB(255, 235, 250), 
+            TextDark = Color3.fromRGB(190, 100, 190)
+        }
+    }
+
+    -- Dropdown chọn Theme
+    local ThemeNames = {}
+    for name, _ in pairs(BuiltInThemes) do table.insert(ThemeNames, name) end
+    table.sort(ThemeNames)
+
+    local ThemeList = ThemeGroup:AddDropdown("Load Preset", ThemeNames, false, function(selected)
+        if BuiltInThemes[selected] then
+            ThemeManager:UpdateTheme(BuiltInThemes[selected])
+            
+            -- Cập nhật lại các ColorPicker bên dưới (để đồng bộ visual)
+            for key, col in pairs(BuiltInThemes[selected]) do
+                if Library.Options["Theme_"..key] then
+                    Library.Options["Theme_"..key]:Set(col)
+                end
+            end
+            Library:Notify({Title="THEME", Content="Loaded preset: "..selected})
+        end
     end)
-    Themes:AddButton("CRIMSON RED", function()
-        ThemeManager:UpdateTheme({
-            Main = Color3.fromRGB(15, 10, 10),
-            Stroke = Color3.fromRGB(255, 50, 50),
-            Accent = Color3.fromRGB(255, 50, 50)
-        })
+
+    ThemeGroup:AddDivider("CUSTOMIZE COLORS")
+
+    -- Tự động tạo Color Picker cho từng màu trong Theme
+    -- Sắp xếp thứ tự ưu tiên để UI đẹp hơn
+    local Order = {"Accent", "Stroke", "Main", "Secondary", "Divider", "Text", "TextDark"}
+    
+    for _, key in ipairs(Order) do
+        ThemeGroup:AddColorPicker(string.upper(key), ThemeManager.Current[key], function(color)
+            ThemeManager:UpdateTheme({[key] = color})
+        end, {Flag = "Theme_"..key}) -- Flag đặc biệt để code update được
+    end
+
+    -- 2. IMPORT / EXPORT GROUP
+    local JSONGroup = Settings:AddGroupbox({Title = "THEME DATA (JSON)", Side = "Left"})
+    
+    local ExportInput = JSONGroup:AddInput("Theme Data String", {Placeholder = "Paste theme JSON here..."})
+    
+    JSONGroup:AddButton("EXPORT CURRENT THEME", function()
+        -- Convert Color3 to Table {R,G,B} for JSON
+        local exportData = {}
+        for k, v in pairs(ThemeManager.Current) do
+            if typeof(v) == "Color3" then
+                exportData[k] = {R = v.R, G = v.G, B = v.B}
+            end
+        end
+        local json = HttpService:JSONEncode(exportData)
+        ExportInput.Box.Text = json
+        setclipboard(json)
+        Library:Notify({Title="EXPORT", Content="Theme JSON copied to clipboard!"})
+    end)
+
+    JSONGroup:AddButton("IMPORT FROM STRING", function()
+        local str = ExportInput:Get()
+        if str and str ~= "" then
+            local success, data = pcall(function() return HttpService:JSONDecode(str) end)
+            if success and type(data) == "table" then
+                local newTheme = {}
+                for k, v in pairs(data) do
+                    if v.R then newTheme[k] = Color3.new(v.R, v.G, v.B) end
+                end
+                
+                ThemeManager:UpdateTheme(newTheme)
+                
+                -- Sync Pickers
+                for key, col in pairs(newTheme) do
+                    if Library.Options["Theme_"..key] then
+                        Library.Options["Theme_"..key]:Set(col)
+                    end
+                end
+                
+                Library:Notify({Title="IMPORT", Content="Custom theme applied!"})
+            else
+                Library:Notify({Title="ERROR", Content="Invalid JSON data!", Image=Assets.Icons.Warning})
+            end
+        end
+    end)
+
+    -- 3. GENERAL SETTINGS
+    local MainSettings = Settings:AddGroupbox({Title = "GENERAL SETTINGS", Side = "Right"})
+    
+    MainSettings:AddKeybind("Toggle Interface", Enum.KeyCode.RightControl, function(key)
+        Library.ScreenGui.Enabled = not Library.ScreenGui.Enabled
+    end)
+
+    MainSettings:AddToggle("Show Keybind HUD", true, function(v)
+        Library.KeybindFrame.Visible = v
     end)
     
-    local Configs = Settings:AddGroupbox({Title = "CONFIGURATIONS", Side = "Right"})
-    local CfgName = Configs:AddInput("Config Name", {Flag = "CfgName"})
-    local CfgList = Configs:AddDropdown("Files", Library:GetConfigs(), false, function() end, {Flag = "CfgList"})
-    Configs:AddButton("SAVE CONFIG", function()
-        Library:SaveConfig(CfgName:Get())
-        CfgList:Set(Library:GetConfigs()) -- Refresh dropdown logic
+    MainSettings:AddToggle("Show Watermark", true, function(v)
+        Library.WatermarkFrame.Visible = v
     end)
-    Configs:AddButton("LOAD CONFIG", function()
-        Library:LoadConfig(CfgList.Value) -- Need to implement getter in dropdown properly
+
+    MainSettings:AddButton("Unload Interface", function()
+        Library:Modal({
+            Title = "UNLOAD UI?",
+            Content = "This will destroy the interface and clear all connections.",
+            OnConfirm = function() Library.ScreenGui:Destroy() end
+        })
+    end)
+
+    -- 4. CONFIG MANAGER
+    local ConfigGroup = Settings:AddGroupbox({Title = "CONFIGURATIONS", Side = "Right"})
+    local CfgName = ConfigGroup:AddInput("Config Name", {Placeholder = "MySetting"})
+    local CfgList = ConfigGroup:AddDropdown("Files", Library:GetConfigs(), false, function() end)
+    
+    ConfigGroup:AddButton("SAVE CONFIG", function()
+        local name = CfgName:Get()
+        if name ~= "" then
+            Library:SaveConfig(name)
+            CfgList:Set(Library:GetConfigs())
+        else
+            Library:Notify({Title="ERROR", Content="Please enter a config name."})
+        end
+    end)
+    
+    ConfigGroup:AddButton("LOAD CONFIG", function()
+        local selected = CfgList:Set(Library.Flags["Files"]) -- Get selected
+        if selected then Library:LoadConfig(selected) end
+    end)
+    
+    ConfigGroup:AddButton("REFRESH LIST", function()
+        CfgList:Set(Library:GetConfigs())
     end)
 
     return Window
