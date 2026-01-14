@@ -446,7 +446,7 @@ function Library:Init(config)
         Position = UDim2.new(1, 0, 1, 0),
         AnchorPoint = Vector2.new(1, 1),
         BackgroundTransparency = 1,
-        Image = "rbxassetid://6153965706", -- Icon gạch chéo góc (Resize Icon)
+        Image = "rbxassetid://6031090999", -- Icon gạch chéo góc (Resize Icon)
         ImageColor3 = ThemeManager.Current.TextDark,
         ImageTransparency = 0.5,
         ZIndex = 10 -- Đảm bảo nó nằm trên cùng
@@ -887,91 +887,186 @@ function Library:Init(config)
                 local Selected = Multi and {} or items[1]
                 local IsOpen = false
 
-                local Holder = Utility:Create("Frame", {Parent = Content, Size = UDim2.new(1, 0, 0, 45), BackgroundTransparency = 1, ZIndex = 20})
+                -- Container chính
+                local Holder = Utility:Create("Frame", {
+                    Parent = Content,
+                    Size = UDim2.new(1, 0, 0, 45),
+                    BackgroundTransparency = 1,
+                    ZIndex = 20
+                })
+                
+                -- Label tiêu đề
                 local Label = Utility:Create("TextLabel", {
-                    Parent = Holder, Text = text, Size = UDim2.new(1, 0, 0, 15), BackgroundTransparency = 1,
-                    TextColor3 = ThemeManager.Current.Text, Font = ThemeManager.Current.FontMain, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left
+                    Parent = Holder,
+                    Text = text,
+                    Size = UDim2.new(1, 0, 0, 15),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Text,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left
                 })
                 ThemeManager:Register(Label, "TextColor3", "Text")
                 AddTooltip(Holder, opts.Tooltip)
 
+                -- Nút chính (Hiển thị trạng thái đóng/mở)
                 local MainBtn = Utility:Create("TextButton", {
-                    Parent = Holder, Size = UDim2.new(1, 0, 0, 25), Position = UDim2.new(0, 0, 0, 20),
-                    BackgroundColor3 = ThemeManager.Current.Main, Text = "", AutoButtonColor = false, BackgroundTransparency = 0.5
+                    Parent = Holder,
+                    Size = UDim2.new(1, 0, 0, 25),
+                    Position = UDim2.new(0, 0, 0, 20),
+                    BackgroundColor3 = ThemeManager.Current.Main,
+                    Text = "",
+                    AutoButtonColor = false,
+                    BackgroundTransparency = 0.5
                 }, {
                     Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 0.2}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1}),
                     Utility:Create("ImageLabel", {
-                        Image = Assets.Icons.Arrow, Size = UDim2.fromOffset(16, 16), Position = UDim2.new(1, -20, 0.5, -8),
-                        BackgroundTransparency = 1, ImageColor3 = ThemeManager.Current.TextDark
+                        Image = Assets.Icons.Arrow,
+                        Size = UDim2.fromOffset(16, 16),
+                        Position = UDim2.new(1, -20, 0.5, -8),
+                        BackgroundTransparency = 1,
+                        ImageColor3 = ThemeManager.Current.TextDark
                     }),
                     Utility:Create("TextLabel", {
-                        Name = "Status", Size = UDim2.new(1, -25, 1, 0), Position = UDim2.new(0, 8, 0, 0),
-                        BackgroundTransparency = 1, Text = "...", TextColor3 = ThemeManager.Current.TextDark,
-                        Font = ThemeManager.Current.FontMain, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd
+                        Name = "Status",
+                        Size = UDim2.new(1, -25, 1, 0),
+                        Position = UDim2.new(0, 8, 0, 0),
+                        BackgroundTransparency = 1,
+                        Text = "...",
+                        TextColor3 = ThemeManager.Current.TextDark,
+                        Font = ThemeManager.Current.FontMain,
+                        TextSize = 11,
+                        TextXAlignment = Enum.TextXAlignment.Left,
+                        TextTruncate = Enum.TextTruncate.AtEnd
                     })
                 })
                 ThemeManager:Register(MainBtn, "BackgroundColor3", "Main")
                 ThemeManager:Register(MainBtn.UIStroke, "Color", "Stroke")
 
+                -- Khung chứa danh sách (List)
                 local ListFrame = Utility:Create("Frame", {
-                    Parent = MainBtn, Size = UDim2.new(1, 0, 0, 0), Position = UDim2.new(0, 0, 1, 5),
-                    BackgroundColor3 = ThemeManager.Current.Main, ClipsDescendants = true, Visible = false, ZIndex = 30
+                    Parent = MainBtn,
+                    Size = UDim2.new(1, 0, 0, 0),
+                    Position = UDim2.new(0, 0, 1, 5),
+                    BackgroundColor3 = ThemeManager.Current.Main,
+                    ClipsDescendants = true,
+                    Visible = false,
+                    ZIndex = 30
                 }, {
                     Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Accent, Thickness = 0.2})
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Accent, Thickness = 1})
                 })
                 ThemeManager:Register(ListFrame, "BackgroundColor3", "Main")
 
+                -- List cuộn
                 local ScrollList = Utility:Create("ScrollingFrame", {
-                    Parent = ListFrame, Size = UDim2.new(1, 0, 1, -5), Position = UDim2.new(0, 0, 0, 5),
-                    BackgroundTransparency = 1, ScrollBarThickness = 2, ScrollBarImageColor3 = ThemeManager.Current.Accent,
-                    CanvasSize = UDim2.new(0,0,0,0), AutomaticCanvasSize = Enum.AutomaticSize.Y, ZIndex = 31
-                }, {Utility:Create("UIListLayout", {Padding = UDim.new(0, 2), SortOrder = Enum.SortOrder.LayoutOrder}), Utility:Create("UIPadding", {PaddingLeft = UDim.new(0,5), PaddingRight=UDim.new(0,5)})})
+                    Parent = ListFrame,
+                    Size = UDim2.new(1, 0, 1, -5),
+                    Position = UDim2.new(0, 0, 0, 5),
+                    BackgroundTransparency = 1,
+                    ScrollBarThickness = 2,
+                    ScrollBarImageColor3 = ThemeManager.Current.Accent,
+                    CanvasSize = UDim2.new(0,0,0,0),
+                    AutomaticCanvasSize = Enum.AutomaticSize.Y,
+                    ZIndex = 31
+                }, {
+                    Utility:Create("UIListLayout", {Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder}),
+                    Utility:Create("UIPadding", {PaddingLeft = UDim.new(0,5), PaddingRight=UDim.new(0,5)})
+                })
 
-                local function Refresh()
+                -- Hàm cập nhật text hiển thị bên ngoài
+                local function RefreshDisplay()
                     local txt = ""
                     if Multi then
                         local count = 0
-                        for k, v in pairs(Selected) do if v then count = count + 1; txt = txt .. k .. ", " end end
+                        for k, v in pairs(Selected) do 
+                            if v then 
+                                count = count + 1; txt = txt .. k .. ", " 
+                            end 
+                        end
                         MainBtn.Status.Text = (count == 0) and "NONE" or txt:sub(1, -3)
-                    else MainBtn.Status.Text = tostring(Selected) end
+                        MainBtn.Status.TextColor3 = (count > 0) and ThemeManager.Current.Accent or ThemeManager.Current.TextDark
+                    else 
+                        MainBtn.Status.Text = tostring(Selected)
+                        MainBtn.Status.TextColor3 = ThemeManager.Current.Accent
+                    end
                 end
 
+                -- Hàm tạo danh sách item (Có xử lý Highlight)
                 local function Populate()
                     for _, v in pairs(ScrollList:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
+                    
                     for _, item in pairs(items) do
+                        local IsSelected = (Multi and Selected[item]) or (not Multi and Selected == item)
+                        
+                        -- Button Item
                         local ItemBtn = Utility:Create("TextButton", {
-                            Parent = ScrollList, Size = UDim2.new(1, 0, 0, 20), BackgroundTransparency = 1,
-                            Text = tostring(item), TextColor3 = ThemeManager.Current.TextDark, Font = ThemeManager.Current.FontMain,
-                            TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 32
+                            Parent = ScrollList,
+                            Size = UDim2.new(1, 0, 0, 22),
+                            BackgroundTransparency = IsSelected and 0.85 or 1, -- Highlight nền nếu chọn
+                            BackgroundColor3 = ThemeManager.Current.Accent,
+                            Text = tostring(item),
+                            TextColor3 = IsSelected and ThemeManager.Current.Accent or ThemeManager.Current.TextDark,
+                            Font = ThemeManager.Current.FontMain,
+                            TextSize = 11,
+                            TextXAlignment = Enum.TextXAlignment.Left,
+                            ZIndex = 32,
+                            AutoButtonColor = false
+                        }, {
+                            Utility:Create("UICorner", {CornerRadius = UDim.new(0, 3)}),
+                            Utility:Create("UIPadding", {PaddingLeft = UDim.new(0, 5)}),
+                            -- Thêm viền stroke cho item được chọn
+                            Utility:Create("UIStroke", {
+                                Color = ThemeManager.Current.Accent,
+                                Thickness = 1,
+                                Transparency = IsSelected and 0.5 or 1, -- Hiện viền nếu chọn
+                                ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                            })
                         })
-                        if (Multi and Selected[item]) or (not Multi and Selected == item) then ItemBtn.TextColor3 = ThemeManager.Current.Accent end
+                        
+                        -- Sự kiện click
                         ItemBtn.MouseButton1Click:Connect(function()
-                            if Multi then Selected[item] = not Selected[item]
-                            else Selected = item; IsOpen = false; ListFrame.Visible = false; Utility:Tween(Holder, {0.2}, {Size = UDim2.new(1,0,0,45)}) end
-                            Refresh()
+                            if Multi then 
+                                Selected[item] = not Selected[item]
+                            else 
+                                Selected = item
+                                IsOpen = false
+                                ListFrame.Visible = false
+                                Utility:Tween(Holder, {0.2}, {Size = UDim2.new(1,0,0,45)})
+                            end
+                            
+                            -- Refresh lại toàn bộ list để cập nhật highlight
+                            Populate() 
+                            RefreshDisplay()
+                            
                             pcall(callback, Selected)
                             Library.Flags[Flag] = Selected
                         end)
                     end
                 end
 
+                -- Sự kiện mở dropdown
                 MainBtn.MouseButton1Click:Connect(function()
                     IsOpen = not IsOpen
                     if IsOpen then
-                        ListFrame.Visible = true; Populate()
-                        local h = math.min(#items * 22 + 10, 150)
+                        ListFrame.Visible = true
+                        Populate() -- Load items
+                        local h = math.min(#items * 26 + 10, 150) -- Tính chiều cao
                         ListFrame.Size = UDim2.new(1, 0, 0, h)
                         Utility:Tween(Holder, {0.2}, {Size = UDim2.new(1, 0, 0, 45 + h + 5)})
+                        Utility:Tween(MainBtn.ImageLabel, {0.2}, {Rotation = 180})
                     else
                         ListFrame.Visible = false
                         Utility:Tween(Holder, {0.2}, {Size = UDim2.new(1, 0, 0, 45)})
+                        Utility:Tween(MainBtn.ImageLabel, {0.2}, {Rotation = 0})
                     end
                 end)
                 
-                local F = {} function F:Set(v) Selected = v; Refresh(); Library.Flags[Flag] = v end
-                Library.Options[Flag] = F; Library.Flags[Flag] = Selected; Refresh()
+                -- Init
+                local F = {} 
+                function F:Set(v) Selected = v; RefreshDisplay(); Library.Flags[Flag] = v end
+                Library.Options[Flag] = F; Library.Flags[Flag] = Selected; RefreshDisplay()
                 return F
             end
             
