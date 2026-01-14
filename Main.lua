@@ -354,6 +354,71 @@ function Library:Modal(config)
     CreateBtn("CONFIRM", ThemeManager.Current.Error, OnConfirm)
 end
 
+--// KEYBIND VISUALIZER SYSTEM //--
+function Library:KeybindHUD()
+    if self.KeybindFrame then return end -- Chỉ tạo 1 lần
+
+    self.KeybindFrame = Utility:Create("Frame", {
+        Name = "KeybindHUD", Parent = self.ScreenGui,
+        Size = UDim2.fromOffset(200, 0), Position = UDim2.new(0, 20, 0.5, 0), -- Vị trí mặc định bên trái
+        BackgroundColor3 = ThemeManager.Current.Main, BackgroundTransparency = 0.2,
+        AutomaticSize = Enum.AutomaticSize.Y
+    }, {
+        Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+        Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1.5}),
+    })
+    
+    -- Title Header
+    local Header = Utility:Create("Frame", {
+        Parent = self.KeybindFrame, Size = UDim2.new(1, 0, 0, 24), BackgroundColor3 = ThemeManager.Current.Secondary
+    }, {
+        Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+        Utility:Create("TextLabel", {
+            Text = "KEYBINDS", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1,
+            TextColor3 = ThemeManager.Current.Accent, Font = ThemeManager.Current.FontBold, TextSize = 12
+        })
+    })
+
+    -- Container chứa list
+    self.KeybindList = Utility:Create("Frame", {
+        Parent = self.KeybindFrame, Size = UDim2.new(1, 0, 0, 0), Position = UDim2.new(0, 0, 0, 26),
+        BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.Y
+    }, {
+        Utility:Create("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 2)}),
+        Utility:Create("UIPadding", {PaddingBottom = UDim.new(0, 5), PaddingLeft = UDim.new(0, 5), PaddingRight = UDim.new(0, 5)})
+    })
+    
+    Utility:MakeDraggable(self.KeybindFrame, self.KeybindFrame)
+end
+
+function Library:AddKeybindToHUD(name, keyName)
+    if not self.KeybindFrame then self:KeybindHUD() end
+    
+    -- Xóa cũ nếu trùng tên (để cập nhật phím mới)
+    for _, v in pairs(self.KeybindList:GetChildren()) do
+        if v.Name == name then v:Destroy() end
+    end
+    
+    -- Nếu key là "None" thì không hiện
+    if keyName == "None" then return end
+
+    local Item = Utility:Create("Frame", {
+        Name = name, Parent = self.KeybindList, Size = UDim2.new(1, 0, 0, 18), BackgroundTransparency = 1
+    })
+    
+    -- Tên chức năng
+    Utility:Create("TextLabel", {
+        Parent = Item, Text = name, Size = UDim2.new(1, -50, 1, 0), BackgroundTransparency = 1,
+        TextColor3 = ThemeManager.Current.Text, Font = ThemeManager.Current.FontMain, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left
+    })
+    
+    -- Phím
+    Utility:Create("TextLabel", {
+        Parent = Item, Text = "[" .. keyName .. "]", Size = UDim2.new(0, 50, 1, 0), Position = UDim2.new(1, -50, 0, 0),
+        BackgroundTransparency = 1, TextColor3 = ThemeManager.Current.Accent, Font = ThemeManager.Current.FontBold, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Right
+    })
+end
+
 --// CONFIG SYSTEM //--
 if not isfolder(Library.ConfigFolder) then makefolder(Library.ConfigFolder) end
 
@@ -488,6 +553,58 @@ function Library:Init(config)
         self.ScreenGui.Enabled = not self.ScreenGui.Enabled 
     end)
 
+    local SearchBar = Utility:Create("TextBox", {
+        Name = "SearchBar",
+        Parent = Topbar, -- Nằm trên thanh tiêu đề
+        Size = UDim2.new(0, 200, 0, 25),
+        Position = UDim2.new(0.5, -100, 0.5, 0), -- Căn giữa Topbar
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = ThemeManager.Current.Main,
+        Text = "",
+        PlaceholderText = "SEARCH MODULES...",
+        TextColor3 = ThemeManager.Current.Accent,
+        PlaceholderColor3 = ThemeManager.Current.TextDark,
+        Font = ThemeManager.Current.FontMain,
+        TextSize = 12
+    }, {
+        Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+        Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1}),
+        Utility:Create("ImageLabel", { -- Icon kính lúp
+            Image = Assets.Icons.Search,
+            Size = UDim2.fromOffset(14, 14),
+            Position = UDim2.new(1, -20, 0.5, -7),
+            BackgroundTransparency = 1,
+            ImageColor3 = ThemeManager.Current.TextDark
+        })
+    })
+
+    -- LOGIC TÌM KIẾM
+    SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+        local query = SearchBar.Text:lower()
+        
+        -- Duyệt qua tất cả element đã đăng ký
+        for _, item in pairs(Library.SearchableElements) do
+            if query == "" then
+                -- Nếu xóa trắng ô tìm kiếm -> Hiện lại tất cả
+                item.Instance.Visible = true
+                item.Group.Visible = true 
+            else
+                -- Nếu tên element chứa từ khóa tìm kiếm
+                if item.Name:lower():find(query) then
+                    item.Instance.Visible = true
+                    item.Group.Visible = true -- Hiện Group chứa nó
+                    
+                    -- Tự động mở Group nếu đang đóng (nếu bạn dùng Collapsible)
+                    -- (Code tùy chọn nếu bạn muốn tự động mở group)
+                else
+                    item.Instance.Visible = false
+                end
+            end
+        end
+        
+        -- Logic phụ: Ẩn Group nếu không còn element nào hiện trong đó (Optional, hơi nặng)
+    end)
+
     -- Layout Containers
     local TabContainer = Utility:Create("ScrollingFrame", {
         Parent = self.MainFrame, Size = UDim2.new(0, 160, 1, -41), Position = UDim2.new(0, 0, 0, 41),
@@ -601,6 +718,15 @@ function Library:Init(config)
             local ParentCol = (Side == "Left" and LeftCol) or RightCol
             local Group = {}
             local IsCollapsed = false
+
+            -- [HELPER ĐĂNG KÝ TÌM KIẾM]
+            local function RegisterSearch(text, instance)
+                table.insert(Library.SearchableElements, {
+                    Name = text,
+                    Instance = instance,
+                    Group = BoxFrame -- Lưu tham chiếu đến Group cha
+                })
+            end
             
             local BoxFrame = Utility:Create("Frame", {
                 Name = Title.."_Group", Parent = ParentCol,
@@ -744,6 +870,7 @@ function Library:Init(config)
                 ThemeManager:Register(Btn, "BackgroundColor3", "Secondary")
                 ThemeManager:Register(Btn.UIStroke, "Color", "Stroke")
                 ThemeManager:Register(Btn.TextLabel, "TextColor3", "Text")
+                RegisterSearch(text, Btn)
                 AddTooltip(Btn, opts.Tooltip)
 
                 Btn.MouseEnter:Connect(function()
@@ -794,6 +921,7 @@ function Library:Init(config)
                     TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left
                 })
                 ThemeManager:Register(Label, "TextColor3", "Text")
+                RegisterSearch(text, Container)
                 AddTooltip(Container, opts.Tooltip)
 
                 local Funcs = {}
@@ -828,6 +956,7 @@ function Library:Init(config)
                 })
                 ThemeManager:Register(Label, "TextColor3", "Text")
                 ThemeManager:Register(ValLabel, "TextColor3", "Accent")
+                RegisterSearch(text, Frame)
                 AddTooltip(Frame, opts.Tooltip)
 
                 local Track = Utility:Create("Frame", {
@@ -881,7 +1010,7 @@ function Library:Init(config)
             end
 
             function Group:AddDropdown(text, items, multi, callback, config)
-                local opts = config or {}
+                local opts = config or {} 
                 local Flag = opts.Flag or text
                 local Multi = multi or false
                 local Selected = Multi and {} or items[1]
@@ -907,6 +1036,7 @@ function Library:Init(config)
                     TextXAlignment = Enum.TextXAlignment.Left
                 })
                 ThemeManager:Register(Label, "TextColor3", "Text")
+                RegisterSearch(text, Holder)
                 AddTooltip(Holder, opts.Tooltip)
 
                 -- Nút chính (Hiển thị trạng thái đóng/mở)
@@ -1091,6 +1221,9 @@ function Library:Init(config)
                      PickerFrame.Visible = IsOpen
                      Utility:Tween(Frame, {0.3}, {Size = UDim2.new(1,0,0, IsOpen and 145 or 30)})
                  end)
+
+                 RegisterSearch(text, Frame)
+                 AddTooltip(Frame, opts.Tooltip)
                  
                  -- Minimal logic for brevity, full logic assumed from base or similar to slider
                  local F = {} function F:Set(c) Color = c; Preview.BackgroundColor3 = c; Library.Flags[Flag] = {R=c.R,G=c.G,B=c.B}; pcall(callback, c) end
@@ -1100,24 +1233,146 @@ function Library:Init(config)
 
             function Group:AddKeybind(text, default, callback, config)
                 local opts = config or {}
-                local Key = default or Enum.KeyCode.RightControl
-                local Binding = false
-                local Frame = Utility:Create("Frame", {Parent = Content, Size = UDim2.new(1,0,0,30), BackgroundTransparency = 1})
-                Utility:Create("TextLabel", {Parent = Frame, Text=text, Size=UDim2.new(1,-80,1,0), BackgroundTransparency=1, TextColor3=ThemeManager.Current.Text, Font=ThemeManager.Current.FontMain, TextSize=12, TextXAlignment=Enum.TextXAlignment.Left})
-                local Btn = Utility:Create("TextButton", {
-                    Parent = Frame, Size=UDim2.new(0,70,0,18), Position=UDim2.new(1,-70,0.5,-9), BackgroundColor3=ThemeManager.Current.Secondary,
-                    Text="["..Key.Name.."]", TextColor3=ThemeManager.Current.Accent, Font=ThemeManager.Current.FontBold, TextSize=11
-                }, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)}), Utility:Create("UIStroke",{Color=ThemeManager.Current.Stroke,Thickness=1})})
+                local Flag = opts.Flag or text
+                local Key = default or Enum.KeyCode.RightAlt
+                local IsBinding = false
                 
-                Btn.MouseButton1Click:Connect(function()
-                    Binding = true; Btn.Text = "..."
-                    local c; c = UserInputService.InputBegan:Connect(function(input)
-                        if input.UserInputType == Enum.UserInputType.Keyboard then
-                            Key = input.KeyCode; Binding = false; Btn.Text = "["..Key.Name.."]"; c:Disconnect()
+                -- 1. UI CONTAINER
+                local Frame = Utility:Create("Frame", {
+                    Parent = Content,
+                    Size = UDim2.new(1, 0, 0, 30),
+                    BackgroundTransparency = 1,
+                })
+                
+                -- Đăng ký tính năng Search & Tooltip
+                RegisterSearch(text, Frame)
+                AddTooltip(Frame, opts.Tooltip)
+
+                -- 2. LABEL (Tên chức năng)
+                local Label = Utility:Create("TextLabel", {
+                    Parent = Frame,
+                    Text = text,
+                    Size = UDim2.new(1, -90, 1, 0),
+                    BackgroundTransparency = 1,
+                    TextColor3 = ThemeManager.Current.Text,
+                    Font = ThemeManager.Current.FontMain,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+                ThemeManager:Register(Label, "TextColor3", "Text")
+
+                -- 3. BIND BUTTON (Nút hiển thị phím)
+                local BindBtn = Utility:Create("TextButton", {
+                    Parent = Frame,
+                    Size = UDim2.new(0, 80, 0, 18),
+                    Position = UDim2.new(1, -80, 0.5, -9),
+                    BackgroundColor3 = ThemeManager.Current.Secondary,
+                    Text = "[" .. Key.Name .. "]",
+                    TextColor3 = ThemeManager.Current.Accent,
+                    Font = ThemeManager.Current.FontBold,
+                    TextSize = 11,
+                    AutoButtonColor = false
+                }, {
+                    Utility:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+                    Utility:Create("UIStroke", {Color = ThemeManager.Current.Stroke, Thickness = 1})
+                })
+                ThemeManager:Register(BindBtn, "BackgroundColor3", "Secondary")
+                ThemeManager:Register(BindBtn.UIStroke, "Color", "Stroke")
+                ThemeManager:Register(BindBtn, "TextColor3", "Accent")
+
+                -- Helper: Cập nhật Key & HUD
+                local function UpdateKeyDisplay()
+                    local keyName = (typeof(Key) == "EnumItem") and Key.Name or tostring(Key)
+                    BindBtn.Text = "[" .. keyName .. "]"
+                    
+                    -- Cập nhật lên HUD
+                    Library:AddKeybindToHUD(text, keyName)
+                end
+
+                -- 4. LOGIC BINDING (Thay đổi phím)
+                BindBtn.MouseButton1Click:Connect(function()
+                    if IsBinding then return end
+                    IsBinding = true
+                    
+                    Utility:PlaySound("Click")
+                    BindBtn.Text = "[...]"
+                    BindBtn.TextColor3 = ThemeManager.Current.Text -- Đổi màu chờ
+                    
+                    local inputWait
+                    inputWait = UserInputService.InputBegan:Connect(function(input)
+                        -- Chấp nhận phím Keyboard hoặc chuột (MB1, MB2...)
+                        if input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType.Name:find("MouseButton") then
+                            IsBinding = false
+                            
+                            -- Hủy bind nếu ấn Escape
+                            if input.KeyCode == Enum.KeyCode.Escape then
+                                -- Giữ key cũ, chỉ cập nhật lại visual
+                            elseif input.KeyCode == Enum.KeyCode.Backspace then
+                                Key = Enum.KeyCode.Unknown -- Unbind
+                            else
+                                Key = (input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode) or input.UserInputType
+                            end
+                            
+                            UpdateKeyDisplay()
+                            
+                            -- Hiệu ứng hồi phục màu
+                            BindBtn.TextColor3 = ThemeManager.Current.Accent
+                            
+                            -- Lưu Config
+                            Library.Flags[Flag] = Key.Name -- Lưu tên string để JSON không lỗi
+                            if opts.Callback then pcall(opts.Callback, Key) end
+                            
+                            inputWait:Disconnect()
                         end
                     end)
                 end)
-                UserInputService.InputBegan:Connect(function(i,g) if not g and i.KeyCode == Key then pcall(callback) end end)
+
+                -- 5. LOGIC TRIGGER (Kích hoạt callback)
+                UserInputService.InputBegan:Connect(function(input, gp)
+                    if not gp and not IsBinding then
+                        local inputKey = (input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode) or input.UserInputType
+                        if inputKey == Key and Key ~= Enum.KeyCode.Unknown then
+                            -- Trigger Callback
+                            pcall(callback, Key)
+                            
+                            -- Visual Effect: Nháy sáng nút khi ấn
+                            Utility:Tween(BindBtn, {0.1}, {BackgroundColor3 = ThemeManager.Current.Accent, TextColor3 = ThemeManager.Current.Main})
+                            task.delay(0.1, function()
+                                Utility:Tween(BindBtn, {0.2}, {BackgroundColor3 = ThemeManager.Current.Secondary, TextColor3 = ThemeManager.Current.Accent})
+                            end)
+                        end
+                    end
+                end)
+                
+                -- 6. CONFIG SYSTEM (Hàm Set & Load)
+                local Funcs = {}
+                
+                function Funcs:Set(val)
+                    -- Xử lý khi load từ Config (JSON trả về String, cần đổi sang Enum)
+                    if typeof(val) == "string" then
+                        if Enum.KeyCode[val] then
+                            Key = Enum.KeyCode[val]
+                        elseif val:find("MouseButton") then
+                            -- Xử lý chuột hơi phức tạp, tạm thời fallback về Unknown nếu load lỗi
+                            -- (Nâng cao: Cần bảng map string -> UserInputType)
+                            Key = Enum.UserInputType[val] or Enum.KeyCode.Unknown
+                        end
+                    elseif typeof(val) == "EnumItem" then
+                        Key = val
+                    end
+                    
+                    Library.Flags[Flag] = Key.Name
+                    UpdateKeyDisplay()
+                end
+                
+                -- Đăng ký Config
+                Library.Options[Flag] = Funcs
+                Library.Flags[Flag] = Key.Name
+                
+                -- Khởi tạo hiển thị ban đầu
+                UpdateKeyDisplay()
+                
+                return Funcs
             end
             
             function Group:AddInput(text, config)
@@ -1130,6 +1385,7 @@ function Library:Init(config)
                     Text="", PlaceholderText=opts.Placeholder or "...", TextColor3=ThemeManager.Current.Accent, Font=ThemeManager.Current.FontMain, TextSize=12, TextXAlignment=Enum.TextXAlignment.Left
                 }, {Utility:Create("UICorner",{CornerRadius=UDim.new(0,4)}), Utility:Create("UIStroke",{Color=ThemeManager.Current.Stroke,Thickness=1})})
                 AddTooltip(Frame, opts.Tooltip)
+                RegisterObject(Frame, Box)
                 
                 local F = {} function F:Get() return Box.Text end
                 Box.FocusLost:Connect(function() Library.Flags[Flag] = Box.Text; if opts.Callback then opts.Callback(Box.Text) end end)
