@@ -430,7 +430,7 @@ function Library:Init(config)
         Utility:Create("ImageLabel", { -- Glow Shadow
             Name = "Shadow", BackgroundTransparency = 1, Image = "rbxassetid://6015897843",
             Size = UDim2.new(1, 44, 1, 44), Position = UDim2.new(0, -22, 0, -22),
-            ImageColor3 = ThemeManager.Current.Accent, ImageTransparency = 0.6, ZIndex = 0
+            ImageColor3 = ThemeManager.Current.Accent, ImageTransparency = 0.9, ZIndex = 0
         })
     })
     ThemeManager:Register(self.MainFrame, "BackgroundColor3", "Main")
